@@ -10,6 +10,15 @@ class cv_dropbox(osv.osv):
                 'name' : fields.char("Name")
                 }
     
+class cv_byemail(osv.osv):
+    _name = 'cv.byemail'
+    _description = "CV Rceived by email"
+    _order = "id desc" 
+    
+    _columns = {
+                'name' : fields.char("Name")
+                }
+    
 class job_position(osv.osv):
     _name = 'job.position'
     _description = "job Position"
