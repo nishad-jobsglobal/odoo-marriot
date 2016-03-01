@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        
+        <record id="action_take_photo_tapplicant" model="ir.actions.client">
+            <field name="name">Take Picture</field>
+            <field name="tag">photo_tapplicant.action</field>
+        </record>
+        
+        <record id="view_tapplicant_form" model="ir.ui.view">
+            <field name="name">tapplicant.form.webcam</field>
+            <field name="model">tapplicant</field>
+            <field name="inherit_id" ref="view_tapplicant"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <button name="%(action_take_photo_tapplicant)" type="action" string="Take Picture"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

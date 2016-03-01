@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+        <template id="assets_backend" name="acesmanpower assets" inherit_id="web.assets_backend" >
+            <xpath expr="." position="inside">
+                <link ref="stylesheet" href="/acesmanpower/static/src/css/tripevents.css" />
+                <script type="text/javascript" src="/acesmanpower/static/src/js/tripevents.js" />
+                <script type="text/javascript" src="/acesmanpower/static/src/adminlte/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js" />
+                <script type="text/javascript" src="/acesmanpower/static/src/adminlte/plugins/jvectormap/jquery-jvectormap-world-mill-en.js" />
+            </xpath>
+        </template>
+        
+        <record id="act_open_tripevents_page1" model="ir.actions.client" >
+            <field name="name">DashBoard Page</field>
+            <field name="tag">acesmanpower.homepage</field>
+        </record>
+        
+        <menuitem id="homepage_acesmanpower_menu" sequence="0" name="My Dashboard" parent="menu_recruitment_portal_live_modules" action="act_open_tripevents_page1" />
+
+    </data>
+</openerp>

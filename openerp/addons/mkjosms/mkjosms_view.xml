@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        
+        <record id="view_mkjosms_form" model="ir.ui.view">
+            <field name="name">mkjosms.form</field>
+            <field name="model">mkjosms</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="SMS Campaign" version="7.0">
+                    <header>
+                        <field name="stage_id" widget="statusbar" clickable="True"  />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <notebook>
+                            <page string="Details" >
+                                <group>
+                                    <group>
+                                        <field name="company_id" />
+                                        <field name="user_id" />
+                                    </group>
+                                    <group>
+                                        <field name="create_date" />
+                                        <field name="write_date" />
+                                        <field name="write_uid" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Recipients - Copy/Paste" >
+                                <field name="boximport" placeholder="Put one mobile number per line" />
+                                <span>
+                                    Here you can copy from an excel your own list. Two columns only, NUMBER [tab] NAME
+                                </span>
+                            </page>
+                            <page string="Recipients - Applicants" >
+                                <field name="tapplicant_ids" ref="view_tapplicant_all_tree_hastrav"/>
+                                <span>
+                                    Click add items to insert list of recipients
+                                </span>
+                            </page>
+                        </notebook>
+                        <separator string="Message"/>
+                        <field name="message" placeholder="SMS Message"/>
+                        
+                        <span>
+                            Field Mapping:  <br />
+                            Name = '%Name%' <br />
+                            <em>Put all numbers as a column list on the left side keep a tab space then 2nd column should be the name always. <br />
+                            Example: <br />
+                            +9711234567     Juan<br />
+                            +6321234567     Maria<br />
+                            
+                            </em>                            
+                        </span>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        
+        <record id="view_mkjosms_search" model="ir.ui.view">
+            <field name="name">mkjosms.search</field>
+            <field name="model">mkjosms</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="SMS Campaign">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="create_date"/>
+                <field name="write_uid"/>
+                <field name="write_date"/>
+                
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Branch" domain="[]" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="mkjosms_tree">
+            <field name="name">mkjosms.tree</field>
+            <field name="model">mkjosms</field>
+            <field name="arch" type="xml">
+                <tree string="Stages">
+                    <field name="name"/>
+                    <field name="create_date"/>
+                    <field name="write_uid"/>
+                    <field name="write_date"/>
+                    <field name="company_id"/>
+                    <field name="stage_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_mkjosms">
+            <field name="name">SMS Campaign</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mkjosms</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_mkjosms_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_mkjosms_tree">
+            <field name="act_window_id" ref="act_open_mkjosms"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="mkjosms_tree"/>
+        </record>   
+        
+        
+        <menuitem name="SMS" id="menu_mkjosms" parent="base.marketing_menu"  sequence="10" />
+        
+        <menuitem name="SMS Campaign" id="menu_mkjosmss_campaign" parent="menu_mkjosms"  sequence="10" action="act_open_mkjosms"/>
+        
+        
+        
+        
+        
+        
+    </data>
+</openerp>        

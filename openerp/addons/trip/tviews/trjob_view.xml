@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_trjob_tree" model="ir.ui.view">
+            <field name="name">trjob.tree</field>
+            <field name="model">trjob</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Jobs">
+                <field name="name"/>
+                <field name="candidatesrequired"/>
+                <field name="candidatesplaced"/>
+                <field name="trip_id"/>
+                <field name="user_id"/>
+            </tree>
+            </field>
+        </record>
+        
+        <record id="view_trjob_form" model="ir.ui.view">
+            <field name="name">trjob.form</field>
+            <field name="model">trjob</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Trip Job" version="7.0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="description"/>
+                                <field name="candidatesrequired"/>
+                               
+                            </group>
+                            <group>
+                                <field name="trip_id"/>
+                                <field name="partner_id"/>
+                                <field name="user_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <separator string="Applicants"/>
+                    <field name="tapplicant_id" nolabel="1"/>
+                    
+                </form>
+            </field>
+        </record>
+
+        <record id="view_trjob_search" model="ir.ui.view">
+            <field name="name">trjob.search</field>
+            <field name="model">trjob</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Trip Jobs">
+                <field name="name"/>
+                <field name="trip_id"/>
+                <field name="partner_id"/>
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Trip" domain="[]" context="{'group_by':'trip_id'}"/>
+                    <filter string="Employer" domain="[]" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_trjob_view">
+            <field name="name">Trip Jobs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">trjob</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_trjob_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trjob_view_form">
+            <field name="act_window_id" ref="act_open_trjob_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_trjob_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trjob_view_tree">
+            <field name="act_window_id" ref="act_open_trjob_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_trjob_tree"/>
+        </record>
+        
+        <menuitem name="Trip Jobs" id="menu_cg_trjob" parent="rtrip_root"  sequence="4" action="act_open_trjob_view"/>
+        
+        
+        
+        
+        
+
+    </data>
+</openerp>

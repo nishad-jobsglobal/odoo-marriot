@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	<menuitem name='Recruitment Tool' id='menu_recruitment_tool_root' sequence='98'></menuitem>
+    	
+    	<menuitem name="Upload CV" id="menu_recruitment_upload_cv" parent="menu_recruitment_tool_root" sequence="1"/>  
+        <menuitem name="Job Posting" id="menu_recruitment_job_posting" parent="menu_recruitment_tool_root" sequence="2"/>
+    		
+    	<record model="ir.ui.view" id="open_cv_dropbox_tree" >
+            <field name="name">cv.dropbox.tree</field>
+            <field name="model">cv.dropbox</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+	            <tree string="CV Processing Dropbox">
+	                <field name="name"/>
+	            </tree>
+            </field>
+        </record>
+        
+    	<record model="ir.ui.view" id="open_cv_dropbox_search">
+            <field name="name">cv.dropbox.search</field>
+            <field name="model">cv.dropbox</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="CV Processing Dropbox">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        	
+    	<record model="ir.actions.act_window" id="act_open_cv_dropbox_view">
+            <field name="name">CV Processing Dropbox</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cv.dropbox</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="open_cv_dropbox_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <menuitem name="CV Processing Dropbox" id="menu_cv_dropbox" parent="menu_recruitment_upload_cv"  sequence="1" action="act_open_cv_dropbox_view"/>
+        <menuitem name="Process CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="2" action="act_open_cv_dropbox_view"/>
+    	
+        <record model="ir.ui.view" id="open_job_posting_tree">
+            <field name="name">job.posting.tree</field>
+            <field name="model">job.posting</field>
+            <field name="arch" type="xml">
+	            <tree string="Job Posting">
+	            	<field name="posting_intro"/>
+					<field name="posting_title"/>
+					<field name="name"/>
+					<field name="recruit_date"/>
+					<field name="job_locations"/>					
+					<field name="recruit_locations"/>					
+	            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_job_posting_form" >
+            <field name="name">job.posting.form</field>
+            <field name="model">job.posting</field>
+            <field name="arch" type="xml">
+                <form string="Job Posting">
+                    <sheet>
+                    	<group>
+                    	<field name="posting_intro"/>
+						<field name="posting_title"/>
+						<field name="name"/>
+						<field name="recruit_date"/>
+						<field name="url_image"/>						
+						<field name="job_locations" widget="many2many_tags"/>
+                    	</group>
+                        <group>
+                        <field name="recruit_locations" widget="many2many_tags"/>
+						<field name="jobs" widget="many2many_tags"/>
+						<field name="job_industry" widget="many2many_tags"/>
+						<field name="job_details"/>
+						<field name="publish"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+    	<record model="ir.ui.view" id="open_job_posting_search">
+            <field name="name">job.posting.search</field>
+            <field name="model">job.posting</field>
+            <field name="arch" type="xml">
+            <search string="Job posting">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Job" domain="[]"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        	
+    	<record model="ir.actions.act_window" id="act_open_job_posting_view">
+            <field name="name">Job Posting</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">job.posting</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="open_job_posting_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>	
+         	
+        	
+        <menuitem name="Job Posting" id="menu_recruitment_job_posting_data" parent="menu_recruitment_job_posting" sequence="3" action="act_open_job_posting_view"/>
+		
+        <record model="ir.actions.act_window" id="act_open_job_posting_listing_view">
+            <field name="name">Job Posting List</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">job.posting</field>
+            <field name="view_type">tree</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>	
+        	
+        <menuitem name="Job Posting List" id="menu_recruitment_job_posting_list_data" parent="menu_recruitment_job_posting" sequence="4" action="act_open_job_posting_listing_view"/>    	
+    </data>
+</openerp>

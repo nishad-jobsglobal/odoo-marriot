@@ -1,0 +1,876 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <menuitem name="Tracking Level 2" id="rtrip_root_medical" parent="hr.menu_hr_root"  sequence="10" />  
+        
+        
+        <record id="view_tapplicant_tree_med" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id" string="Trip"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datemedicalstart" string="Medical Started"/>
+                <field name="datemedicalfit" string="Fit"/>
+                <field name="datemedicaluploaded" string="Uploaded"/>
+                <field name="medicalexpirenote" />
+                <field name="write_date" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_med">
+            <field name="name">Trip Applicant - Medical</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('datetravel','&gt;','2015-01-01'),('cnclld','!=',1),'|',('mdclnprcss','&gt;',0),'|',('frmdcltst','&gt;',0),'|',('fttwrk','&gt;',0),('frmdclpld','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_med">
+            <field name="act_window_id" ref="act_open_tapplicant_view_med"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_med"/>
+        </record>  
+        
+        <menuitem name="Medical Summary" id="menu_cg_tapplicants_med" parent="rtrip_root_medical"  sequence="1" action="act_open_tapplicant_view_med"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_frmdcltst" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(frmdcltst &gt; 3 and daysup &gt; 0)" default_order="frmdcltst desc">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id" string="Trip"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="medicalclinic" string="Clinic"/>
+                <field name="write_date" />
+                <field name="frmdcltst" string="Delay" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frmdcltst">
+            <field name="name">Trip Applicant - For Medical Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frmdcltst','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frmdcltst">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frmdcltst"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frmdcltst"/>
+        </record>  
+        
+        <menuitem name="For Medical Test" id="menu_cg_tapplicants_frmdcltst" parent="rtrip_root_medical"  sequence="2" action="act_open_tapplicant_view_frmdcltst"/>
+        
+
+
+        
+        <record id="view_tapplicant_tree_mdclnprcss" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(mdclnprcss &gt; 5 and daysup &gt; 0)"  default_order="mdclnprcss desc">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="medicalclinic" string="Clinic"/>
+                <field name="datemedicalstart" string="Medical Start"/>
+                <field name="medicalnote" string="Notes"/>
+                <field name="write_date" />
+                <field name="mdclnprcss" string="Delay" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_mdclnprcss">
+            <field name="name">Trip Applicant - Awaiting Medical Release</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('mdclnprcss','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_mdclnprcss">
+            <field name="act_window_id" ref="act_open_tapplicant_view_mdclnprcss"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_mdclnprcss"/>
+        </record>  
+        
+        <menuitem name="Awaiting Medical Release" id="menu_cg_tapplicants_mdclnprcss" parent="menu_cg_tapplicants_frmdcltst"  sequence="1" action="act_open_tapplicant_view_mdclnprcss"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_fttwrk" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(fttwrk &gt; 2 and daysup &gt; 0)" default_order="fttwrk desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="medicalclinic" string="Clinic"/>
+                <field name="datemedicalfit" string="Confirmed Fit"/>
+                <field name="medicalnote" string="Notes"/>
+                <field name="write_date" />
+                <field name="fttwrk" string="Delay (days)" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_fttwrk">
+            <field name="name">Trip Applicant - Fit to Work</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('fttwrk','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_fttwrk">
+            <field name="act_window_id" ref="act_open_tapplicant_view_fttwrk"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_fttwrk"/>
+        </record>  
+        
+        <menuitem name="Fit to work" id="menu_cg_tapplicants_fttwrk" parent="menu_cg_tapplicants_frmdcltst"  sequence="1" action="act_open_tapplicant_view_fttwrk"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_frmdclpld" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(frmdclpld &gt; 0 and daysup &gt; 0)" default_order="frmdclpld desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="medicalclinic" string="Clinic"/>
+                <field name="datemedicalfit" string="Confirmed Fit"/>
+                <field name="datemedicalexpire" />
+                <field name="medicalnote" string="Notes"/>
+                <field name="write_date" />
+                <field name="frmdclpld" string="Delay (days)" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frmdclpld">
+            <field name="name">Trip Applicant - Medical Upload</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frmdclpld','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frmdclpld">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frmdclpld"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frmdclpld"/>
+        </record>  
+        
+        <menuitem name="For Upload" id="menu_cg_tapplicants_frmdclpld" parent="menu_cg_tapplicants_frmdcltst"  sequence="1" action="act_open_tapplicant_view_frmdclpld"/>
+        
+        
+        
+        
+         
+        
+        
+        
+        <record id="view_tapplicant_tree_gamca" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />  
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="dategamcastart" string="Start"/>
+                <field name="dategamcafit" string="Fit"/>
+                <field name="dategamcauploaded" string="Uploaded"/>
+                <field name="write_date" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_gamca">
+            <field name="name">Trip Applicant - Gamca</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('datetravel','&gt;','2015-01-01'),('cnclld','!=',1),'|',('frgmctst','&gt;',0),'|',('gmcnprcss','&gt;',0),'|',('gmcfttwrk','&gt;',0),('frgmcpld','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_gamca">
+            <field name="act_window_id" ref="act_open_tapplicant_view_gamca"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_gamca"/>
+        </record>  
+        
+        <menuitem name="Gamca Summary" id="menu_cg_tapplicants_gamca" parent="rtrip_root_medical"  sequence="3" action="act_open_tapplicant_view_gamca"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_frgmctst" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(frgmctst &gt; 3 and daysup &gt; 0)" default_order="frgmctst desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id"  /> 
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="medicalnote" string="Notes"/>
+                <field name="write_date" />
+                <field name="frgmctst" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frgmctst">
+            <field name="name">Trip Applicant - For Gamca Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frgmctst','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frgmctst">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frgmctst"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frgmctst"/>
+        </record>  
+        
+        <menuitem name="For Gamca Test" id="menu_cg_tapplicants_frgmctst" parent="rtrip_root_medical"  sequence="4" action="act_open_tapplicant_view_frgmctst"/>
+        
+
+
+        
+        <record id="view_tapplicant_tree_gmcnprcss" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(gmcnprcss &gt; 5 and daysup &gt; 0)" default_order="gmcnprcss desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id"  /> 
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="dategamcastart" string="Gamca Start"/>
+                <field name="medicalnote" string="Notes"/>
+                <field name="write_date" />
+                <field name="gmcnprcss" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_gmcnprcss">
+            <field name="name">Trip Applicant - Awaiting Gamca Release</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('gmcnprcss','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_gmcnprcss">
+            <field name="act_window_id" ref="act_open_tapplicant_view_gmcnprcss"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_gmcnprcss"/>
+        </record>  
+        
+        <menuitem name="Awaiting Gamca Release" id="menu_cg_tapplicants_gmcnprcss" parent="menu_cg_tapplicants_frgmctst"  sequence="1" action="act_open_tapplicant_view_gmcnprcss"/>
+        
+        
+        <record id="view_tapplicant_tree_gmcfttwrk" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(gmcfttwrk &gt; 2 and daysup &gt; 0)" default_order="gmcfttwrk desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id"  /> 
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="dategamcafit" string="Gamca Fit"/>
+                <field name="gamcaexpirenote" />
+                <field name="write_date" />
+                <field name="gmcfttwrk" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_gmcfttwrk">
+            <field name="name">Trip Applicant - Gamca Fit to Work</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('gmcfttwrk','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_gmcfttwrk">
+            <field name="act_window_id" ref="act_open_tapplicant_view_gmcfttwrk"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_gmcfttwrk"/>
+        </record>  
+        
+        <menuitem name="Gamca Fit to work" id="menu_cg_tapplicants_gmcfttwrk" parent="menu_cg_tapplicants_frgmctst"  sequence="1" action="act_open_tapplicant_view_gmcfttwrk"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_frgmcpld" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(frgmcpld &gt; 0 and daysup &gt; 0)" default_order="frgmcpld desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id"  /> 
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="dategamcafit" string="Gamca Fit"/>
+                <field name="gamcaexpirenote" />
+                <field name="write_date" />
+                <field name="frgmcpld" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frgmcpld">
+            <field name="name">Trip Applicant - Gamca Upload</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frgmcpld','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frgmcpld">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frgmcpld"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frgmcpld"/>
+        </record>  
+        
+        <menuitem name="For Upload" id="menu_cg_tapplicants_frgmcpld" parent="menu_cg_tapplicants_frgmctst"  sequence="1" action="act_open_tapplicant_view_frgmcpld"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_wtngmf" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:wtngmf &gt; 3">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trip_id"  /> 
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="dategamcafit" string="Gamca Fit"/>
+                <field name="gamcaexpirenote" />
+                <field name="write_date" />
+                <field name="wtngmf" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_wtngmf">
+            <field name="name">Trip Applicant - Waiting MOFA</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('wtngmf','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_wtngmf">
+            <field name="act_window_id" ref="act_open_tapplicant_view_wtngmf"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_wtngmf"/>
+        </record>  
+        
+        <menuitem name="Waiting for MOFA" id="menu_cg_tapplicants_wtngmf" parent="menu_cg_tapplicants_frgmctst"  sequence="1" action="act_open_tapplicant_view_wtngmf"/>
+        
+        
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_remed" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="dateremedicalstart" string="Remed Start"/>
+                <field name="dateremedicalfit" string="Remed Fit"/>
+                <field name="dateremedicaluploaded" string="Remed Uploaded"/>
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_remed">
+            <field name="name">Trip Applicant - Re-Medical</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('datetravel','&gt;','2015-01-01'),('cnclld','!=',1),'|',('frrmdcltst','&gt;',0),'|',('rmdclnprcss','&gt;',0),'|',('rmdclfttwrk','&gt;',0),('frrmdclpld','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_remed">
+            <field name="act_window_id" ref="act_open_tapplicant_view_remed"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_remed"/>
+        </record>  
+        
+        <menuitem name="Re-Medical Summary" id="menu_cg_tapplicants_remed" parent="rtrip_root_medical"  sequence="5" action="act_open_tapplicant_view_remed"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_frrmdcltst" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:frrmdcltst &gt; 3 and daysup &gt; 0">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="dateremedicalstart" string="Remed Start"/>
+                <field name="dateremedicalfit" string="Remed Fit"/>
+                <field name="dateremedicaluploaded" string="Remed Uploaded"/>
+                <field name="frrmdcltst" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frrmdcltst">
+            <field name="name">Trip Applicant - For Re-Medical Test</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frrmdcltst','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frrmdcltst">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frrmdcltst"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frrmdcltst"/>
+        </record>  
+        
+        <menuitem name="For Re-Medical Test" id="menu_cg_tapplicants_frrmdcltst" parent="rtrip_root_medical"  sequence="6" action="act_open_tapplicant_view_frrmdcltst"/>
+        
+
+
+        
+        <record id="view_tapplicant_tree_rmdclnprcss" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:rmdclnprcss &gt; 3 and daysup &gt; 0">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="medicalclinic" string="Med Clinic"/>
+                <field name="gamcaclinic" string="Gam Clinic"/>
+                <field name="dateremedicalstart" string="Remed Start"/>
+                <field name="medicalnote" string="Notes"/>
+                <field name="rmdclnprcss" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_rmdclnprcss">
+            <field name="name">Trip Applicant - Awaiting Re-medical Release</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('rmdclnprcss','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_rmdclnprcss">
+            <field name="act_window_id" ref="act_open_tapplicant_view_rmdclnprcss"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_rmdclnprcss"/>
+        </record>  
+        
+        <menuitem name="Awaiting Re-medical Release" id="menu_cg_tapplicants_rmdclnprcss" parent="menu_cg_tapplicants_frrmdcltst"  sequence="1" action="act_open_tapplicant_view_rmdclnprcss"/>
+        
+        
+        <record id="view_tapplicant_tree_rmdclfttwrk" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:rmdclfttwrk &gt; 2 and daysup &gt; 0">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="medicalclinic" string="Med Clinic"/>
+                <field name="gamcaclinic" string="Gam Clinic"/>
+                <field name="dateremedicalfit" string="Remed Fit"/>
+                <field name="rmdclfttwrk" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_rmdclfttwrk">
+            <field name="name">Trip Applicant - Re-Medical Fit to Work</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('rmdclfttwrk','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_rmdclfttwrk">
+            <field name="act_window_id" ref="act_open_tapplicant_view_rmdclfttwrk"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_rmdclfttwrk"/>
+        </record>  
+        
+        <menuitem name="Re-Medical Fit to work" id="menu_cg_tapplicants_rmdclfttwrk" parent="menu_cg_tapplicants_frrmdcltst"  sequence="1" action="act_open_tapplicant_view_rmdclfttwrk"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_frrmdclpld" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:frrmdclpld &gt; 0 and daysup &gt; 0">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="visaexpirenote" />
+                <field name="medicalclinic" string="Med Clinic"/>
+                <field name="gamcaclinic" string="Gam Clinic"/>
+                <field name="dateremedicalfit" string="Remed Fit"/>
+                <field name="frrmdclpld" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frrmdclpld">
+            <field name="name">Trip Applicant - Re-Medical Upload</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frrmdclpld','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01'),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frrmdclpld">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frrmdclpld"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frrmdclpld"/>
+        </record>  
+        
+        <menuitem name="For Re-Medical Upload" id="menu_cg_tapplicants_frrmdclpld" parent="menu_cg_tapplicants_frrmdcltst"  sequence="1" action="act_open_tapplicant_view_frrmdclpld"/>
+
+
+
+
+
+        
+         
+        
+        <record id="view_tapplicant_tree_unfit" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="medicalclinic" string="Clinic"/>
+                <field name="gamcaclinic" string="Gamca Clinic"/>
+                <field name="unfit" string="MU"/>
+                <field name="gamcaunfit" string="GU"/>
+                <field name="remedicalunfit" string="RMU"/>
+                <field name="medicalnote" string="Notes"/>
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_unfit">
+            <field name="name">Trip Applicant - UnFit</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">['|','|',('unfit','=',True),('gamcaunfit','=',True),('remedicalunfit','=',True),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_unfit">
+            <field name="act_window_id" ref="act_open_tapplicant_view_unfit"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_unfit"/>
+        </record>  
+        
+        <menuitem name="Unfit Applicants" id="menu_cg_tapplicants_unfit" parent="rtrip_root"  sequence="10" action="act_open_tapplicant_view_unfit"/>
+        
+        
+        
+        
+         
+        
+        <record id="view_tapplicant_tree_medpass" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"  />
+                <field name="trjob_id" string="Job"/>
+                <field name="medicalexpirenote" />
+                <field name="gamcaexpirenote" />
+                <field name="remedicalexpirenote" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_medpass">
+            <field name="name">Trip Applicant - Medical Passed</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">['&amp;','&amp;',('dateendorsedvisa','=',False),'|',('medicalnotneeded','=',True),('datemedicaluploaded','!=',False),'|',('gamcanotneeded','=',True),('dategamcauploaded','!=',False),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_medpass">
+            <field name="act_window_id" ref="act_open_tapplicant_view_medpass"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_medpass"/>
+        </record>  
+        
+        <menuitem name="Medical Passed" id="menu_cg_tapplicants_medpass" parent="rtrip_root_medical"  sequence="8" action="act_open_tapplicant_view_medpass"/>
+        
+        
+        
+        
+        
+        
+        
+    </data>
+</openerp>

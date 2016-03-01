@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data noupdate="0">
+    <record id="base.group_branch_accounts" model="res.groups">
+        <field name="name">Branch Accounts</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_level1" model="res.groups">
+        <field name="name">Branch Level 1</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_level2" model="res.groups">
+        <field name="name">Branch Level 2</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_level3" model="res.groups">
+        <field name="name">Branch Level 3</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_level4" model="res.groups">
+        <field name="name">Branch Level 4</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_level5" model="res.groups">
+        <field name="name">Branch Level 5</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_supervisor" model="res.groups">
+        <field name="name">Branch Supervisor</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_manager" model="res.groups">
+        <field name="name">Branch Manager</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_trips" model="res.groups">
+        <field name="name">Branch Trips</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_branch_consultant" model="res.groups">
+        <field name="name">Branch Consultant</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_ho" model="res.groups">
+        <field name="name">Head Office</field>
+        <field name="comment"></field>
+    </record>
+    
+    <record id="base.group_ho_accounts" model="res.groups">
+        <field name="name">Head Office Accounts</field>
+        <field name="comment"></field>
+    </record>
+    
+    
+    
+    
+</data>
+</openerp>

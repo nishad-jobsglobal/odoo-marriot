@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        
+        <record id="view_tapplicant_form" model="ir.ui.view">
+            <field name="name">tapplicant.form</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Trip Applicant" version="7.0">
+                    <header>
+                        <field name="stage_id" widget="statusbar" clickable="True" />
+                    </header>
+                    <sheet>
+                    <field name="image_medium" widget='image' class="oe_left oe_avatar" />
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="trip_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="trip_id" class="oe_inline"/>
+                            </h2> / 
+                            <label for="partner_id" class="oe_edit_only"/>
+                            <h3 style="display: inline-block;">
+                                <field name="partner_id" class="oe_inline"/>
+                            </h3>
+                            <field name="balancepercent" widget="progressbar"/>
+                        </div>
+                        <notebook>
+                            <page string="Profile" >
+                                <group>
+                                    <group>
+                                        <field name="user_email"/>
+                                        <field name="phone" />
+                                        <field name="mobile" />
+                                        
+                                        
+                                    </group>
+                                    <group>
+                                        <field name="date_birth" />
+                                        <field name="age" />
+                                        <field name="gender" />
+                                        <field name="homeaddress" />
+                                    </group>
+                                    <group>
+                                        <field name="trjob_id" string="Job" />
+                                        <field name="salary_basic" />
+                                        <field name="salary_gross" />
+                                    </group>
+                                    <group>
+                                        <field name="company_id" />
+                                        <field name="user_id" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Documentation">
+                                <group>
+                                    <group>
+                                        <field name="hascv" />
+                                        <field name="hasinterviewsheet" />
+                                        <field name="hasoffersigned" />
+                                        <field name="hasphoto" />
+                                        <field name="haspassport" />
+                                    </group>
+                                    <group>
+                                        <field name="nationality" />
+                                        <field name="passportnumber" />
+                                        <field name="passportexpiry" />
+                                        <field name="passportnotes" />
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="dateformscompleted" />
+                                        <field name="tappforms" widget="many2many_tags" string="Forms Completed"/>
+                                        <field name="medicalclinic" on_change="onchange_medicalclinic(medicalclinic, context)" placeholder="Setting this field puts this applicant to the medical processing stage" />
+                                        <field name="mdclnprcss" invisible="1" />
+                                    </group>
+                                    
+                                </group>
+                            </page>
+                            <page string="Medical Process">
+                                <group>
+                                    <group>
+                                        <field name="medicalnotneeded" />
+                                        <field name="unfit" />
+                                        <field name="medicalpassed" />
+                                    </group>
+                                    <group>
+                                        <field name="datemedicalstart" />
+                                        <field name="datemedicalfit" />
+                                        <field name="datemedicaluploaded" />
+                                        <field name="datemedicalexpire" />
+                                        <field name="medicalexpirenote" />
+                                    </group>
+                                    <group>
+                                        <field name="gamcanotneeded" />
+                                        <field name="mofanotneeded" />
+                                        <field name="gamcaunfit" />
+                                        <field name="gamcapassed" />
+                                    </group>
+                                    <group>
+                                        <field name="dategamcastart" />
+                                        <field name="dategamcafit" />
+                                        <field name="dategamcauploaded" />
+                                        <field name="dategamcaexpire" />
+                                        <field name="gamcaexpirenote" />
+                                        <field name="datemofauploaded" />
+                                    </group>
+                                    <group>
+                                        <field name="forremedical" />
+                                        <field name="remedicalunfit" />
+                                        <field name="remedicalpassed" />
+                                    </group>
+                                    <group>
+                                        <field name="dateremedicalstart" />
+                                        <field name="dateremedicalfit" />
+                                        <field name="dateremedicaluploaded" />
+                                        <field name="dateremedicalexpire" />
+                                        <field name="remedicalexpirenote" />
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="medicalnote" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Visa Process">
+                                <group>
+                                    <group>
+                                        <field name="dateendorsedvisa" />
+                                        <field name="datevisarequested" />
+                                        <field name="datevisareceived" />
+                                        <field name="datevisaexpire" />
+                                        <field name="visaexpirenote" />
+                                    </group>
+                                    <group>
+                                        <field name="dateendorsedvisastamp" />
+                                        <field name="dateclearedvisastamp" />
+                                        <field name="gamcaclinic" />
+                                        <field name="datenbi" />
+                                        <field name="datevisastampembassy" />
+                                        <field name="datevisastampreceived" />
+                                    </group>
+                                    <group>
+                                        <field name="dateendorsedvisarenew" />
+                                        <field name="datevisarenewrequested" />
+                                    </group>
+                                    <group>
+                                        <field name="isstarttravelprocess" />  <em>This will trigger the next applicant stage</em>
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="visanote" />
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Traveling">
+                                <group>
+                                    <group>
+                                        <field name="datetravelproccleared" />
+                                        <field name="datetraveldocscompleted" />
+                                    </group>
+                                    <group>
+                                        <field name="dateoecsubmit" />
+                                        <field name="dateoecreceieved" />
+                                        <field name="dateoecexpire" />
+                                        <field name="dateinsurancereceived" />
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="tapptraveldocs" widget="many2many_tags" />
+                                    </group>
+                                    <group>
+                                        <field name="dateticketendorse" />
+                                        <field name="dateticketissueclear" />
+                                        <field name="dateticketrequest" />
+                                        <field name="datetravel" />
+                                        <field name="flightdetails" />
+                                        <field name="hastravelled" />
+                                    </group>
+                                    
+                                </group>
+                            </page>
+                            <page string="Accounting">
+                                <group>
+                                    <group string="Fees">
+                                        <field name="feeplacement" />
+                                        <field name="feeprocessing" />
+                                        <field name="totalfee" />
+                                        <field name="noplacement" />
+                                    </group>
+                                    <group string="Collections">
+                                        <field name="collplacement" />
+                                        <field name="collprocessing" />
+                                        <field name="totalcollected" />
+                                    </group>
+                                    <group>
+                                        <field name="amountbalance" />
+                                        <field name="totalexpenses" />
+                                    </group>
+                                    <group>
+                                        <field name="collpromissory" />
+                                    </group>
+                                    <group string="Other Expenses" >
+                                        <field name="expenseoec" />
+                                        <field name="expenseinsurance" />
+                                        <field name="expensestamping" />
+                                        <field name="expensetranslation" />
+                                        <field name="expensemedical" />
+                                        <field name="expenseetc" />
+                                        <field name="expenseetcnote" />
+                                    </group>
+                                    <group string="Dates" >
+                                        <field name="expenseoecdate" />
+                                        <field name="expenseinsurancedate" />
+                                        <field name="expensestampingdate" />
+                                        <field name="expensetranslationdate" />
+                                        <field name="expensemedicaldate" />
+                                        <field name="expenseetcdate" />
+                                    </group>
+                                </group>
+                                
+                                <group>
+                                        <field name="move_line_ids" nolabel="1" colspan="2">
+                                            <tree>
+                                                <field name="journal_id" widget="many2one"/>
+                                                <field name="name"/>
+                                                <field name="thecurrency_id" string="" />
+                                                <field name="debit"/>
+                                                <field name="credit"/>
+                                                <field name="date"/>
+                                            </tree>
+                                        </field>
+                                        <separator string=""/>
+                                    </group>
+                                    <group>
+                                        <field name="invoice_line_ids" nolabel="1" colspan="2">
+                                            <tree>
+                                                <field name="thenumber"/>
+                                                <field name="name"/>
+                                                <field name="thecurrency_id" string="" />
+                                                <field name="price_subtotal"/>
+                                            </tree>
+                                        </field>
+                                        <separator string=""/>
+                                    </group>
+                                
+                            </page>
+                            <page string="Other Actions">
+                                <group>
+                                    <group>
+                                        <field name="promissoryrequested" />
+                                    </group>
+                                    <group>
+                                        <field name="promissoryconfirmed" />
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="promissorynote" string="Reason" />
+                                        <separator string=""/>
+                                    </group>
+                                    
+                                    <group>
+                                        <field name="cancelrequested" />
+                                    </group>
+                                    <group>
+                                        <field name="cancelconfirmed" /> 
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="cancelnote" string="Reason" />
+                                    </group>
+                                </group>
+                            </page>
+                            
+                            
+                        </notebook>
+                        <separator string="Applicant Summary"/>
+                        <field name="description" placeholder="Applicant Summary"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        
+        
+        
+           
+        <record id="view_tapplicant_search" model="ir.ui.view">
+            <field name="name">tapplicant.search</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Trip Applicant">
+                <field name="name"/>
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Trip" domain="[]" context="{'group_by':'trip_id'}"/>
+                    <filter string="Employer" domain="[]" context="{'group_by':'partner_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        
+
+
+        
+
+        
+        
+        <!-- Stage Tree View -->
+        <record model="ir.ui.view" id="tapplicant_stage_tree">
+            <field name="name">tapplicant.stage.tree</field>
+            <field name="model">tapplicant.stage</field>
+            <field name="arch" type="xml">
+                <tree string="Stages">
+                    <field name="sequence" invisible="1"/>
+                    <field name="name"/>
+                    <field name="fold"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Stage Form View -->
+        <record model="ir.ui.view" id="tapplicant_stage_form">
+            <field name="name">tapplicant.stage.form</field>
+            <field name="model">tapplicant.stage</field>
+            <field name="arch" type="xml">
+                <form string="Stage" version="7.0">
+                    <sheet>
+                    <group string="Stage Definition">
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Stage Action -->
+        <record id="tapplicant_stage_act" model="ir.actions.act_window">
+            <field name="name">Trip Applicant Stages</field>
+            <field name="res_model">tapplicant.stage</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="tapplicant_stage_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new stage in the trip applicant process.
+              </p><p>
+                Don't forget to follow the jobsglobal standards in filling up the fields.
+              </p>
+            </field>
+        </record>
+        
+        <menuitem name="Trip Applicant Stages" id="menu_cg_tapplicants_stage" parent="rtrip_root_conf"  sequence="10" action="tapplicant_stage_act"/>
+        
+        
+        
+        <record model = "ir.ui.view" id = "modify_view_inv_line_tree">
+         <field name="name">account.invoice.line.tree</field>
+            <field name="model">account.invoice.line</field>
+         <field name = "inherit_id" ref="account.view_invoice_line_tree"></field>
+         <field name="arch" type="xml">
+            <xpath expr="/tree/field[@name='uos_id']" position="after">
+                <field name="tapplicant_id">Applicant</field>
+            </xpath>
+        </field>
+      </record>
+      
+        
+        
+        
+        
+        
+    </data>
+</openerp>

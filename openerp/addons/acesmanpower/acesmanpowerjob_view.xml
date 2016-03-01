@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_acesmanpowerjob_tree" model="ir.ui.view">
+            <field name="name">acesmanpowerjob.tree</field>
+            <field name="model">acesmanpowerjob</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Vacancies">
+                <field name="name"/>
+                <field name="quantity"/>
+                <field name="acesmanpowerproperty_id"/>
+                <field name="acesmanpowerevent_id"/>
+            </tree>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowerjob_form" model="ir.ui.view">
+            <field name="name">acesmanpowerjob.form</field>
+            <field name="model">acesmanpowerjob</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Vacancy" version="7.0">
+                    <header>
+                        
+                    </header>
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="button_box" style="width: 180px; ">
+                        </div>
+                        <div class="oe_title" >
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="acesmanpowerproperty_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="acesmanpowerproperty_id" class="oe_inline"/> 
+                            </h2>
+                            <label for="acesmanpowerevent_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="acesmanpowerevent_id" class="oe_inline"/> 
+                            </h2>
+                        </div>
+                        <notebook>
+                            <page string="Details">
+                                <group>
+                                    <group>
+                                        <field name="quantity" />
+                                    </group>
+                                    <group>
+                                        <field name="write_date" />
+                                        <field name="write_uid" />
+                                    </group>
+                                    <group colspan="4">
+                                        <field name="qualification" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <separator string="Description"/>
+                        <field name="jobdescription" nolabel="1" />
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowerjob_search" model="ir.ui.view">
+            <field name="name">acesmanpowerjob.search</field>
+            <field name="model">acesmanpowerjob</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Property">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Property" domain="[]" context="{'group_by':'acesmanpowerproperty_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_acesmanpowerjob_view">
+            <field name="name">Jobs</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowerjob</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowerjob_search"/>
+            <field name="domain">[('user_id','=',uid)]</field>
+<!--            <field name="domain">[('acesmanpowerproperty_id','=','acesmanpowerjob.user_id.acesmanpoweruser_id.property_id')]</field-->
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowerjob_view_form">
+            <field name="act_window_id" ref="act_open_acesmanpowerjob_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_acesmanpowerjob_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowerjob_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowerjob_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowerjob_tree"/>
+        </record>
+        
+       <menuitem name="Open positions" id="menu_acesmanpowerjob" parent="menu_recruitment_process_live_modules"  sequence="5" action="act_open_acesmanpowerjob_view"/>
+        
+    </data>
+</openerp>

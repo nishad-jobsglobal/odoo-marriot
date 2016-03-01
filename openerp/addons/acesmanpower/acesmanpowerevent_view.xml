@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    
+    	<menuitem name='Recruitment' id='menu_recruitment_root' sequence='99'></menuitem>
+    	<menuitem name="Recruitment" id='menu_recruitment_main' parent='menu_recruitment_root' sequence='0'></menuitem>
+    			
+        <record id="view_acesmanpowerevent_tree" model="ir.ui.view">
+            <field name="name">acesmanpowerevent.tree</field>
+            <field name="model">acesmanpowerevent</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+	            <tree string="Recruitment Events">
+	                <field name="name"/>
+	                <field name="can_country_id"/>
+	                <field name="datestart"/>
+	                <field name="dateend"/>
+	                <field name="user_id"/>
+	                <field name="acesmanpoweruser_id"/>
+	                <field name="stage_id"/>
+	            </tree>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowerevent_form" model="ir.ui.view">
+            <field name="name">acesmanpowerevent.form</field>
+            <field name="model">acesmanpowerevent</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Recruitment Event" version="7.0">
+                    <header>
+                        <field name="stage_id" widget="statusbar" clickable="True"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_right oe_button_box" name="button_box" style="width: 300px; ">
+                            <button name="action_view_invite" class="oe_stat_button" icon="fa-check-square-o" type="object" string="Invite"/>
+                            <button name="action_view_participant" class="oe_stat_button" icon="fa-share-square" type="object" string="Participants"/>
+                            <button name="action_view_registration" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Registrations"/>
+                            <button name="action_view_shortlists" class="oe_stat_button" icon="fa-file-pdf-o" type="object" string="Shortlists"/>
+                        </div>
+                        <div class="oe_title" style="width: 480px;">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="can_country_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="can_country_id" class="oe_inline"/> 
+                            </h2>
+                        </div>
+                        
+                        <notebook>
+                            <page string="Details"  >
+                                <group>
+                                    <group string="Inclusive Dates">
+                                        <field name="datestart" />
+                                        <field name="dateend" />
+                                    </group>
+                                    <group string="Contacts for the Event">
+                                        <field name="partner_id" invisible="1" />
+                                        <field name="user_id" string="Contact" />
+                                        <field name="email" placeholder="This will be auto filled with the contacts email"/>
+                                        <field name="mobile" placeholder="This will be auto filled with the contacts mobile"/>
+                                    </group>
+                                    <group string=" ">
+                                        <field name="create_date" />
+                                        <field name="write_date" />
+                                        <field name="write_uid" />
+                                        <field name="company_id" />
+                                    </group>
+                                    
+                                </group>
+                            </page>
+                            <page string="Job Vacancies">
+                                <group>
+                                    <field name="acesmanpowerjob_ids" nolabel="1" />
+                                </group>
+                            </page>
+                            <page string="Joining Properties">
+                                <group>
+                                    <field name="acesmanpowerproperty_ids" nolabel="1" />
+                                </group>
+                            </page>
+                            <page string="Other Info">
+                                <group>
+                                    <group>
+                                        <field name="acesmanpoweruser_id" />
+                                        <field name="twitterhashtag" />
+                                        <field name="url_image" />
+                                        <field name="secu" string="****" invisible="1" />
+                                        <field name="getbase64enc" string="****"  />
+                                    </group>
+                                    <group string="Venue">
+                                        <field name="city" />
+                                        <field name="street" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                        <separator string="Notes"/>
+                        <field name="description" nolabel="1" />
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowerevent_search" model="ir.ui.view">
+            <field name="name">acesmanpowerevent.search</field>
+            <field name="model">acesmanpowerevent</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Recruitment Event">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Destination" domain="[]" context="{'group_by':'can_country_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_trip_calendar">
+            <field name="name">Recruitment Calendar</field>
+            <field name="model">acesmanpowerevent</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Recruitment Dates" date_start="datestart" color="company_id" date_stop="dateend" event_open_popup="1">
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="user_id"/>
+                    <field name="stage_id"/> 
+                </calendar>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_acesmanpowerevent_view">
+            <field name="name">Recruitment Events</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowerevent</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="view_acesmanpowerevent_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowerevent_view_form">
+            <field name="act_window_id" ref="act_open_acesmanpowerevent_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_acesmanpowerevent_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowerevent_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowerevent_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowerevent_tree"/>
+        </record>
+       
+       <menuitem name="Recruitment" id="menu_recruitment_process_live_modules"
+					parent="menu_recruitment_root"
+            		sequence="1"/>  
+        
+        <menuitem name="Events" id="menu_acesmanpowerevent" parent="menu_recruitment_process_live_modules"  sequence="6" action="act_open_acesmanpowerevent_view"/>
+        
+        <record model = "ir.ui.view" id = "modify_view_hr_job_form">
+            <field name="name">hr.job.form</field>
+            <field name="model">hr.job</field>
+            <field name = "inherit_id" ref="hr.view_hr_job_form"></field>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/div/field[@name='requirements']" position="after">
+                    <field name="acesmanpowerevent_ids">Recruitment Events</field>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>

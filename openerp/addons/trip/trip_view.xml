@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <record id="view_trip_tree" model="ir.ui.view">
+            <field name="name">trip.tree</field>
+            <field name="model">trip</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip">
+                <field name="name"/>
+                <field name="job_country_id" />
+                <field name="can_country_id" />
+                <field name="trip_start"  />
+                <field name="trip_end"  />
+                <field name="partner_id"  />
+                <field name="user_id" />
+                <field name="stage_id"/>
+                <field name="company_id" invisible="1"  />
+            </tree>
+            </field>
+        </record>
+
+        <record id="view_trip_form" model="ir.ui.view">
+            <field name="name">trip.form</field>
+            <field name="model">trip</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Trip" version="7.0">
+                    <header>
+                        <field name="stage_id" widget="statusbar" clickable="True"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="partner_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="partner_id" class="oe_inline"/>
+                            </h2>
+                        </div>
+                        <notebook>
+                            <page string="General">
+                                <group>
+                                    <group>
+                                        <field name="trip_start" />
+                                        <field name="trip_end" />
+                                    </group>
+                                    <group>
+                                        <field name="company_id" />
+                                        <field name="user_id" />
+                                    </group>
+                                    <group>
+                                        <field name="triptype" />
+                                        <field name="visalen" />
+                                    </group>
+                                    <group>
+                                        <field name="job_country_id" />
+                                        <field name="can_country_id" />
+                                    </group>
+                                </group>
+                                <group>
+                                    <separator string="Trip Applicants"/>
+                                    <field name="tapplicant_ids" nolabel="1" colspan="2">
+                                        <tree>
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"/>
+                                            <field name="user_email"  /> 
+                                            <field name="phone" />
+                                            <field name="create_date"  />
+                                            <field name="frprflng"  invisible="1" />
+                                            <field name="frdcmntcllctn"  invisible="1" />
+                                            
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 1">
+                                <group>
+                                    <field name="tapplicant_ids_level1" nolabel="1" colspan="2">
+                                        <tree colors="red:frprflng &gt; 0;pink:frdcmntcllctn &gt; 0">
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"/>
+                                            <field name="user_email"  /> 
+                                            <field name="phone" />
+                                            <field name="create_date"  />
+                                            <field name="frprflng"  invisible="1" />
+                                            <field name="frdcmntcllctn"  invisible="1" />
+                                            
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 2">
+                                <group>
+                                    <field name="tapplicant_ids_level2" nolabel="1" colspan="2">
+                                        <tree >
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"  />
+                                            <field name="datemedicalstart" />
+                                            <field name="dategamcauploaded" />
+                                            <field name="dategamcastart" />
+                                            <field name="dategamcauploaded" />
+                                            
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 3">
+                                <group>
+                                    <field name="tapplicant_ids_level3" nolabel="1" colspan="2">
+                                        <tree colors="red:frvsrqst &gt; 0;pink:wtngvsrls &gt; 0">
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"  />
+                                            <field name="datevisarequested" string="Visa Requested"/>
+                                            <field name="visaexpirenote" string="Visa Expire"/>
+                                            <field name="gamcaclinic" string="Clinic"/>
+                                            <field name="datevisastampreceived" string="Stampped"/>
+                                            <field name="frvsrqst"  invisible="1" />
+                                            <field name="wtngvsrls"  invisible="1" />
+                                            
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 4">
+                                <group>
+                                    <field name="tapplicant_ids_level4" nolabel="1" colspan="2">
+                                        <tree colors="red:ndrsdttrvl &gt; 0;pink:clrdfrtrvlprcss &gt; 0">
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"  />
+                                            <field name="dateoecexpire" string="OEC Expire"/>
+                                            <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                                            <field name="datetravel" />
+                                            <field name="flightdetails" />
+                                            <field name="ndrsdttrvl"  invisible="1" />
+                                            <field name="clrdfrtrvlprcss"  invisible="1" />
+                                            
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Jobs">
+                                <group>
+                                    <field name="trjob_ids" nolabel="1" colspan="2">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="candidatesrequired"/>
+                                            <field name="candidatesplaced"/>
+                                            <field name="user_id" string="Responsible"/>
+                                            
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                        </notebook>
+                        <separator string="Trip Summary"/>
+                        <field name="description" placeholder="Trip Summary"/>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_trip_search" model="ir.ui.view">
+            <field name="name">trip.search</field>
+            <field name="model">trip</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Trip">
+                <field name="name"/>
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Job Locations" domain="[]" context="{'group_by':'job_country_id'}"/>
+                    <filter string="Sourcing Location" domain="[]" context="{'group_by':'can_country_id'}"/>
+                    <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Stage" domain="[]" context="{'group_by':'stage_id'}"/>
+                    <filter string="Branch" domain="[]" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        
+        
+        <record model="ir.ui.view" id="view_trip_calendar">
+            <field name="name">Trip Calendar</field>
+            <field name="model">trip</field>
+            <field name="priority" eval="2"/>
+            <field name="arch" type="xml">
+                <calendar string="Trips" date_start="trip_start" color="company_id" date_stop="trip_end" event_open_popup="1">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                </calendar>
+            </field>
+        </record>
+
+        
+        <record model="ir.actions.act_window" id="act_open_trip_view">
+            <field name="name">Trip</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">trip</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="search_view_id" ref="view_trip_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trip_view_form">
+            <field name="act_window_id" ref="act_open_trip_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_trip_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trip_view_tree">
+            <field name="act_window_id" ref="act_open_trip_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_trip_tree"/>
+        </record>
+        
+        <menuitem name="Recruitment Trips" id="rtrip_root" parent="hr.menu_hr_root" sequence="10"/>
+        <menuitem name="Trips" id="menu_cg_trips" parent="rtrip_root"  sequence="1" action="act_open_trip_view"/>
+        
+        
+        
+        <!-- Stage Tree View -->
+        <record model="ir.ui.view" id="trip_stage_tree">
+            <field name="name">trip.stage.tree</field>
+            <field name="model">trip.stage</field>
+            <field name="arch" type="xml">
+                <tree string="Stages">
+                    <field name="sequence" invisible="1"/>
+                    <field name="name"/>
+                    <field name="fold"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Stage Form View -->
+        <record model="ir.ui.view" id="trip_stage_form">
+            <field name="name">trip.stage.form</field>
+            <field name="model">trip.stage</field>
+            <field name="arch" type="xml">
+                <form string="Stage" version="7.0">
+                    <sheet>
+                    <group string="Stage Definition">
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Stage Action -->
+        <record id="trip_stage_act" model="ir.actions.act_window">
+            <field name="name">Trip Stages</field>
+            <field name="res_model">trip.stage</field>
+            <field name="view_type">form</field>
+            <field name="view_id" ref="trip_stage_tree"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to add a new stage in the trip process.
+              </p><p>
+                Don't forget to follow the jobsglobal standard naming convention for trips.
+              </p>
+            </field>
+        </record>
+        
+        <menuitem name="Trips Configuration" id="rtrip_root_conf" parent="rtrip_root"  sequence="199" />
+        
+        <menuitem name="Trip Stages" id="menu_cg_trips_stage" parent="rtrip_root_conf"  sequence="10" action="trip_stage_act"/>
+        
+        
+        
+       
+      
+        
+      <record model = "ir.ui.view" id = "modify_view_partner_form">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name = "inherit_id" ref="base.view_partner_form"></field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='ref']" position="before">
+                <field name="client" readonly="1" help="Add an agreement to make this a client" />
+            </xpath>
+            <xpath expr="//page[@string='Accounting']" position="after">
+              <page name="Agreements" string="Agreements">
+                <group>
+                  <field name="attachment_ids" widget="many2many_binary" string="Files" help="Add here scanned legal files, agreements, terms and conditions" />
+                  <field name="agreedfees" />
+                  <field name="conterms" />
+                </group>
+              </page>
+            </xpath>
+            
+        </field>
+      </record>
+        
+        
+        
+        
+    </data>
+</openerp>

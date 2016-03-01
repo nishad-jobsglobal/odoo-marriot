@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_trip_form_tree" model="ir.ui.view">
+            <field name="name">trip_form.tree</field>
+            <field name="model">trip_form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Forms">
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+            </field>
+        </record>
+
+        <record id="view_trip_form_form" model="ir.ui.view">
+            <field name="name">trip_form.form</field>
+            <field name="model">trip_form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Trip Form" version="7.0">
+                    <sheet>
+                        <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_trip_form_search" model="ir.ui.view">
+            <field name="name">trip_form.search</field>
+            <field name="model">trip_form</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Trip Forms">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Visa Requirements" domain="[]" context="{'group_by':'description'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_trip_form_view">
+            <field name="name">trip_form</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">trip_form</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_trip_form_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trip_form_view_form">
+            <field name="act_window_id" ref="act_open_trip_form_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_trip_form_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trip_form_view_tree">
+            <field name="act_window_id" ref="act_open_trip_form_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_trip_form_tree"/>
+        </record>
+        
+        <menuitem name="Trip Forms" id="menu_cg_trips_forms" parent="rtrip_root_conf"  sequence="10" action="act_open_trip_form_view"/>
+        
+        
+        
+        
+        
+        
+        <record id="view_trip_traveldoc_tree" model="ir.ui.view">
+            <field name="name">trip_traveldoc.tree</field>
+            <field name="model">trip_traveldoc</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Travel Documents">
+                <field name="name"/>
+                <field name="description"/>
+            </tree>
+            </field>
+        </record>
+
+        <record id="view_trip_traveldoc_form" model="ir.ui.view">
+            <field name="name">trip_traveldoc.form</field>
+            <field name="model">trip_traveldoc</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Travel Documents" version="7.0">
+                    <sheet>
+                        <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_trip_traveldoc_search" model="ir.ui.view">
+            <field name="name">trip_traveldoc.search</field>
+            <field name="model">trip_traveldoc</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Travel Documents">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Visa Requirements" domain="[]" context="{'group_by':'description'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_trip_traveldoc_view">
+            <field name="name">trip_traveldoc</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">trip_traveldoc</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_trip_traveldoc_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trip_traveldoc_view_form">
+            <field name="act_window_id" ref="act_open_trip_traveldoc_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_trip_traveldoc_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_trip_traveldoc_view_tree">
+            <field name="act_window_id" ref="act_open_trip_traveldoc_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_trip_traveldoc_tree"/>
+        </record>
+        
+        <menuitem name="Travel Documents" id="menu_cg_trips_traveldocs" parent="rtrip_root_conf"  sequence="10" action="act_open_trip_traveldoc_view"/>
+
+
+    </data>
+</openerp>

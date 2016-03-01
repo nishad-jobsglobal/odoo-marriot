@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_job_location_tree" model="ir.ui.view">
+            <field name="name">job_location.tree</field>
+            <field name="model">job_location</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Job_Location">
+                <field name="name"/>
+                <field name="visarequirements"/>
+            </tree>
+            </field>
+        </record>
+
+        <record id="view_job_location_form" model="ir.ui.view">
+            <field name="name">job_location.form</field>
+            <field name="model">job_location</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Job_Location" version="7.0">
+                    <sheet>
+                        <group>
+                        <field name="name"/>
+                        <field name="visarequirements"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_job_location_search" model="ir.ui.view">
+            <field name="name">job_location.search</field>
+            <field name="model">job_location</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Job_Location">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Visa Requirements" domain="[]" context="{'group_by':'visarequirements'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_job_location_view">
+            <field name="name">Job_Location</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">job_location</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_job_location_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_job_location_view_form">
+            <field name="act_window_id" ref="act_open_job_location_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_job_location_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_job_location_view_tree">
+            <field name="act_window_id" ref="act_open_job_location_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_job_location_tree"/>
+        </record>
+        
+        
+        <menuitem name="Trip Job Locations" id="menu_cg_trips_joblocation" parent="rtrip_root_conf"  sequence="10" action="act_open_job_location_view"/>
+
+    </data>
+</openerp>

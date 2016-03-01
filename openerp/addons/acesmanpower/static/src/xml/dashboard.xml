@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates >
+<t t-name="DashBoarder" >
+  <style>
+    
+  </style>
+  
+  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/chris/acesmanpower.css" />
+  
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/jvectormap/jquery-jvectormap-1.2.2.css" />
+  
+  <script src="http://jobsglobal.com/cdn/plugins/chris/acesmanpowers.js"></script>
+
+  <div class="content">
+  <!-- Content Wrapper. Contains page content -->
+  <div class="wrapper">
+      <div class="content-wrapper" >
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Marriott
+          	
+            <small>Summary of recruitment activities</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Dashboard</li>
+          </ol>
+        </section>
+        
+        <!-- Main content -->
+        <section class="content">
+          <!-- Small boxes (Stat box) -->
+          <div class="row">
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-aqua">
+                <div class="inner">
+                  <h3 id="cgnewmessages">0</h3>
+
+                  <p>New Messages</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-email-outline"></i>
+                </div>
+                <a href="http://c.jobsglobal.com/web#menu_id=148&amp;action=158" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-yellow">
+                <div class="inner">
+                  <h3 id="acesjobseeker">0</h3>
+
+                  <p>Total Applications</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-contact-outline"></i>
+                </div>
+                <a href="#" class="mall-box-footer" data-module="acesjobseeker" >More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-red">
+                <div class="inner">
+                  <h3 id="acesmanpowerevent">0</h3>
+
+                  <p>Recruitment Trips</p>
+                </div>
+                <div class="icon">
+                  <i class="ion ion-ios-people"></i>
+                </div>
+                <a href="#" class="small-box-footer" data-module="acesmanpowerevent">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+            
+            	
+            <!-- ./col -->
+            <div class="col-lg-3 col-xs-6">
+              <!-- small box -->
+              <div class="small-box bg-green">
+                <div class="inner">
+                  <h3 id="acesmanpowershortlist">0</h3>
+                  
+                  <p>Candidates on Process</p>
+                </div>
+                <div class="icon">
+                  <i class="ion-ios-speedometer"></i>
+                </div>
+                <a href="#" class="small-box-footer" id="2772" data-module="acesmanpowerjob">More info <i class="fa fa-arrow-circle-right"></i></a>
+              </div>
+            </div>
+            <!-- ./col -->
+             
+          </div>
+          <!-- /.row -->
+          
+           <!-- Map box -->
+          <div class="box box-solid bg-light-blue-gradient">
+            <div class="box-header">
+
+              <i class="fa fa-map-marker"></i>
+
+              <h3 class="box-title">
+                Upcoming Recruitment Events Locations
+              </h3>
+            </div>
+            <div class="box-body">
+              <div id="world-map" style="height: 250px; width: 100%;"></div>
+            </div>
+            
+            <!-- /.box-body-->
+            <div class="box-footer no-border"><p id="colorlevellegend">Legend: <span ></span> More red means more planned trips </p></div>
+          </div>
+          
+          <!-- /.box -->
+          <!-- Calendar -->
+          
+        <div id="generalpurposewrap">
+        <h3>Upcoming Trips </h3>
+        <table id="generalpurpose" border="1px" >
+        </table>
+        <p>
+            <a href="#" class="btn btn-info" data-module="acesmanpowerevent" data-iractid="2771" role="button">View All</a>
+            <a href="#" class="btn btn-primary" data-module="acesmanpowerevent" role="button">Propose a Trip</a>
+        </p>
+        </div>
+        
+        <div id="generalpurposewrap">
+        <h3>Open positions</h3>
+        <table id="gpjobs" border="1px" >
+        </table>
+        <p>
+            <a href="#" class="btn btn-info" data-module="acesmanpowerjob" data-iractid="2772" role="button">View All</a>
+            <a href="#" class="btn btn-primary" data-module="acesmanpowerjob" role="button">Add Position</a>
+        </p>
+        </div>
+        
+        <div id="generalpurposewrap" style="width: 380px; ">
+        <h3>Recruiting Properties</h3>
+        <table id="gprecruitproperties" border="1px"  >
+        <tr><th>Property</th><th>Manager</th><th>Task</th></tr>
+        </table>
+        <p>
+            <a href="#" class="btn btn-info" data-module="acesmanpowerproperty" data-iractid="2772" role="button">View All</a>
+            <a href="#" class="btn btn-primary" data-module="acesmanpowerproperty" role="button">Add Property</a>
+        </p>
+        </div>
+        
+        </section>
+        
+      </div>
+  </div>
+  
+  </div>
+  
+   <script>
+   
+   </script>
+  
+</t>
+
+</templates>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        
+        <record id="view_tapplog_form" model="ir.ui.view">
+            <field name="name">tapplog.form</field>
+            <field name="model">tapplog</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Applicant Update Logs" version="7.0">
+                    <sheet>
+                        <notebook>
+                            <page>
+                                <group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="description" />
+                                        <field name="tapplicant_id" />
+                                        
+                                    </group>
+                                    <group>
+                                        <field name="create_date" />
+                                        <field name="user_id" />
+                                        <field name="write_uid" />
+                                        <field name="company_id" />
+                                    </group>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        
+        <record id="view_tapplog_search" model="ir.ui.view">
+            <field name="name">tapplog.search</field>
+            <field name="model">tapplog</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Trip Applicant">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="create_date"/>
+                <field name="write_uid"/>
+                <field name="write_date"/>
+                
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Responsible" domain="[]" context="{'group_by':'user_id'}"/>
+                    <filter string="Branch" domain="[]" context="{'group_by':'company_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="tapplog_tree">
+            <field name="name">tapplog.tree</field>
+            <field name="model">tapplog</field>
+            <field name="arch" type="xml">
+                <tree string="Stages">
+                    <field name="name"/>
+                    <field name="create_date"/>
+                    <field name="write_uid"/>
+                    <field name="write_date"/>
+                    <field name="company_id"/>
+                    <field name="stage_id"/>
+                </tree>
+            </field>
+        </record>
+        
+        
+        <record model="ir.actions.act_window" id="act_open_tapplog">
+            <field name="name">SMS Campaign</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplog</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplog_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplog_tree">
+            <field name="act_window_id" ref="act_open_tapplog"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="tapplog_tree"/>
+        </record>   
+        
+        
+        <menuitem name="SMS" id="menu_tapplog" parent="base.marketing_menu"  sequence="10" />
+        
+        <menuitem name="SMS Campaign" id="menu_tapplogs_campaign" parent="menu_tapplog"  sequence="10" action="act_open_tapplog"/>
+        
+        
+        
+        
+        
+        
+    </data>
+</openerp>        

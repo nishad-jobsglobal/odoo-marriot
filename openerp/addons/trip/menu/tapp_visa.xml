@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <menuitem name="Tracking Level 3" id="rtrip_root_visa" parent="hr.menu_hr_root"  sequence="10" />  
+
+        
+        <record id="view_tapplicant_tree_visa" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisarequested" string="Requested"/>
+                <field name="datevisareceived" string="Received"/>
+                <field name="datevisaexpire" string="Expiry"/>
+                <field name="medicalexpirenote" string="Medical Expire"/>
+                <field name="gamcaexpirenote" string="Gamca Expire"/>
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_visa">
+            <field name="name">Trip Applicant - On Visa Process</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">['|','|','|','|',('vsrcd','&gt;',0),('frvsrqst','&gt;',0),('wtngvsrls','&gt;',0),('vsxprd','&gt;',0),('wtngvsrnwlrls','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),'&amp;',('partner_id','!=',18186),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_visa">
+            <field name="act_window_id" ref="act_open_tapplicant_view_visa"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_visa"/>
+        </record>  
+        
+        <menuitem name="Summary Level 3" id="menu_cg_tapplicants_visa" parent="rtrip_root_visa"  sequence="1" action="act_open_tapplicant_view_visa"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_frvsrqst" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(frvsrqst &gt; 1 and daysup &gt; 0)" default_order="frvsrqst desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="dateendorsedvisa" string="Endorsed"/>
+                <field name="medicalexpirenote" string="Medical Expire"/>
+                <field name="gamcaexpirenote" string="Gamca Expire"/>
+                <field name="write_date" />
+                <field name="frvsrqst" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_frvsrqst">
+            <field name="name">Trip Applicant - For Visa Request</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frvsrqst','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_frvsrqst">
+            <field name="act_window_id" ref="act_open_tapplicant_view_frvsrqst"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_frvsrqst"/>
+        </record>  
+        
+        <menuitem name="For Visa Request" id="menu_cg_tapplicants_frvsrqst" parent="rtrip_root_visa"  sequence="2" action="act_open_tapplicant_view_frvsrqst"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_wtngvsrls" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(wtngvsrls &gt; 1 and daysup &gt; 0)" default_order="wtngvsrls desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisarequested" string="Requested"/>
+                <field name="medicalexpirenote" string="Medical Expire"/>
+                <field name="gamcaexpirenote" string="Gamca Expire"/>
+                <field name="write_date" />
+                <field name="wtngvsrls" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_wtngvsrls">
+            <field name="name">Trip Applicant - Awaiting Visa Release</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('wtngvsrls','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_wtngvsrls">
+            <field name="act_window_id" ref="act_open_tapplicant_view_wtngvsrls"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_wtngvsrls"/>
+        </record>  
+        
+        <menuitem name="Awaiting Visa Release" id="menu_cg_tapplicants_wtngvsrls" parent="menu_cg_tapplicants_frvsrqst"  sequence="1" action="act_open_tapplicant_view_wtngvsrls"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_vsrcd" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(vsrcd &gt; 1 and daysup &gt; 0)" default_order="vsrcd desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisareceived" string="Received"/>
+                <field name="medicalexpirenote" string="Medical Expire"/>
+                <field name="gamcaexpirenote" string="Gamca Expire"/>
+                <field name="write_date" />
+                <field name="vsrcd" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_vsrcd">
+            <field name="name">Trip Applicant - Visa Received</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('vsrcd','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_vsrcd">
+            <field name="act_window_id" ref="act_open_tapplicant_view_vsrcd"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_vsrcd"/>
+        </record>  
+        
+        <menuitem name="Visa Received" id="menu_cg_tapplicants_vsrcd" parent="rtrip_root_visa"  sequence="3" action="act_open_tapplicant_view_vsrcd"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_vsxprd" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:(vsxprd &gt; 1 and daysup &gt; 0)" default_order="vsxprd desc" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisareceived" string="Visa Received"/>
+                <field name="datevisaexpire" string="Visa Expiry"/>
+                <field name="medicalexpirenote" string="Medical Expiry"/>
+                <field name="gamcaexpirenote" string="Gamca Expiry"/>
+                <field name="write_date" />
+                <field name="vsxprd" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                <field name="daysup" invisible="1"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_vsxprd">
+            <field name="name">Trip Applicant - For Visa Renewal</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('vsxprd','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_vsxprd">
+            <field name="act_window_id" ref="act_open_tapplicant_view_vsxprd"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_vsxprd"/>
+        </record>  
+        
+        <menuitem name="For Visa Renewal" id="menu_cg_tapplicants_vsxprd" parent="rtrip_root_visa"  sequence="4" action="act_open_tapplicant_view_vsxprd"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_wtngvsrnwlrls" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:wtngvsrnwlrls &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisareceived" string="Visa Received"/>
+                <field name="datevisaexpire" string="Last Visa Expiry"/>
+                <field name="medicalexpirenote" string="Medical Expiry"/>
+                <field name="gamcaexpirenote" string="Gamca Expiry"/>
+                <field name="write_date" />
+                <field name="wtngvsrnwlrls" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_wtngvsrnwlrls">
+            <field name="name">Trip Applicant - Awaiting Visa Renewal Release</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('wtngvsrnwlrls','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_wtngvsrnwlrls">
+            <field name="act_window_id" ref="act_open_tapplicant_view_wtngvsrnwlrls"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_wtngvsrnwlrls"/>
+        </record>  
+        
+        <menuitem name="Awaiting Visa Renewal Release" id="menu_cg_tapplicants_wtngvsrnwlrls" parent="menu_cg_tapplicants_vsxprd"  sequence="1" action="act_open_tapplicant_view_wtngvsrnwlrls"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_clrdfrvsstmpng" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:clrdfrvsstmpng &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisareceived" string="Visa Received"/>
+                <field name="datevisaexpire" string="Visa Expiry"/>
+                <field name="gamcaexpirenote" string="Gamca Expiry"/>
+                <field name="write_date" />
+                <field name="clrdfrvsstmpng" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_clrdfrvsstmpng">
+            <field name="name">Trip Applicant - Cleared for Visa Stamping</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('clrdfrvsstmpng','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_clrdfrvsstmpng">
+            <field name="act_window_id" ref="act_open_tapplicant_view_clrdfrvsstmpng"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_clrdfrvsstmpng"/>
+        </record>  
+        
+        <menuitem name="Cleared for Visa Stamping" id="menu_cg_tapplicants_clrdfrvsstmpng" parent="rtrip_root_visa"  sequence="5" action="act_open_tapplicant_view_clrdfrvsstmpng"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_vsstmpngnprcss" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:vsstmpngnprcss &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisaexpire" string="Visa Expiry"/>
+                <field name="gamcaexpirenote" string="Gamca Expiry"/>
+                <field name="datevisastampembassy" />
+                <field name="write_date" />
+                <field name="vsstmpngnprcss" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_vsstmpngnprcss">
+            <field name="name">Trip Applicant - Visa Stamping on Process </field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('vsstmpngnprcss','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_vsstmpngnprcss">
+            <field name="act_window_id" ref="act_open_tapplicant_view_vsstmpngnprcss"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_vsstmpngnprcss"/>
+        </record>  
+        
+        <menuitem name="VS on Process" id="menu_cg_tapplicants_vsstmpngnprcss" parent="rtrip_root_visa"  sequence="6" action="act_open_tapplicant_view_vsstmpngnprcss"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_wtngvsstmpngrls" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:wtngvsstmpngrls &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="datevisaexpire" string="Visa Expiry"/>
+                <field name="gamcaexpirenote" string="Gamca Expiry"/>
+                <field name="datevisastampreceived" string="Stamp Received"/>
+                <field name="write_date" />
+                <field name="wtngvsstmpngrls" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_wtngvsstmpngrls">
+            <field name="name">Trip Applicant - Visa Stamped </field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('wtngvsstmpngrls','&gt;',0),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_wtngvsstmpngrls">
+            <field name="act_window_id" ref="act_open_tapplicant_view_wtngvsstmpngrls"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_wtngvsstmpngrls"/>
+        </record>  
+        
+        <menuitem name="Visa Stamped" id="menu_cg_tapplicants_wtngvsstmpngrls" parent="rtrip_root_visa"  sequence="7" action="act_open_tapplicant_view_wtngvsstmpngrls"/>
+        
+        
+        
+        
+        
+        
+        
+    </data>
+</openerp>

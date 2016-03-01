@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <menuitem name="Tracking Level 4" id="rtrip_root_travel" parent="hr.menu_hr_root"  sequence="10" />  
+
+        
+        
+        <record id="view_tapplicant_tree_travel" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant">
+                <field name="name" string="Applicant Name"/>
+                <field name="datetravelproccleared" string="Date Cleared"/>
+                <field name="dateoecexpire" string="OEC Expire"/>
+                <field name="dateinsurancereceived" string="Insurance"/>
+                <field name="tapptraveldocs" string="Travel Documents"/>
+                <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                <field name="datetravel" />
+                <field name="flightdetails" />
+                <field name="hastravelled" />
+                
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_travel">
+            <field name="name">Trip Applicant - Applicants to Travel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">['|','|','|','|','|','|',('oecnprcss','&gt;',0),('ndrsdttrvl','&gt;',0),('clrdfrtrvlprcss','&gt;',0),('ndrsdfrtckt','&gt;',0),('clrdfrtcktssnc','&gt;',0),('wtngtckt','&gt;',0),('wtngflght','&gt;',0)]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_travel">
+            <field name="act_window_id" ref="act_open_tapplicant_view_travel"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_travel"/>
+        </record>  
+        
+        <menuitem name="Applicants to Travel" id="menu_cg_tapplicants_travel" parent="rtrip_root_travel"  sequence="1" action="act_open_tapplicant_view_travel"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_clrdfrtrvlprcss" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:clrdfrtrvlprcss &gt; 1">
+                <field name="name" string="Applicant Name"/>
+                <field name="datetravelproccleared" string="Date Cleared"/>
+                <field name="dateoecexpire" string="OEC Expire"/>
+                <field name="dateinsurancereceived" string="Insurance"/>
+                <field name="tapptraveldocs" string="Travel Documents"/>
+                <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                <field name="datetravel" />
+                <field name="flightdetails" />
+                <field name="write_date" />
+                <field name="clrdfrtrvlprcss" string="Delay (days)"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_clrdfrtrvlprcss">
+            <field name="name">Trip Applicant - Cleared to Travel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('clrdfrtrvlprcss','&gt;',0)]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_clrdfrtrvlprcss">
+            <field name="act_window_id" ref="act_open_tapplicant_view_clrdfrtrvlprcss"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_clrdfrtrvlprcss"/>
+        </record>  
+        
+        
+        <menuitem name="Cleared to Travel" id="menu_cg_tapplicants_clrdfrtrvlprcss" parent="rtrip_root_travel"  sequence="2" action="act_open_tapplicant_view_clrdfrtrvlprcss"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_oecnprcss" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:oecnprcss &gt; 1">
+                <field name="name" string="Applicant Name"/>
+                <field name="visaexpirenote" />
+                <field name="dateoecsubmit" />
+                <field name="dateoecexpire" string="OEC Expire"/>
+                <field name="medicalexpirenote" />
+                <field name="gamcaexpirenote" />
+                <field name="write_date" />
+                <field name="oecnprcss" string="Delay (days)"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_oecnprcss">
+            <field name="name">Trip Applicant - Cleared to Travel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('oecnprcss','&gt;',0)]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_oecnprcss">
+            <field name="act_window_id" ref="act_open_tapplicant_view_oecnprcss"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_oecnprcss"/>
+        </record>  
+        
+        
+        <menuitem name="OEC On Process" id="menu_cg_tapplicants_oecnprcss" parent="rtrip_root_travel"  sequence="2" action="act_open_tapplicant_view_oecnprcss"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_clrdfrtcktssnc" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:clrdfrtcktssnc &gt; 1">
+                <field name="name" string="Applicant Name"/>
+                <field name="datetravelproccleared" string="Date Cleared"/>
+                <field name="dateoecexpire" string="OEC Expire"/>
+                <field name="dateinsurancereceived" string="Insurance"/>
+                <field name="tapptraveldocs" string="Travel Documents"/>
+                <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                <field name="datetravel" />
+                <field name="flightdetails" />
+                <field name="write_date" />
+                <field name="clrdfrtcktssnc" string="Delay (days)"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_clrdfrtcktssnc">
+            <field name="name">Trip Applicant - Cleared for Ticket Issuance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('clrdfrtcktssnc','&gt;',0)]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_clrdfrtcktssnc">
+            <field name="act_window_id" ref="act_open_tapplicant_view_clrdfrtcktssnc"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_clrdfrtcktssnc"/>
+        </record>  
+        
+        <menuitem name="Cleared for Ticket" id="menu_cg_tapplicants_clrdfrtcktssnc" parent="rtrip_root_travel"  sequence="3" action="act_open_tapplicant_view_clrdfrtcktssnc"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_wtngtckt" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:wtngtckt &gt; 1">
+                <field name="name" string="Applicant Name"/>
+                <field name="datetravelproccleared" string="Date Cleared"/>
+                <field name="dateoecexpire" string="OEC Expire"/>
+                <field name="dateinsurancereceived" string="Insurance"/>
+                <field name="tapptraveldocs" string="Travel Documents"/>
+                <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                <field name="datetravel" />
+                <field name="flightdetails" />
+                <field name="write_date" />
+                <field name="wtngtckt" string="Delay (days)"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_wtngtckt">
+            <field name="name">Trip Applicant - Waiting for Ticket</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('wtngtckt','&gt;',0)]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_wtngtckt">
+            <field name="act_window_id" ref="act_open_tapplicant_view_wtngtckt"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_wtngtckt"/>
+        </record>  
+        
+        <menuitem name="Waiting for Ticket" id="menu_cg_tapplicants_wtngtckt" parent="rtrip_root_travel"  sequence="4" action="act_open_tapplicant_view_wtngtckt"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_wtngflght" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:wtngflght &gt; 1">
+                <field name="name" string="Applicant Name"/>
+                <field name="datetravelproccleared" string="Date Cleared"/>
+                <field name="dateoecexpire" string="OEC Expire"/>
+                <field name="dateinsurancereceived" string="Insurance"/>
+                <field name="tapptraveldocs" string="Travel Documents"/>
+                <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                <field name="datetravel" />
+                <field name="flightdetails" />
+                <field name="write_date" />
+                <field name="wtngflght" string="Delay (days)"  />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_wtngflght">
+            <field name="name">Trip Applicant - Ready to Travel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('wtngflght','&gt;',0)]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_wtngflght">
+            <field name="act_window_id" ref="act_open_tapplicant_view_wtngflght"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_wtngflght"/>
+        </record>  
+        
+        <menuitem name="Ready to Travel" id="menu_cg_tapplicants_wtngflght" parent="rtrip_root_travel"  sequence="5" action="act_open_tapplicant_view_wtngflght"/>
+        
+        
+        
+        
+ 
+        
+        
+    </data>
+</openerp>

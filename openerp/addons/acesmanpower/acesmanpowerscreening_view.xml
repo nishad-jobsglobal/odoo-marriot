@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record id="view_acesmanpowerscreening_tree" model="ir.ui.view">
+            <field name="name">acesmanpowerscreening.tree</field>
+            <field name="model">acesmanpowerscreening</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Jobseeker Screening">
+                <field name="name"/>
+                <field name="q1" string="Q1"/>
+                <field name="q2" string="Q2"/>
+                <field name="q3" string="Q3"/>
+                <field name="q4" string="Q4"/>
+                <field name="q5" string="Q5"/>
+                <field name="q6" string="Q6"/>
+                <field name="q7" string="Q7"/>
+                <field name="q8" string="Q8"/>
+                <field name="q9" string="Q9"/>
+                <field name="q10" string="Q10"/>
+                <field name="q11" string="Q11"/>
+                <field name="q12" string="Q12"/>
+                <field name="write_date" />
+                <field name="write_uid" />
+            </tree>
+            </field>
+        </record>
+
+        
+        <record id="view_acesmanpowerscreening_form" model="ir.ui.view">
+            <field name="name">acesmanpowerscreening.form</field>
+            <field name="model">acesmanpowerscreening</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Jobseeker Screening" version="7.0">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_left" style="width: 128px; ">
+                            <field name="url_image" widget="uimage"  />
+                        </div>
+                        <div class="oe_title" style="width: 480px;">
+                            <label for="acesjobseeker_id" class="oe_edit_only"/>
+                            <h1><field name="acesjobseeker_id"/></h1>
+                        </div>
+                        <group>
+                            <group >
+                                <field name="q1" widget="radio" class="oe_myrad" />
+                                <field name="q2" widget="radio" class="oe_myrad" />
+                                <field name="q3" widget="radio" class="oe_myrad" />
+                                <field name="q4" widget="radio" class="oe_myrad" />
+                                <field name="q5" widget="radio" class="oe_myrad" />
+                                <field name="q6" widget="radio" class="oe_myrad" />
+                                <field name="q7" widget="radio" class="oe_myrad" />
+                                <field name="q8" widget="radio" class="oe_myrad" />
+                                <field name="q9" widget="radio" class="oe_myrad" />
+                                <field name="q10" widget="radio" class="oe_myrad" />
+                                <field name="q11" widget="radio" class="oe_myrad" />
+                                <field name="q12" widget="radio" class="oe_myrad" />
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <group>
+                                <field name="workin"  />
+                            </group>
+                        </group>
+      
+                        <separator string="Notes"/>
+                        <field name="description" nolabel="1" />
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowerscreening_search" model="ir.ui.view">
+            <field name="name">acesmanpowerscreening.search</field>
+            <field name="model">acesmanpowerscreening</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Jobseeker Screening">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter domain="[('q1','&gt;',6)]" context="{'group_by':'q1'}" string="Q1" />
+                    <filter domain="[('q2','&gt;',6)]" context="{'group_by':'q2'}" string="Q2" />
+                    <filter domain="[('q3','&gt;',6)]" context="{'group_by':'q3'}" string="Q3" />
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_acesmanpowerscreening_view">
+            <field name="name"> Jobseeker Screening Q1) Overall Experience 
+            					Q2) Communication Skills</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowerscreening</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowerscreening_search"/>
+          	<field name="domain">[('state_id','=','new')]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowerscreening_view_form">
+            <field name="act_window_id" ref="act_open_acesmanpowerscreening_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_acesmanpowerscreening_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowerscreening_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowerscreening_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowerscreening_tree"/>
+        </record>
+        
+        <menuitem name="Agency Screening" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowerscreening_view"/>
+        
+    </data>
+</openerp>

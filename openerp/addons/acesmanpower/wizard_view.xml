@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <record model="ir.ui.view" id="wizard_form_view">
+            <field name="name">wizard.form</field>
+            <field name="model">acesmanpower.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Send SMS">
+                    <group>
+                        <field name="jobseeker_id"/>
+                        <field name="mobile_to"/>
+                        <field name="text"/>
+                    </group>
+                   	<footer>
+                        <button string="Send SMS" name="send_sms" type="object" class="oe_stat_button" 
+                       icon="fa-share-square" context="{'mobile_to': mobile_to, 'text': text,}"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer> 
+<!--                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />-->
+                </form>
+            </field>
+        </record>
+       
+       <record model="ir.actions.act_window" id="launch_acesmanpower_wizard">
+            <field name="name">Send SMS</field>
+            <field name="res_model">acesmanpower.wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>  
+
+       <!-- 
+         
+        <act_window id="launch_acesmanpower_wizard"
+                    name="Send SMS"
+                    src_model="acesjobseeker"
+                    res_model="acesmanpower.wizard"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+        
+                    
+        <record model="ir.ui.view" id="wizard_form_view">
+            <field name="name">wizardsms.form</field>
+            <field name="model">acesmanpower.wizardsms</field>
+            <field name="arch" type="xml">
+                <form string="Send SMS">
+                    <group>
+                        <field name="sender"/>
+                        <field name="mobile"/>
+                        <field name="message"/>
+                        <field name="auser_id" invisible="1"/>
+                    </group>
+                    <button name="2775" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'sender': sender, 'mobile': mobile, 'message': message, 'auser_id': auser_id,}"  />
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardsms"
+                    name="Send SMS"
+                    src_model="acesmanpoweruser"
+                    res_model="acesmanpower.wizardsms"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>		-->
+       
+         
+                    
+       <!-- 
+       'This is to notify agency consultants from approved data pool'
+       -->		           
+       
+       <record model="ir.ui.view" id="wizardnotify_agents_form_view">
+            <field name="name">wizardnotify_agents.form.view</field>
+            <field name="model">acesmanpower.notify.agents</field>
+            <field name="arch" type="xml">
+                <form string="Request Contacts">
+                    <group>
+                        <field name="agency_consultant_ids" readonly="1" widget="selection"/>
+                        <field name="mobile"/>
+                        <field name="message"/>
+                    </group>
+                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardnotify_agents"
+                    name="Agency Request"
+                    src_model="acesmanpowershortlist"
+                    res_model="acesmanpower.notify.agents"
+                    view_mode="form"
+                    target="new"
+        			groups="base.user_root"
+                   />	
+       
+       
+       <!--======= -->				
+        		
+        
+        
+        <record model="ir.ui.view" id="wizardnotify1_form_view">
+            <field name="name">wizardnotify1.form</field>
+            <field name="model">acesmanpower.notifyassess</field>
+            <field name="arch" type="xml">
+                <form string="Request Contacts">
+                    <group>
+                        <field name="acesmanpowershortlist_id" widget="selection" readonly="1"/>
+                        <field name="mobile"/>
+                        <field name="message"/>
+                    </group>
+                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send Request" context="{'mobile': mobile, 'message': message,}"  />
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardnotify1"
+                    	name="Applicant Request"
+                    src_model="acesmanpowershortlist"
+                    res_model="acesmanpower.notifyassess"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>    
+                    
+                                        
+
+        <record model="ir.ui.view" id="wizardnotify2_form_view">
+            <field name="name">wizardnotify2.form</field>
+            <field name="model">acesmanpower.notifyusers</field>
+            <field name="arch" type="xml">
+                <form string="Request Info">
+                    <group>
+                        <field name="recipient_id"/>
+                        <field name="message"/>
+                    </group>
+                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send Request" context="{'recipient_id': recipient_id, 'message': message,}"  />
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardnotify2"
+                    name="Request Info"
+                    src_model="res.partner"
+                    res_model="acesmanpower.notifyusers"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>    
+                    
+
+        <record model="ir.ui.view" id="wizardnotify3_form_view">
+            <field name="name">wizardnotify3.form</field>
+            <field name="model">acesmanpower.createuser</field>
+            <field name="arch" type="xml">
+                <form string="Request Info">
+                    <group>
+                        <field name="name"/>
+                        <field name="login" widget="email" />
+                        <field name="password" password="1"/>
+                        <field name="mobile"/>
+                        <field name="access_id"/>
+                        <field name="property_id"/>
+                        <field name="company_id" />
+                        
+                    </group>
+                    
+                    <button name="2613" class="oe_stat_button" icon="fa-user" type="action" string="Create User" 
+                    context="{
+                    'name': name, 
+                    'login': login,
+                    'password': password,
+                    'mobile': mobile,
+                    'access_id': access_id,
+                    'property_id': property_id,
+                    'company_id': company_id,
+                    }"  />
+                    
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardnotify3"
+                    name="Create New Recruitment User"
+                    src_model="acesmanpoweruser"
+                    res_model="acesmanpower.createuser"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>    
+                    
+                    
+        
+    </data>
+</openerp>

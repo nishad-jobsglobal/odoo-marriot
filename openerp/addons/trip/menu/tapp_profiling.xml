@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        <menuitem name="Tracking Level 1" id="rtrip_root_profiling" parent="hr.menu_hr_root"  sequence="10" />        
+        
+        <record id="view_tapplicant_tree" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="maroon:(frprflng &gt; 1 and daysup &gt; 0);orange:(newtoproc == 1)" default_order="newtoproc desc, write_date asc, frprflng desc " >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id" string="Trip"/>
+                <field name="user_email"  /> 
+                <field name="phone" />
+                <field name="mobile"  />
+                <field name="write_date"  />
+                <field name="reds"  invisible="1" />
+                <field name="frprflng" string="Delay"/>
+                
+                <field name="company_id" invisible="1"/>
+                <field name="newtoproc" invisible="1"/>
+                <field name="daysup" invisible="1"/>
+                <field name="write_date" invisible="1"/>
+                <field name="job_country_id" invisible="1"/>
+                <field name="can_country_id" invisible="1"/>
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view">
+            <field name="name">Trip Applicant</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frprflng','&gt;',0),('fromimport','=',False),('cnclld','!=',1),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree">
+            <field name="act_window_id" ref="act_open_tapplicant_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree"/>
+        </record>    
+            
+        <menuitem name="Profiling" id="menu_cg_tapplicants_prof" parent="rtrip_root_profiling"  sequence="1" action="act_open_tapplicant_view"/>
+        
+        
+                                        
+        <record id="view_tapplicant_tree_doc" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="maroon:(frdcmntcllctn &gt; 1 and daysup &gt; 0)" default_order="frdcmntcllctn desc" >
+                <field name="name"/>
+                <field name="hasinterviewsheet" string="Sheet" />
+                <field name="hasoffersigned" string="Offer" />
+                <field name="hasphoto" string="Pic" />
+                <field name="haspassport" string="PP" />
+                <field name="passportexpiry" string="PP Exp" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="trip_id" string="Trip"/>
+                <field name="can_country_id" string="Source Loc"/>
+                <field name="daysup" invisible="1"  />
+                <field name="frdcmntcllctn"  string="Delay" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_doc">
+            <field name="name">Trip Applicant - Document Processing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('frdcmntcllctn','&gt;',0),('fromimport','=',False),('cnclld','!=',1),('hastravelled','=',False),('cancelrequested','=',False),('invoice_line_ids','=',False),('stage_id','not in', (5,6))]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_doc">
+            <field name="act_window_id" ref="act_open_tapplicant_view_doc"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_doc"/>
+        </record>  
+        
+        <menuitem name="Document Collection" id="menu_cg_tapplicants_docum" parent="rtrip_root_profiling"  sequence="1" action="act_open_tapplicant_view_doc"/>
+        
+        
+        
+         <record id="view_tapplicant_all_tree" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="maroon:colortotal &gt; 0"  >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id" string="Trip"/>
+                <field name="user_email"  /> 
+                <field name="trjob_id"  />
+                <field name="write_date"  />
+                <field name="write_uid"  />
+                <field name="colortotal"  invisible="1" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view">
+            <field name="name">All Applicants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree"/>
+        </record>    
+            
+        <menuitem name="All Applicants" id="menu_cg_tapplicants_all" parent="rtrip_root"  sequence="4" action="act_open_tapplicant_all_view"/>
+        
+        
+        
+        <record id="view_tapplicant_all_tree_hastrav" model="ir.ui.view">
+            <field name="name">tapplicant_hastrav.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="partner_id"  />
+                <field name="trjob_id"  />
+                <field name="datetravel"  />
+                <field name="company_id"  />
+                <field name="write_uid"  />
+                
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_hastrav">
+            <field name="name">Travelled Applicants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('hastravelled','=',True),('fromimport','=',False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_hastrav">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_hastrav"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_hastrav"/>
+        </record>    
+            
+        <menuitem name="Travelled Applicants" id="menu_cg_tapplicants_hastrav" parent="rtrip_root"  sequence="5" action="act_open_tapplicant_all_view_hastrav"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_all_tree_cncllrq" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="partner_id"  />
+                <field name="trjob_id"  />
+                <field name="company_id"  />
+                <field name="write_uid"  />
+                <field name="cncllrq" string="Delay/s" />
+                
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_cncllrq">
+            <field name="name">Request to Cancel</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('cancelrequested','!=',False),('cancelendorsed','=',False),('cancelconfirmed','=',False),('fromimport','=',False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_cncllrq">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_cncllrq"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_cncllrq"/>
+        </record>    
+            
+        <menuitem name="Request to Cancel" id="menu_cg_tapplicants_cncllrq" parent="rtrip_root"  sequence="6" action="act_open_tapplicant_all_view_cncllrq"/>
+        
+        
+        <record id="view_tapplicant_all_tree_endorsecancel" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="partner_id"  />
+                <field name="trjob_id"  />
+                <field name="company_id"  />
+                <field name="write_uid"  />
+                
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_endorsecancel">
+            <field name="name">Endorsed for Cancellation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('cancelendorsed','!=',False),('cancelconfirmed','=',False),('fromimport','=',False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_endorsecancel">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_endorsecancel"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_endorsecancel"/>
+        </record>    
+            
+        <menuitem name="Endorsed for Cancellation" id="menu_cg_tapplicants_endorsecancel" parent="rtrip_root"  sequence="7" action="act_open_tapplicant_all_view_endorsecancel"/>
+
+        
+        
+        <record id="view_tapplicant_all_tree_cancel" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="partner_id"  />
+                <field name="trjob_id"  />
+                <field name="company_id"  />
+                <field name="write_uid"  />
+                
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_cancel">
+            <field name="name">Cancelled Applicants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('cnclld','=',True),('fromimport','=',False)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_cancel">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_cancel"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_cancel"/>
+        </record>    
+            
+        <menuitem name="Cancelled Applicants" id="menu_cg_tapplicants_cancel" parent="rtrip_root"  sequence="8" action="act_open_tapplicant_all_view_cancel"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_all_tree_onhold" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="partner_id"  />
+                <field name="trjob_id"  />
+                <field name="company_id"  />
+                <field name="write_uid"  />
+                
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_onhold">
+            <field name="name">On Hold Applicants</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('stage_id','=', 5)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_onhold">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_onhold"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_onhold"/>
+        </record>    
+            
+        <menuitem name="On Hold Applicants" id="menu_cg_tapplicants_onhold" parent="rtrip_root"  sequence="9" action="act_open_tapplicant_all_view_onhold"/>
+        
+        
+        
+        
+
+
+    </data>
+</openerp>

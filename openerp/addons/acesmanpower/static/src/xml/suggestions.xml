@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+
+    <!-- Trips placeholder in sidebar -->
+    <t t-extend="mail.wall.sidebar">
+        <t t-jquery=".oe_mail_wall_sidebar" t-operation="append">
+            <div class="oe_suggestions_rtrips"></div>
+        </t>
+    </t>
+
+    <!-- Suggested trips -->
+    <div t-name="acesmanpower.rtrips" class="oe_sidebar_suggestion oe_suggestion_rtrip">
+        <div class="oe_suggest_title">
+            <a class="oe_suggestion_remove oe_suggestion_rtrip oe_e">X</a>
+            <h2></h2>
+        </div>
+        <div class="oe_suggest_items">
+            <t t-foreach="widget.rtrips" t-as="result">
+                
+            </t>
+        </div>
+    </div>
+
+</template>

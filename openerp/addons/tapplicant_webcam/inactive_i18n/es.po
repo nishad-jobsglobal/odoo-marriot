@@ -1,0 +1,62 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * tapplicant_webcam
+# 
+# Translators:
+msgid ""
+msgstr ""
+"Project-Id-Version: hr (8.0)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-18 13:10+0000\n"
+"PO-Revision-Date: 2015-07-27 23:44+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: Spanish (http://www.transifex.com/oca/OCA-hr-8-0/language/es/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Language: es\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: tapplicant_webcam
+#. openerp-web
+#: code:addons/tapplicant_webcam/static/src/xml/tapplicant_webcam.xml:10
+#, python-format
+msgid "Close Window"
+msgstr ""
+
+#. module: tapplicant_webcam
+#: model:ir.model,name:tapplicant_webcam.model_hr_employee
+msgid "Employee"
+msgstr "Empleado"
+
+#. module: tapplicant_webcam
+#: model:ir.actions.client,name:tapplicant_webcam.action_client_employees_menu
+msgid "Open Employees Menu"
+msgstr ""
+
+#. module: tapplicant_webcam
+#. openerp-web
+#: code:addons/tapplicant_webcam/static/src/xml/tapplicant_webcam.xml:4
+#, python-format
+msgid "Photo Booth"
+msgstr ""
+
+#. module: tapplicant_webcam
+#: view:hr.employee:tapplicant_webcam.view_employee_form
+#: model:ir.actions.client,name:tapplicant_webcam.action_take_photo
+msgid "Take Picture"
+msgstr ""
+
+#. module: tapplicant_webcam
+#. openerp-web
+#: code:addons/tapplicant_webcam/static/src/xml/tapplicant_webcam.xml:10
+#, python-format
+msgid "Take a Picture"
+msgstr ""
+
+#. module: tapplicant_webcam
+#. openerp-web
+#: code:addons/tapplicant_webcam/static/src/xml/tapplicant_webcam.xml:6
+#, python-format
+msgid "Webcam"
+msgstr ""

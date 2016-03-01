@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+        
+        <menuitem name="Trip Accounting" id="rtrip_root_account" parent="hr.menu_hr_root"  sequence="11" />  
+        
+        
+        <record id="view_tapplicant_tree_account" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="partner_id" string="Client"/>
+                <field name="salary_basic" string="Basic"/>
+                <field name="feeplacement" string="Plcmt Fee"/>
+                <field name="feeprocessing" string="Proc Fee" />
+                <field name="totalfee" string="Total" />
+                <field name="totalcollected" string="Collected" />
+                <field name="balancepercent" string="%" widget="progressbar"/>
+                <field name="totalexpenses" />
+                <field name="stage_id" />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_account">
+            <field name="name">Trip Applicant - Account</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('hastravelled','=',False),('cnclld','=',0),('datetravel','&gt;','2015-01-01')]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_account">
+            <field name="act_window_id" ref="act_open_tapplicant_view_account"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_account"/>
+        </record>  
+        
+        <menuitem name="Summary Accounts" id="menu_cg_tapplicants_account" parent="rtrip_root_account"  sequence="1" action="act_open_tapplicant_view_account"/>
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_tpdtchrgs" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:tpdtchrgs &gt; 1" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="trip_id" />
+                <field name="salary_basic" string="Basic"/>
+                <field name="feeplacement" string="Plcmt Fee"/>
+                <field name="feeprocessing" string="Proc Fee" />
+                <field name="totalfee" string="Total" />
+                <field name="balancepercent" string="%" widget="progressbar"/>
+                <field name="tpdtchrgs" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_tpdtchrgs">
+            <field name="name">Trip Applicant - Update Charges</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('tpdtchrgs','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01')]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_tpdtchrgs">
+            <field name="act_window_id" ref="act_open_tapplicant_view_tpdtchrgs"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_tpdtchrgs"/>
+        </record>  
+        
+        <menuitem name="To Update Fees" id="menu_cg_tapplicants_tpdtchrgs" parent="rtrip_root_account"  sequence="2" action="act_open_tapplicant_view_tpdtchrgs"/>
+        
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_ndrsdfrvsstmpng" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:ndrsdfrvsstmpng &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="trip_id" />
+                <field name="salary_basic" string="Basic"/>
+                <field name="feeplacement" string="Plcmt Fee"/>
+                <field name="feeprocessing" string="Proc Fee" />
+                <field name="totalfee" string="Total" />
+                <field name="balancepercent" string="%" widget="progressbar"/>
+                <field name="ndrsdfrvsstmpng" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_ndrsdfrvsstmpng">
+            <field name="name">Trip Applicant - Accounts Clearing / Visa Stamping </field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('ndrsdfrvsstmpng','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01')]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_ndrsdfrvsstmpng">
+            <field name="act_window_id" ref="act_open_tapplicant_view_ndrsdfrvsstmpng"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_ndrsdfrvsstmpng"/>
+        </record>  
+        
+        <menuitem name="Clearance - Visa Stamping" id="menu_cg_tapplicants_ndrsdfrvsstmpng" parent="rtrip_root_account"  sequence="3" action="act_open_tapplicant_view_ndrsdfrvsstmpng"/>
+        
+        
+        
+        <record id="view_tapplicant_tree_ndrsdttrvl" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:ndrsdttrvl &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="trip_id" />
+                <field name="salary_basic" string="Basic"/>
+                <field name="feeplacement" string="Plcmt Fee"/>
+                <field name="feeprocessing" string="Proc Fee" />
+                <field name="totalfee" string="Total" />
+                <field name="balancepercent" string="%" widget="progressbar"/>
+                <field name="ndrsdttrvl" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_ndrsdttrvl">
+            <field name="name">Trip Applicant - For Travel Processing Clearance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('ndrsdttrvl','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01')]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_ndrsdttrvl">
+            <field name="act_window_id" ref="act_open_tapplicant_view_ndrsdttrvl"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_ndrsdttrvl"/>
+        </record>  
+        
+        <menuitem name="Clearance - Travel Documentation" id="menu_cg_tapplicants_ndrsdttrvl" parent="rtrip_root_account"  sequence="4" action="act_open_tapplicant_view_ndrsdttrvl"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_tree_ndrsdfrtckt" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant" colors="red:ndrsdfrtckt &gt; 1">
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant"/>
+                <field name="trjob_id" string="Job"/>
+                <field name="trip_id" />
+                <field name="salary_basic" string="Basic"/>
+                <field name="feeplacement" string="Plcmt Fee"/>
+                <field name="feeprocessing" string="Proc Fee" />
+                <field name="totalfee" string="Total" />
+                <field name="balancepercent" string="%" widget="progressbar"/>
+                <field name="ndrsdfrtckt" string="Delay (days)"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+                
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_view_ndrsdfrtckt">
+            <field name="name">Trip Applicant - For Ticket Clearance</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('ndrsdfrtckt','&gt;',0),('cnclld','=',0),('datetravel','&gt;','2015-01-01')]</field>
+            <field name="context">{}</field>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_view_tree_ndrsdfrtckt">
+            <field name="act_window_id" ref="act_open_tapplicant_view_ndrsdfrtckt"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_tree_ndrsdfrtckt"/>
+        </record>  
+        
+        <menuitem name="Clearance - Ticket" id="menu_cg_tapplicants_ndrsdfrtckt" parent="rtrip_root_account"  sequence="5" action="act_open_tapplicant_view_ndrsdfrtckt"/>
+        
+        
+        
+        
+        <record id="view_tapplicant_all_tree_invc" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="trjob_id" string="Position"  />
+                <field name="datetravel" />
+                <field name="write_uid"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_invc">
+            <field name="name">Applicants for Invoicing</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('hastravelled','=',True),('invoice_line_ids','=',False),('datetravel','&gt;','2015-01-01'),('cnclld','=',0)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_invc">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_invc"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_invc"/>
+        </record>    
+            
+        <menuitem name="For Invoicing" id="menu_cg_tapplicants_invc" parent="rtrip_root_account"  sequence="5" action="act_open_tapplicant_all_view_invc"/>
+        
+        
+        
+        
+        
+        
+        
+        
+        <record id="view_tapplicant_all_tree_forcoll" model="ir.ui.view">
+            <field name="name">tapplicant.tree</field>
+            <field name="model">tapplicant</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Trip Applicant"   >
+                <field name="image_small" widget="image" string="" />
+                <field name="name" string="Applicant Name"/>
+                <field name="trip_id"  /> 
+                <field name="partner_id"  />
+                <field name="trjob_id" string="Job"  />
+                <field name="datetravel" />
+                <field name="invoiced"  />
+                <field name="invoiced_nums"  />
+                
+                <field name="company_id" invisible="1"  />
+                <field name="job_country_id" invisible="1" />
+                <field name="can_country_id" invisible="1" />
+                
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_tapplicant_all_view_forcoll">
+            <field name="name">For Invoice Collection</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">tapplicant</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_tapplicant_search"/>
+            <field name="domain">[('invoice_line_ids','!=',False),('invoiced_state','!=','paid'),('partner_id','not in',(17977,17843,18188,18186,18187,17827))]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_tapplicant_all_view_tree_forcoll">
+            <field name="act_window_id" ref="act_open_tapplicant_all_view_forcoll"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tapplicant_all_tree_forcoll"/>
+        </record>    
+            
+        <menuitem name="For Collection" id="menu_cg_tapplicants_forcoll" parent="rtrip_root_account"  sequence="6" action="act_open_tapplicant_all_view_forcoll"/>
+        
+        
+        
+        
+        
+        
+        
+        
+    </data>
+</openerp>

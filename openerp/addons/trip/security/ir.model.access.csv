@@ -1,0 +1,10 @@
+access_job_location,access_job_location,model_job_location,base.group_branch_level1,1,0,0,0
+access_sourcing_location,access_sourcing_location,model_sourcing_location,base.group_branch_level1,1,0,0,0
+access_trip_form,access_trip_form,model_trip_form,base.group_branch_level1,1,0,0,0
+access_trip_traveldoc,access_trip_traveldoc,model_trip_traveldoc,base.group_branch_level1,1,0,0,0
+access_trjob,access_trjob,model_trjob,base.group_branch_level1,1,0,0,0
+access_trip_stage,access_trip_stage,model_trip_stage,base.group_branch_level1,1,0,0,0
+access_tapplicant_stage,access_tapplicant_stage,model_tapplicant_stage,base.group_branch_level1,1,0,0,0
+access_tapplicant_clinic,access_tapplicant_clinic,model_tapplicant_clinic,base.group_branch_level1,1,0,0,0
+access_tapplicant,access_tapplicant,model_tapplicant,base.group_branch_level1,1,0,0,0
+access_trip,access_trip,trip,base.group_branch_level1,1,0,0,0

@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	<template id="assets_backend" name="acesmanpower assets" inherit_id="web.assets_backend" >
+            <xpath expr="." position="inside">
+                <link ref="stylesheet" href="/acesmanpower/static/src/css/tripevents.css" />
+            </xpath>
+        </template>	
+    		
+        <record id="view_acesmanpowershortlist_tree" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="For Assessment" color="green:asses_id == 1" >
+                <field name="image_small" widget="image" string="" />
+                <field name="name"/>
+                <field name="acesjobseeker_id"/>
+                <field name="acesmanpowerjob_id"/>
+                <field name="acesmanpowerproperty_id"/>
+                <field name="acesmanpowerevent_id"/>
+                <field name="assess_id" />
+                <field name="stage_id" />
+            </tree>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowershortlist_form" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist.form</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Applicant Process" version="7.0">
+                    <header>
+                        <field name="stage_id" widget="statusbar" clickable="False"/>
+                    </header>
+                    <sheet>
+                        <field name="image_medium" widget='image' class="oe_left oe_avatar" />
+                        <div class="oe_right oe_button_box" name="button_box" style="width: 280px; " >
+                            <button attrs="{'invisible': [('assess_id','=',False)]}" name="2601" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Interview" context="{'stage_id': 4}" />
+                            <button attrs="{'invisible': [('assess_id','=',False)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_stat_button" icon="fa-phone-square" type="action" context="{'agency_consultant_ids':agency_consultant_ids}" string="Assessment Done" help="Ask JobsGlobal more info regarding this applicant" />
+                            <button attrs="{'invisible': [('stage_id','!=',1)]}" name="2601" class="oe_stat_button" icon="fa-clipboard" type="action" string="Request Result" context="{'stage_id': 9}" />
+                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-clipboard" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
+                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="2603" class="oe_stat_button" type="action" string="Send Request to Interview  " />
+                            <button attrs="{'invisible': [('stage_id','!=',1)]}" name="back_to_screening" class="oe_stat_button" icon="fa-mail-reply" type="object" string="Back to Screening" />
+                            
+<!--                            <div class="oe_right oe_large_button_box" name="large_button_box" style="width: 350px; ">-->
+<!--                       			<button attrs="{'invisible': [('stage_id','!=',6)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_large_stat_button" type="action"  string="Request For Agency Processing" />-->
+<!--                            	<button attrs="{'invisible': [('stage_id','!=',6)]}" name="2603" class="oe_large_stat_button" type="action" string="Send Request to Interview   " />-->
+<!--                       		</div> -->
+                        </div>
+                        
+                        <div class="oe_title" >
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="acesjobseeker_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="acesjobseeker_id" class="oe_inline"/> 
+                            </h2>
+                        </div>
+                       
+                       <separator string="Assessment Score"/>
+                       <field name="assess_id" readonly="1" />  
+                        <notebook>
+                            
+                            <page string="Input Assessment Result">
+                                <separator />
+                                <group>
+                                    <div class="assessbox">
+                                        <button name="2599" class="oe_stat_button oeb_red" icon="fa-close" context="{'assess_id':'red'}" type="action" string=" Fail" />
+                                        <div></div>
+                                        <button name="2599" class="oe_stat_button oeb_yellow" icon="fa-check-square-o" context="{'assess_id':'yellow'}" type="action" string=" Good" />
+                                        <div></div>
+                                        <button name="2599" class="oe_stat_button oeb_white" icon="fa-check-square-o" context="{'assess_id':'white'}" type="action" string=" Very Good" />
+                                        <div></div>
+                                        <button name="2599" class="oe_stat_button oeb_green" icon="fa-check-square-o" context="{'assess_id':'green'}" type="action" string=" Excellent" />
+                                    </div>
+                                </group>
+                               <group>
+                                   <field name="interview_sheet" />
+								   <button name="import_file" string="Upload Sheet" type="object" icon="fa-save" class="oe_stat_button"/>
+                               </group> 
+                           </page>
+                           
+                           <page string="Details">
+                                <group>
+                                    <group>
+                                        <field name="acesmanpowerjob_id"  />
+                                        <field name="acesmanpoweruser_id" readonly="1"/>
+                                        <field name="acesmanpowerproperty_id" readonly="1" />
+                                        <field name="acesmanpowerevent_id" attrs="{'readonly':[('stage_id', '!=', 3)]}" />
+                                    </group>
+                                    <group>
+                                        <field name="write_date" />
+                                        <field name="write_uid" />
+                                    </group>
+                                </group>
+                            </page>
+                           
+                           <page string="Agency Consultants" groups="base.marriot_consultant">
+                            	<group>
+                                	<field name="agency_consultant_ids" readonly="1" nolabel="1" />
+                            	</group>
+                           </page>
+                          	 
+<!--                          <page string="Request for Agency Processing">-->
+<!--                            	<group>-->
+<!--                                	<field name="agency_consultant_ids" readonly="1" nolabel="1" />-->
+<!--                                	<field name="agency_consultant_ids" widget="many2many">-->
+<!--									    <tree string="Agency Consultants" editable="bottom">-->
+<!--									        <field name="name"/>#Define all your fields for tree view-->
+<!--									        <field name="email"/>	-->
+<!--									    </tree>-->
+<!--							</field>-->
+<!--                            	</group>-->
+<!--                           </page>    -->
+                              
+                        </notebook>
+                        <separator string="Notes"/>
+                        <field name="description" nolabel="1" />
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_acesmanpowershortlist_search" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist.search</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="For Assessment">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Jobseeker" domain="[]" context="{'group_by':'acesjobseeker_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_view">
+            <field name="name">For Assessment</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_search"/>
+            <field name="domain">[('stage_id', '=', 1)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowershortlist_view_form">
+            <field name="act_window_id" ref="act_open_acesmanpowershortlist_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_acesmanpowershortlist_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowershortlist_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowershortlist_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowershortlist_tree"/>
+        </record>
+        
+        <menuitem name="For Assessment" id="menu_acesmanpowershortlist" parent="menu_prerecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_view"/>
+        
+        <record id="view_acesmanpowershortlist_confirmshortlist_tree" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist_confirmshortlist.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Waiting Results">
+                <field name="image_small" widget="image" string="" />
+                <field name="name"/>
+                <field name="acesjobseeker_id"/>
+                <field name="acesmanpowerjob_id"/>
+                <field name="acesmanpowerproperty_id"/>
+                <field name="acesmanpowerevent_id"/>
+                <field name="assess_id" />
+                <field name="stage_id" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_confirmshortlist_view">
+            <field name="name">Waiting Results</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_search"/>
+            <field name="domain">[('stage_id', '=', 9)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowershortlist_confirmshortlist_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowershortlist_confirmshortlist_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowershortlist_confirmshortlist_tree"/>
+        </record>
+        
+        <menuitem name="Final Assessment" id="menu_finalrecruitment_portal_live_modules"
+            		parent="menu_recruitment_root"
+            		sequence="3"/>
+        
+        <menuitem name="Waiting Results" id="menu_acesmanpowershortlist_confirmshortlist" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_confirmshortlist_view"/>
+        
+        <record id="view_acesmanpowershortlist_passed_tree" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist_passed.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Qualified">
+                <field name="image_small" widget="image" string="" />
+                <field name="name"/>
+                <field name="acesjobseeker_id"/>
+                <field name="acesmanpowerjob_id"/>
+                <field name="acesmanpowerproperty_id"/>
+                <field name="acesmanpowerevent_id"/>
+                <field name="assess_id" />
+                <field name="stage_id" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_passed_view">
+            <field name="name">Qualified</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_search"/>
+            <field name="domain">[('stage_id', 'in', (3,5))]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowershortlist_passed_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowershortlist_passed_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowershortlist_passed_tree"/>
+        </record>
+        
+        <menuitem name="Qualified" id="menu_acesmanpowershortlist_passed" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_passed_view"/>
+        
+        <record id="view_acesmanpowershortlist_forinterview_tree" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist_forinterview.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="For Interview">
+                <field name="image_small" widget="image" string="" />
+                <field name="name"/>
+                <field name="acesjobseeker_id"/>
+                <field name="acesmanpowerjob_id"/>
+                <field name="acesmanpowerproperty_id"/>
+                <field name="acesmanpowerevent_id"/>
+                <field name="assess_id" />
+                <field name="stage_id" />
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_forinterview_view">
+            <field name="name">For Interview</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_search"/>
+            <field name="domain">[('stage_id', '=', 4)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowershortlist_forinterview_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowershortlist_forinterview_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowershortlist_forinterview_tree"/>
+        </record>
+        
+        <menuitem name="For Interview" id="menu_acesmanpowershortlist_forinterview" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_forinterview_view"/>
+        
+        <record id="view_acesmanpowershortlist_approved_tree" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist_approved.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <tree string="Approved Data Pool">
+                <field name="image_small" widget="image" string="" />
+                <field name="name"/>
+                <field name="acesjobseeker_id"/>
+                <field name="acesmanpowerjob_id"/>
+                <field name="acesmanpowerproperty_id"/>
+                <field name="acesmanpowerevent_id"/>
+                <field name="assess_id"/>
+                <field name="stage_id"/>
+            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_approved_view">
+            <field name="name">Approved Data Pool</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_search"/>
+            <field name="domain">[('stage_id', '=', 6)]</field>
+            <field name="context">{}</field>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_acesmanpowershortlist_approved_view_tree">
+            <field name="act_window_id" ref="act_open_acesmanpowershortlist_approved_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpowershortlist_approved_tree"/>
+        </record>
+        
+        <menuitem name="Approved Data Pool" id="menu_acesmanpowershortlist_approved" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_approved_view"/>
+        
+        
+        <record model="ir.ui.view" id="view_acesmanpower_my_candidates_tree">
+            <field name="name">view.acesmanpower.my.candidates.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="9"/>
+            <field name="arch" type="xml">
+	            <tree string="My candidates">
+	                <field name="image_small" widget="image" string="" />
+	                <field name="name"/>
+	                <field name="acesjobseeker_id"/>
+	                <field name="acesmanpowerjob_id"/>
+	                <field name="acesmanpowerproperty_id"/>
+	                <field name="acesmanpowerevent_id"/>
+	                <field name="assess_id"/>
+	                <field name="stage_id"/>
+	            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="view_acesmanpower_my_candidates_view">
+            <field name="name">My Candidates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_search"/>
+            <field name="domain">[('stage_id', '=', 10)]</field>
+            <field name="context">{}</field>
+        </record>
+       
+       <record model="ir.actions.act_window.view" id="act_open_acesmanpower_my_candidates_tree">
+            <field name="act_window_id" ref="view_acesmanpower_my_candidates_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpower_my_candidates_tree"/>
+        </record>  
+
+        <menuitem name="My Candidates" id="menu_acesmanpower_my_candidates" parent="menu_finalrecruitment_portal_live_modules"  sequence="6" action="view_acesmanpower_my_candidates_view"/>	
+        
+    </data>
+</openerp>

@@ -1,0 +1,83 @@
+<openerp>
+    <data>
+        <record id="view_testwidget_tree" model="ir.ui.view">
+            <field name="name">testwidget.tree</field>
+            <field name="model">testwidget</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <tree string="Test Widget">
+                    <field name="name"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_testwidget_form" model="ir.ui.view">
+            <field name="name">testwidget.form</field>
+            <field name="model">testwidget</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Test Widget">
+                    <field name="name"/>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_testwidget_search" model="ir.ui.view">
+            <field name="name">testwidget.search</field>
+            <field name="model">testwidget</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <search string="Test API">
+                    <newline/>
+                    <field name="name" />
+                </search>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_testwidget_view">
+            <field name="name">testwidget</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">testwidget</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_testwidget_search"/>
+        </record>
+        
+        <record model="ir.actions.act_window.view" id="act_open_testwidget_view_form">
+            <field name="act_window_id" ref="act_open_testwidget_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_testwidget_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_testwidget_view_tree">
+            <field name="act_window_id" ref="act_open_testwidget_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_testwidget_tree"/>
+        </record>
+        
+        
+        <!-- ** Global menu for SMS Client ******************************** -->
+        <menuitem name="Test Widget" id="menu_testwidget_administration_server" parent="base.menu_config"/>
+
+        <menuitem name="Test Widget" id="menu_testwidget_tree" parent="menu_testwidget_administration_server" action="act_open_testwidget_view" />
+        
+        <template id="assets_backend" name="testwidget_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/testwidget/static/testwidget.css" />
+                <script type="text/javascript" src="/testwidget/static/js/testwidget.js" />
+            </xpath>
+        </template>
+        
+        <record id="action_testwidget_page" model="ir.actions.client">
+            <field name="name">Test Widget Home</field>
+            <field name="tag">testwidget.homepage</field>
+        </record>
+
+        <menuitem id="home_page_testwidget_menu" name="Test widget Page" parent="menu_testwidget_administration_server"
+            action="action_testwidget_page"/>
+        
+        
+    </data>
+</openerp>

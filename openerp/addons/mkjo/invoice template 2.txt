@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<t t-name="account.report_invoice_detailed_document">
+    <t t-call="report.external_layout">
+        <div class="page">
+            <div class="row">
+                <div class="col-xs-5 col-xs-offset-7">
+                    <address t-field="o.partner_id" t-field-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;phone&quot;, &quot;name&quot;], &quot;no_marker&quot;: true}"/>
+                    <span t-field="o.partner_id.vat"/>
+                    Salesman: <span t-field="o.user_id"/>
+                </div>
+            </div>
+
+            <h2>
+                <span t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">Invoice</span>
+                <span t-if="o.type == 'out_invoice' and o.state == 'proforma2'">PRO-FORMA</span>
+                <span t-if="o.type == 'out_invoice' and o.state == 'draft'">Draft Invoice</span>
+                <span t-if="o.type == 'out_invoice' and o.state == 'cancel'">Cancelled Invoice</span>
+                <span t-if="o.type == 'out_refund'">Refund</span>
+                <span t-if="o.type == 'in_refund'">Supplier Refund</span>
+                <span t-if="o.type == 'in_invoice'">Supplier Invoice</span>
+                <span t-field="o.number"/>
+            </h2>
+
+<table width="100%" >
+<tr>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center; font-weight: bold;">Payment Terms</td>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center; font-weight: bold;">Invoice Date</td>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center; font-weight: bold;">Due Date</td>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center; font-weight: bold;">Customer Ref.</td>
+</tr>
+<tr>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center;"><span t-field="o.payment_term"/></td>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center;"><span t-field="o.date_invoice"/></td>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center;"><span t-field="o.date_due"/></td>
+<td style="border: 1px solid #999999; padding: 4px; text-align: center;"><span t-field="o.reference"/></td>
+</tr>
+</table>
+<br />
+
+            <p t-if="o.comment">
+                <span t-field="o.comment"/>
+            </p>
+
+            <table class="table table-condensed">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th class="text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody class="invoice_tbody">
+                    <tr t-foreach="o.invoice_line" t-as="l">
+                        <td><span t-field="l.name"/></td>
+                        <td class="text-right">
+                            <span t-field="l.price_subtotal" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <table class="table table-condensed">
+                        <tr class="border-black">
+                            <td><strong>Total</strong></td>
+                            <td class="text-right">
+                                 <span t-field="o.amount_total" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+Amount in words: <span t-esc="o.amount_to_text(o.amount_total, o.currency_id.name)"/> <br />
+
+            <div class="row" t-if="o.tax_line">
+                <div class="col-xs-6">
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Tax</th>
+                                <th class="text-right">Base</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="o.tax_line" t-as="t">
+                                <td><span t-field="t.name"/></td>
+                                <td class="text-right">
+                                    <span t-field="t.base" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-field="t.amount" t-field-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: &quot;o.currency_id&quot;}"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            
+            <p t-if="o.fiscal_position.note">
+                <strong>Fiscal Position Remark:</strong>
+                <span t-field="o.fiscal_position.note"/>
+            </p>
+
+<br />
+<table>
+       <tr>
+        <td>
+          Beneficiary's name: <br />
+          Beneficiary's account: <br />
+          Beneficiary's bank: <br />
+          SWIFT Branch code: <br />
+          IBAN code: <br />
+        </td>
+        <td>
+          M/s Arabian Centers Human Resources <br />
+          6201329555 <br />
+          National Bank of Abu Dhabi, Head Office, Deira Dubai <br />
+          NBADAEAA <br />
+          AE420350000006201329555 <br />
+        </td>
+      </tr>
+</table>
+
+        </div>
+    </t>
+</t>
