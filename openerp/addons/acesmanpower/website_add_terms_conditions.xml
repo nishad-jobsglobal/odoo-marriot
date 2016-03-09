@@ -4,7 +4,7 @@
         <template id="layout" inherit_id="web.menu_secondary">
             <xpath expr="//div[@class='oe_footer']" position="after">
             	<div class="oe_terms">
-                	<a href="http://www.jobsglobal.com" target="_blank">Terms and Conditions</a>
+                	<a href="http://ae.jobsglobal.com/terms.php" target="_blank">Terms and Conditions</a>
             	</div>
 			</xpath>            
         </template>
