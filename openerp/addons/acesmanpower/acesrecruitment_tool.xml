@@ -4,7 +4,7 @@
     	
     	<menuitem name='Recruitment Tool' id='menu_recruitment_tool_root' sequence='98'></menuitem>
     	
-    	<menuitem name="Upload CV" id="menu_recruitment_upload_cv" parent="menu_recruitment_tool_root" sequence="1"/>  
+    	<menuitem name="CV Processing" id="menu_recruitment_upload_cv" parent="menu_recruitment_tool_root" sequence="1"/>  
         <menuitem name="Job Posting" id="menu_recruitment_job_posting" parent="menu_recruitment_tool_root" sequence="2"/>
     		
     	<record model="ir.ui.view" id="open_cv_dropbox_tree" >
@@ -15,6 +15,31 @@
 	            <tree string="CV Processing Dropbox">
 	                <field name="name"/>
 	            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_cv_dropbox_form" >
+            <field name="name">cv.dropbox.form</field>
+            <field name="model">cv.dropbox</field>
+            <field name="arch" type="xml">
+                <form string="CV By Dropbox">
+                	<sheet>
+                		<div class="oe_title">
+                            <label for="name" string="Description" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name"/>
+                            </h1>
+                        </div>
+                        
+                    	<group col="4">
+							<field name="drop_cv_file_name" invisible="1"/>
+							<field widget="binary" height="64" name="drop_cv" filename="drop_cv_file_name" />
+								                  		
+							<button name="drop_your_cv" string="Upload CV" type="object" context="{'cv_filename':cv_filename}" icon="fa-save" class="oe_stat_button"/>
+                    	</group>
+                    	
+                	</sheet>
+                </form>
             </field>
         </record>
         
@@ -43,9 +68,89 @@
             <field name="context">{}</field>
         </record>
         
-        <menuitem name="CV Processing Dropbox" id="menu_cv_dropbox" parent="menu_recruitment_upload_cv"  sequence="1" action="act_open_cv_dropbox_view"/>
-        <menuitem name="Process CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="2" action="act_open_cv_dropbox_view"/>
+        <menuitem name="CV Dropbox" id="menu_cv_dropbox" parent="menu_recruitment_upload_cv"  sequence="1" action="act_open_cv_dropbox_view"/>
+        
+        <record model="ir.ui.view" id="open_cv_byemail_tree" >
+            <field name="name">cv.byemail.tree</field>
+            <field name="model">cv.byemail</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+	            <tree string="CV By Email">
+	                <field name="name"/>
+	                <field name="partner_name"/>
+					<field name="email_from"/>
+					<field name="user_id"/>                
+					<field name="message_last_post"/>	                
+	            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="view_cv_byemail_form" >
+            <field name="name">cv.byemail.form</field>
+            <field name="model">cv.byemail</field>
+            <field name="arch" type="xml">
+                <form string="CV By Email" create="false" edit="false">
+                    <sheet>
+                    	<div class="oe_title">
+		                    <label for="name" class="oe_edit_only"/>
+		                    <h1><field name="name"/></h1>
+		                    <label for="partner_name" class="oe_edit_only"/>
+		                    <h2 style="display: inline-block;">
+		                        <field name="partner_name" class="oe_inline"/>
+		                    </h2>
+		                </div>
+		                <group>
+		                	<group>
+		                        <field name="partner_id"/>
+		                        <field name="email_from" widget="email"/>
+		                        <field name="partner_phone"/>
+		                        <field name="partner_mobile"/>
+		                    </group>
+		                    <group>
+							<field name="user_id"/>
+							<field name="reference"/>						
+	                        </group>
+		                </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+        
+    	<record model="ir.ui.view" id="open_cv_byemail_search">
+            <field name="name">cv.byemail.search</field>
+            <field name="model">cv.byemail</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="CV By Email">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" context="{'group_by':'name'}"/>
+					<field name="message_last_post"/>                    
+                </group>
+            </search>
+            </field>
+        </record>
+        	
+    	<record model="ir.actions.act_window" id="act_open_cv_byemail_view">
+            <field name="name">CV By Email</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cv.byemail</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="open_cv_byemail_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>	
+        	
+        <menuitem name="CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="2" action="act_open_cv_byemail_view"/>
     	
+        	
+        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_recruitment_upload_cv"  sequence="10" action="act_open_acesjobseeker_view"/>
+        	
         <record model="ir.ui.view" id="open_job_posting_tree">
             <field name="name">job.posting.tree</field>
             <field name="model">job.posting</field>
@@ -93,8 +198,18 @@
             <field name="arch" type="xml">
             <search string="Job posting">
                 <newline/>
+				<field name="posting_intro"/>
+				<field name="posting_title"/>
+				<field name="name"/>
+				<field name="job_locations"/>
+				<field name="recruit_locations"/>
+				<field name="jobs"/>
+				<field name="job_industry"/>
+				<field name="job_details"/>
                 <group expand="0" string="Group By...">
-                    <filter string="Job" domain="[]"/>
+                    <filter string="Date" domain="[]" context="{'group_by':'recruit_date'}"/>
+					<filter string="Title" domain="[]" context="{'group_by':'posting_title'}"/>
+					<filter string="Name" domain="[]" context="{'group_by':'name'}"/>                   
                 </group>
             </search>
             </field>

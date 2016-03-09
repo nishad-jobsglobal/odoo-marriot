@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from openerp import models, api
+from openerp import models 
 from openerp.osv import orm
-from openerp.osv import osv, fields
+from openerp.osv import fields
 
 class Wizard(models.TransientModel):
     _name = 'acesmanpower.wizard'
@@ -52,7 +52,6 @@ class Wizard(models.TransientModel):
         
         'gateway' : fields.many2one('sms.smsclient', string='SMS Gateway', default=_default_get_gateway),
         'validity' : fields.integer('Validity'),
-        
         'classes' : fields.selection([
                     ('0', 'Flash'),
                     ('1', 'Phone display'),
@@ -118,15 +117,9 @@ class WizardNotify1(models.TransientModel):
         return self.env['acesmanpowershortlist'].browse(self._context.get('active_id'))
     
     def _default_consultant(self):
-        
         property_id = self._context.get('acesmanpowerproperty_id')
         agency_consultant_ids = [consultants.id for consultants in self.env['acesmanpowerproperty'].browse([property_id]).agency_consultant_ids]
-        res = {
-            'value': {
-                'agency_contacts': [(6, 0, agency_consultant_ids)]
-                    }
-               }
-        return res
+        return {'value': {'agency_contacts': [(6, 0, agency_consultant_ids)]}}
     
     def _default_mobile_no(self):
         acesjobseeker_id = self.env['acesmanpowershortlist'].browse(self._context.get('active_id')).acesjobseeker_id.id
@@ -134,16 +127,10 @@ class WizardNotify1(models.TransientModel):
     
     def on_change_consultant_id(self, cr, uid, ids, agency_consultant_id,context=None):
         mobile = self.pool.get('acesmanpoweruser').browse(cr,uid,[agency_consultant_id]).mobile or 000
-        res = {
-            'value': {
-                'mobile': mobile
-                    }
-               }
-        return res
+        return {'value': {'mobile': mobile}}
     
     _columns = { 
             'acesmanpowershortlist_id' : fields.many2one('acesmanpowershortlist', "Applicant Process", default=_default_assess),
-            #'agency_contacts' : fields.many2one('acesmanpoweruser', string="Agency Consultant",default=_default_consultant),
             'mobile' : fields.char(size=12, string='Mobile', default=_default_mobile_no),
             'message' : fields.text(string="Message")
             }

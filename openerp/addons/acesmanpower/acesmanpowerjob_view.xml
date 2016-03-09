@@ -73,8 +73,13 @@
             <field name="arch" type="xml">
             <search string="Property">
                 <newline/>
+                <field name="name" string="Job Title"/>
+                <field name="acesmanpowerproperty_id" string="Property"/>
+                <field name="acesmanpowerevent_id" string="Event"/>
                 <group expand="0" string="Group By...">
+                	<filter string="Job Title" domain="[]" context="{'group_by':'name'}"/>	
                     <filter string="Property" domain="[]" context="{'group_by':'acesmanpowerproperty_id'}"/>
+                    <filter string="Event" domain="[]" context="{'group_by':'acesmanpowerevent_id'}"/>
                 </group>
             </search>
             </field>

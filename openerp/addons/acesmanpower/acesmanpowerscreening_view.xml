@@ -44,7 +44,7 @@
                             <h1><field name="acesjobseeker_id"/></h1>
                         </div>
                         <group>
-                            <group >
+                            <group>
                                 <field name="q1" widget="radio" class="oe_myrad" />
                                 <field name="q2" widget="radio" class="oe_myrad" />
                                 <field name="q3" widget="radio" class="oe_myrad" />
@@ -84,6 +84,7 @@
             <field name="arch" type="xml">
             <search string="Jobseeker Screening">
                 <newline/>
+                <field name="name" string="Name"/>
                 <group expand="0" string="Group By...">
                     <filter domain="[('q1','&gt;',6)]" context="{'group_by':'q1'}" string="Q1" />
                     <filter domain="[('q2','&gt;',6)]" context="{'group_by':'q2'}" string="Q2" />

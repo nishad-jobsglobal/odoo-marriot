@@ -113,8 +113,13 @@
             <field name="arch" type="xml">
             <search string="Recruitment Event">
                 <newline/>
+                <field name="name" string="Name"/>
+                <field name="can_country_id" string="Recruitment Location"/>
+                <field name="stage_id" string="Status"/>
+                <field name="city" string="City"/>
                 <group expand="0" string="Group By...">
                     <filter string="Destination" domain="[]" context="{'group_by':'can_country_id'}"/>
+                    <filter string="Status" domain="[]" context="{'group_by':'stage_id'}"/>
                 </group>
             </search>
             </field>

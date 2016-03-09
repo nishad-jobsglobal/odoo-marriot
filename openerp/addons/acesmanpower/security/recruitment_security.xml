@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<data noupdate="0">
+<data noupdate="1">
 	
 	<record model="ir.module.category" id="base.marriot_gourp_category">
         <field name="name">Marriot User Access</field>
@@ -8,33 +8,38 @@
         <field name="sequence">10</field>
 	  </record>  
 	   
-	  <record id="base.marriot_user" model="res.groups">
+	  <record id="base.group_marriot_user" model="res.groups">
 	    <field name="name">Property User</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
 		<field name="comment">the user will have access to his own data in the recruitment application.</field>
 	  </record> 
 	 
-	 <record id="base.marriot_admin" model="res.groups">
+	 <record id="base.group_marriot_admin" model="res.groups">
 	    <field name="name">Property Manager</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-		<field name="implied_ids" eval="[(4, ref('base.marriot_user'))]"/>	    
+		<field name="implied_ids" eval="[(4, ref('base.group_marriot_user'))]"/>	    
 	 </record>
 	 
-	 <record id="base.marriot_group_user" model="res.groups">
+	 <record id="base.group_marriot_group_user" model="res.groups">
 	    <field name="name">Group User</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-	    <field name="implied_ids" eval="[(4, ref('base.marriot_user'))]"/>
+	    <field name="implied_ids" eval="[(4, ref('base.group_marriot_user'))]"/>
 	 </record> 
 	  
-	 <record id="base.marriot_group_admin" model="res.groups">
+	 <record id="base.group_marriot_group_admin" model="res.groups">
 	    <field name="name">Group Management</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-		<field name="implied_ids" eval="[(4, ref('base.marriot_admin'))]"/>	    
+		<field name="implied_ids" eval="[(4, ref('base.group_marriot_admin'))]"/>	    
 		<field name="users" eval="[(4, ref('base.user_root'))]"/>	    
 	  </record>
 	  
-	  <record id="base.marriot_consultant" model="res.groups">
+	  <record id="base.group_marriot_consultant" model="res.groups">
 	    <field name="name">Marriot Property Consultant</field>
+	    <field name="category_id" ref="base.marriot_gourp_category"/>
+	  </record>
+	  
+	  <record id="base.group_marriot_manage_relationship" model="res.groups">
+	    <field name="name">Marriot Manage Relationship</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
 	  </record>
 	  

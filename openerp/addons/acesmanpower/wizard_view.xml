@@ -95,11 +95,9 @@
                     target="new"
         			groups="base.user_root"
                    />	
-       
-       
+      
        <!--======= -->				
         		
-        
         
         <record model="ir.ui.view" id="wizardnotify1_form_view">
             <field name="name">wizardnotify1.form</field>
@@ -123,8 +121,7 @@
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"/>    
-                    
-                                        
+                              
 
         <record model="ir.ui.view" id="wizardnotify2_form_view">
             <field name="name">wizardnotify2.form</field>
@@ -187,8 +184,5 @@
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"/>    
-                    
-                    
-        
     </data>
 </openerp>

@@ -42,7 +42,20 @@
                             <button attrs="{'invisible': [('assess_id','=',False)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_stat_button" icon="fa-phone-square" type="action" context="{'agency_consultant_ids':agency_consultant_ids}" string="Assessment Done" help="Ask JobsGlobal more info regarding this applicant" />
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="2601" class="oe_stat_button" icon="fa-clipboard" type="action" string="Request Result" context="{'stage_id': 9}" />
                             <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-clipboard" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
-                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="2603" class="oe_stat_button" type="action" string="Send Request to Interview  " />
+                            
+                            
+                            <button type="action"
+                            		name="2603" 
+                                 	class="oe_stat_button"
+                            		icon="fa-keyboard-o"	 
+                            		>
+                            		<div>
+                            			<span>Send Request</span>
+                            			<span> to Interview</span>	
+                        			</div>
+                            </button>
+                            
+                            
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="back_to_screening" class="oe_stat_button" icon="fa-mail-reply" type="object" string="Back to Screening" />
                             
 <!--                            <div class="oe_right oe_large_button_box" name="large_button_box" style="width: 350px; ">-->
@@ -103,19 +116,6 @@
                                 	<field name="agency_consultant_ids" readonly="1" nolabel="1" />
                             	</group>
                            </page>
-                          	 
-<!--                          <page string="Request for Agency Processing">-->
-<!--                            	<group>-->
-<!--                                	<field name="agency_consultant_ids" readonly="1" nolabel="1" />-->
-<!--                                	<field name="agency_consultant_ids" widget="many2many">-->
-<!--									    <tree string="Agency Consultants" editable="bottom">-->
-<!--									        <field name="name"/>#Define all your fields for tree view-->
-<!--									        <field name="email"/>	-->
-<!--									    </tree>-->
-<!--							</field>-->
-<!--                            	</group>-->
-<!--                           </page>    -->
-                              
                         </notebook>
                         <separator string="Notes"/>
                         <field name="description" nolabel="1" />
@@ -135,13 +135,19 @@
             <field name="arch" type="xml">
             <search string="For Assessment">
                 <newline/>
+                <field name="name" string="Name"/>
+                <field name="acesmanpowerjob_id" string="Job Applied"/>
+                <field name="assess_id" string="Assessment Score"/>
+                <field name="acesmanpowerproperty_id" string="Property"/>
+                <field name="acesmanpowerevent_id" string="Event"/>
                 <group expand="0" string="Group By...">
                     <filter string="Jobseeker" domain="[]" context="{'group_by':'acesjobseeker_id'}"/>
+                    <filter string="Assessment Score" domain="[]" context="{'group_by':'assess_id'}"/>
                 </group>
             </search>
             </field>
         </record>
-
+       
         <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_view">
             <field name="name">For Assessment</field>
             <field name="type">ir.actions.act_window</field>

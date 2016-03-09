@@ -100,7 +100,11 @@
             <field name="arch" type="xml">
             <search string="Recruitment User">
                 <newline/>
+                <field name="name" string="Name"/>
+                <field name="property_id" string="Property"/>
+                <field name="access_id" string="Security Access"/>
                 <group expand="0" string="Group By...">
+                    <filter string="Property" domain="[]" context="{'group_by':'property_id'}"/>
                     <filter string="Security Access" domain="[]" context="{'group_by':'access_id'}"/>
                 </group>
             </search>

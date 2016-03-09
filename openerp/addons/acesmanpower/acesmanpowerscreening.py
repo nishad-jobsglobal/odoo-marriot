@@ -1,5 +1,26 @@
-from openerp.osv import osv, fields
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2016 Jobsglobal.com
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
 from openerp import api
+from openerp.osv import osv, fields
 
 class acesmanpowerscreening(osv.osv):
     _name = 'acesmanpowerscreening'
@@ -35,7 +56,6 @@ class acesmanpowerscreening(osv.osv):
         'create_date': fields.datetime('Create Date', readonly=True),
         'write_date': fields.datetime('Updated', readonly=True),
         'write_uid': fields.many2one('res.users', 'Updated by', readonly=True),
-        
         'workin': fields.char('Willing to work in', size=500),
     }
     

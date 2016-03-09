@@ -34,15 +34,12 @@
                         <div class="oe_right oe_button_box" name="button_box" style="width: 300px; ">
                             <button name="2544" class="oe_stat_button" icon="fa-check-square-o" type="action" string="New Screen" help="Set a new screening test for this candidate" />
                             <button name="%(launch_acesmanpower_wizard)d" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS"/>
-                            <button name="2593" class="oe_stat_button" icon="fa-file-word-o" type="action" string="Original CV" context="{'url': url_cv, }" />
-                            <button name="2593" class="oe_stat_button" icon="fa-file-pdf-o" type="action" string="Formatted CV" context="{'url': url_cvpdf, }" />
+                            <button name="open_document" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Original CV" context="{'url': url_cv, }" />
+                            <button name="open_document" class="oe_stat_button" icon="fa-file-pdf-o" type="object" string="Formatted CV" context="{'url': url_cvpdf, }" />
                             
-                            <button name="2597" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Assessment" help="Set this candidate to take the assessment exam"
+                           <button name="2597" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Assessment" help="Set this candidate to take the assessment exam"
                             context="{'url_image': url_image, 'acesjobseeker_id': active_id }" />
                             
-<!--                            <button name="send_for_assessment" class="oe_stat_button" icon="fa-share-square-o" type="object" string="For Assessment" help="Set this candidate to take the assessment exam" -->
-<!--                            context="{'url_image': url_image, 'acesjobseeker_id': active_id }" />-->
-                            	
                         </div>
                         <div class="oe_title" style="width: 380px;">
                             <label for="name" class="oe_edit_only"/>
@@ -105,7 +102,6 @@
                                     <group string="Social Info" >
                                         <field name="socialinfo" nolabel="1" />
                                     </group>
-                                    
                                 </group>
                             </page>
                             
@@ -120,7 +116,6 @@
                                     </group>
                                 </group>
                             </page>
-                            
                         </notebook>
                         <separator string="Notes"/>
                         <field name="description" nolabel="1" />
@@ -136,8 +131,29 @@
             <field name="arch" type="xml">
             <search string="Jobseeker">
                 <newline/>
+                <field name="name"/>
+                <field name="positionpref"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="gender"/>
+                <field name="nationality"/>
+                <field name="industrypref"/>
+                <field name="languages"/>
+                <field name="expectedsalary"/>
+                <field name="personalinfo"/>
+                <field name="experience"/>
+                <field name="education"/>
+                <field name="skills"/>
+                <field name="jobsapplied"/>
+                
                 <group expand="0" string="Group By...">
-                    <filter string="Name" domain="[]" context="{'group_by':'positionpref'}"/>
+                	<filter string="Prefered Position" domain="[]" context="{'group_by':'positionpref'}"/>	
+                    <filter string="Name" domain="[]" context="{'group_by':'name'}"/>
+                    <filter string="Industry Prefered" domain="[]" context="{'group_by':'industrypref'}"/>
+                    <filter string="Nationality" domain="[]" context="{'group_by':'nationality'}"/>
+                    <filter string="Gender" domain="[]" context="{'group_by':'gender'}"/>
+                    <filter string="Language" domain="[]" context="{'group_by':'languages'}"/>
+                    <filter string="Expected Salary" domain="[]" context="{'group_by':'expectedsalary'}"/>
                 </group>
             </search>
             </field>

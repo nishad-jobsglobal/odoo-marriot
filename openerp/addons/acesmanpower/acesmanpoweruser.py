@@ -1,7 +1,27 @@
-from openerp.osv import osv, fields
-from openerp import tools
-from openerp.modules.module import get_module_resource
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2016 Jobsglobal.com
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
+from openerp import tools
+from openerp.osv import osv, fields
+from openerp.modules.module import get_module_resource
 
 class acesmanpoweruser(osv.osv):
     _name = 'acesmanpoweruser'
@@ -19,9 +39,7 @@ class acesmanpoweruser(osv.osv):
             return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
         return True
     
-    
     _columns = {
-    
         'name': fields.char(size=256, string='Name', required=True, ),
         'username': fields.char(size=256, string='Username',  ),
         'password': fields.char(size=256, string='Password', required=True, ),
@@ -39,9 +57,7 @@ class acesmanpoweruser(osv.osv):
         
         'property_id': fields.many2one('acesmanpowerproperty', 'Property', required=True),
         'property_ids': fields.one2many('acesmanpowerproperty','acesmanpoweruser_id','Other Properties'),
-        
         'acesmanpowerevent_ids': fields.one2many('acesmanpowerevent','acesmanpoweruser_id','Recruitment Event'),
-        
         
         # image: all image fields are base64 encoded and PIL-supported
         'image': fields.binary("Photo",
@@ -62,7 +78,6 @@ class acesmanpoweruser(osv.osv):
             help="Small-sized photo of the employee. It is automatically "\
                  "resized as a 64x64px image, with aspect ratio preserved. "\
                  "Use this field anywhere a small image is required."),
-                 
     }
     
     def _get_default_image(self, cr, uid, context=None):
@@ -73,7 +88,6 @@ class acesmanpoweruser(osv.osv):
         'image': _get_default_image,
         'access_id': 'staff',
         'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'hr.applicant', context=c),
-        
     }
     
     def onchange_email(self, cr, uid, ids, email, username, context = None):
@@ -82,21 +96,12 @@ class acesmanpoweruser(osv.osv):
             email = email.strip(' \t\n\r')
         if username == '':
             values['username'] = email
-            
         return {'value': values}
-    
-    
-    
     
 class res_users(osv.osv):
     _name = "res.users"
     _inherit = "res.users"
     _columns = {
         'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Recruitment User'),
-        
     }
-    
-    
-    
-    
     

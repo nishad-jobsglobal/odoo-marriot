@@ -1,19 +1,38 @@
-from openerp.osv import osv, fields
-from openerp import tools
-from openerp.modules.module import get_module_resource
-import urllib, cStringIO
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2016 Jobsglobal.com
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
+
 import base64
+import urllib, cStringIO
 
 from openerp import api
+from openerp import tools
+from openerp.osv import osv, fields
 from openerp.tools.translate import _
-
+from openerp.modules.module import get_module_resource
 
 class acesmanpowershortlist(osv.osv):
     _name = 'acesmanpowershortlist'
     _description = "For Assessment"
     _order = "name asc"
     _inherit = ['mail.thread', 'ir.needaction_mixin']
-    
     
     def _default_user(self, cr, uid, context=None):
         return context.get('active_id')
@@ -24,12 +43,13 @@ class acesmanpowershortlist(osv.osv):
             result[obj.id] = tools.image_get_resized_images(obj.image)
         return result
 
-    def _set_image(self, cr, uid, id, name, value, args, context=None):
-        return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+    def _set_image(self, cr, uid, ids, name, value, args, context=None):
+        if value:
+            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+        return True
 
     def _set_image_url2(self, cr, uid, id, name, value, args, context=None):
         file = cStringIO.StringIO(urllib.urlopen(URL).read())
-        #img = Image.open(file)
         return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(file)}, context=context)
         
     @api.model
@@ -62,7 +82,6 @@ class acesmanpowershortlist(osv.osv):
     
     @api.multi
     def write(self, values):
-        
         stage_id = values.get('stage_id',False)
         if stage_id == 6:
             if not (values.get('interview_sheet',False) or self.interview_sheet):
@@ -94,14 +113,11 @@ class acesmanpowershortlist(osv.osv):
         'description': fields.text(string='Notes', ),
         
         'acesmanpowerjob_id': fields.many2one('acesmanpowerjob', 'Job Applied'),
-        
         'acesmanpoweruser_id': fields.related('acesmanpowerjob_id', 'acesmanpoweruser_id', type="many2one", relation="acesmanpoweruser", string="Event Initiator", store=True),
         'acesmanpowerproperty_id': fields.related('acesmanpowerjob_id', 'acesmanpowerproperty_id', type="many2one", relation="acesmanpowerproperty", string="Property", store=True),
         'acesmanpowerevent_id': fields.related('acesmanpowerjob_id', 'acesmanpowerevent_id', type="many2one", relation="acesmanpowerevent", string="Trip Event", store=True),
         
         'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmanpowershortlist_acesuser_rel','acesmanpowershortlist_id','acesmanpoweruser_id'),
-        #'agency_contacts' : fields.many2one('acesmanpoweruser', 'Agents'),
-        
         'interview_sheet': fields.binary('Interview Sheet'),
         
         # image: all image fields are base64 encoded and PIL-supported
@@ -134,7 +150,6 @@ class acesmanpowershortlist(osv.osv):
         else:
             image_path = get_module_resource('hr', 'static/src/img', 'default_image.png')
             raw_data = open(image_path, 'rb').read().encode('base64')
-            
         return tools.image_resize_image_big(raw_data)
     
     _defaults = {
@@ -144,5 +159,3 @@ class acesmanpowershortlist(osv.osv):
         #'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'hr.applicant', context=c),
     }
     
-
-acesmanpowershortlist()

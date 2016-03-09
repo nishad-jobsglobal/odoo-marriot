@@ -25,9 +25,6 @@ class acesmanpowerjob(osv.osv):
             
             #'partner_ids': fields.many2many('res.partner', 'acesevent_id', string='Employers' ),
             #'ajapplicant_ids': fields.many2many('acesjobseeker','aevent_ajos_rel','acesevent_id','ajobseeker_id',string='Applicants'),
-            
-            
-            
     }
     
     _defaults = {
@@ -36,7 +33,5 @@ class acesmanpowerjob(osv.osv):
         'color': 0,
     }
     
-
-acesmanpowerjob()
 
 

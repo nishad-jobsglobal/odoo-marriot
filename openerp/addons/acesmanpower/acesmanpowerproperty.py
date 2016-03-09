@@ -1,15 +1,34 @@
-from openerp.osv import osv, fields
-from openerp import tools
-from openerp.modules.module import get_module_resource
-from openerp import api
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+#    OpenERP, Open Source Management Solution
+#    Copyright (C) 2016 Jobsglobal.com
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU Affero General Public License as
+#    published by the Free Software Foundation, either version 3 of the
+#    License, or (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU Affero General Public License for more details.
+#
+#    You should have received a copy of the GNU Affero General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+##############################################################################
 
+from openerp import api
+from openerp import tools
+from openerp.osv import osv, fields
+from openerp.modules.module import get_module_resource
 
 class acesmanpowerproperty(osv.osv):
     _name = 'acesmanpowerproperty'
     _description = "Property"
     _order = "name asc"
     _inherit = ['mail.thread', 'ir.needaction_mixin']
-    
     
     def _default_user(self, cr, uid, context=None):
         return context.get('active_id')
@@ -20,8 +39,10 @@ class acesmanpowerproperty(osv.osv):
             result[obj.id] = tools.image_get_resized_images(obj.image)
         return result
 
-    def _set_image(self, cr, uid, id, name, value, args, context=None):
-        return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+    def _set_image(self, cr, uid, ids, name, value, args, context=None):
+        if value:
+            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+        return True
     
     @api.model
     def create(self, vals):
@@ -77,7 +98,6 @@ class acesmanpowerproperty(osv.osv):
     def _get_default_image(self, cr, uid, context=None):
         image_path = get_module_resource('hr', 'static/src/img', 'default_image.png')
         return tools.image_resize_image_big(open(image_path, 'rb').read().encode('base64'))
-        
     
     _defaults = {
         'image': _get_default_image,

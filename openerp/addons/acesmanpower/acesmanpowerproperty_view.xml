@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
             <tree string="Properties">
                 <field name="image_small" widget="image" string="" />
-                <field name="name"/>
+                <field name="name" string="Property Name"/>
                 <field name="street"/>
                 <field name="city"/>
                 <field name="country_id"/>
@@ -90,8 +90,12 @@
             <field name="arch" type="xml">
             <search string="Property">
                 <newline/>
+                <field name="name" string="Property Name"/>
+                <field name="city" string="City"/>
+                <field name="country_id" string="Country"/>
                 <group expand="0" string="Group By...">
                     <filter string="Country" domain="[]" context="{'group_by':'country_id'}"/>
+                    <filter string="City" domain="[]" context="{'group_by':'city'}"/>
                 </group>
             </search>
             </field>

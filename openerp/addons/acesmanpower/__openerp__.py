@@ -14,7 +14,7 @@ This module manages the testing
     'depends' : ['base', 'testapi', 'web', 'hr','smsclient'],
     'data' : [
         'security/recruitment_security.xml',
-        #'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'acesmanpower_view.xml',
         'acesmanpowerevent_view.xml',
         'acesmanpoweruser_view.xml',
@@ -25,7 +25,8 @@ This module manages the testing
         'acesmanpowerjob_view.xml',
         'acesmanpowershortlist_view.xml',
         'dashboard_view.xml',
-        'acesrecruitment_tool.xml'
+        'acesrecruitment_tool.xml',
+        'website_add_terms_conditions.xml'
     ],
      'js': [
         'static/src/js/resource.js',
