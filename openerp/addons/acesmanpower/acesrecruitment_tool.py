@@ -38,61 +38,12 @@ class cv_dropbox(osv.osv):
     _description = "CV Dropbox"
     _order = "id desc" 
     
-    
-    def _filestore(self, cr, uid, context=None):
-        return tools.config.filestore(cr.dbname)
-    
-    def _full_path(self, cr, uid, path):
-        # sanitize ath
-        path = re.sub('[.]', '', path)
-        path = path.strip('/\\')
-        return os.path.join(self._filestore(cr, uid), path)
-
-    
-    def _file_read(self, cr, uid, fname, bin_size=False):
-        full_path = self._full_path(cr, uid, fname)
-        r = ''
-        try:
-            if bin_size:
-                r = os.path.getsize(full_path)
-            else:
-                r = open(full_path,'rb').read().encode('base64')
-        except IOError:
-            _logger.exception("_read_file reading %s", full_path)
-        return r
-    
-    def _get_file_name(self, cr, uid, ids, name, arg, context=None):
-        result = dict.fromkeys(ids)
-        for record_browse in self.browse(cr, uid, ids):
-            f = open(record_browse.cv_filename)
-            result[record_browse.id] = base64.encodestring(f.read())
-            f.close()
-        return result
-#         if context is None:
-#             context = {}
-#         result = {}
-#         bin_size = context.get('bin_size')
-#         for attach in self.browse(cr, uid, ids, context=context):
-#             if attach.store_fname:
-#                 result[attach.id] = self._file_read(cr, uid, attach.store_fname, bin_size)
-#             else:
-#                 result[attach.id] = attach.db_datas
-        # here ===========================
-    
-    
     _columns = {
                 'name' : fields.char("Description"),
                 'cv_filename':fields.char('Filename'),
                 'drop_cv': fields.binary('Drop CV'),
-                
-                #'drop_cv_file_name': fields.function(_get_file_name, type="char", size=255, store=False, readonly=True, method=True),
-                
                 'drop_cv_file_name' : fields.char(string='Image Filename')
                 }
-    
-    #@api.multi
-    def drop_your_cv(self,cr,uid,ids,context=None):
-        return
     
     @api.model
     def create(self,vals,uid=None):
@@ -155,9 +106,6 @@ class cv_byemail(osv.osv):
             through message_process.
             This override updates the document according to the email.
         """
-        
-        print "Message",msg
-        
         if custom_values is None:
             custom_values = {}
         val = msg.get('from').split('<')[0]

@@ -34,8 +34,6 @@
                     	<group col="4">
 							<field name="drop_cv_file_name" invisible="1"/>
 							<field widget="binary" height="64" name="drop_cv" filename="drop_cv_file_name" />
-								                  		
-							<button name="drop_your_cv" string="Upload CV" type="object" context="{'cv_filename':cv_filename}" icon="fa-save" class="oe_stat_button"/>
                     	</group>
                     	
                 	</sheet>
