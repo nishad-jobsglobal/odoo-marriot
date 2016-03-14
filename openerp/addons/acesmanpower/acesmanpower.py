@@ -21,8 +21,6 @@
 
 from openerp.osv import osv, fields
 from openerp import api
-from openerp.tools.translate import _
-
 
 class acesjobseeker(osv.osv):
     _name = 'acesjobseeker'

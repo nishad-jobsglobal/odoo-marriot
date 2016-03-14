@@ -22,8 +22,7 @@
 import base64
 import urllib, cStringIO
 
-from openerp import api
-from openerp import tools
+from openerp import api, tools
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 from openerp.modules.module import get_module_resource
@@ -52,9 +51,9 @@ class acesmanpowershortlist(osv.osv):
         file = cStringIO.StringIO(urllib.urlopen(URL).read())
         return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(file)}, context=context)
         
-    @api.model
-    def _needaction_domain_get(self):
-        return [('stage_id', 'in', (1,3,4,5,6,9))]
+#     @api.model
+#     def _needaction_domain_get(self):
+#         return [('stage_id', 'in', (1,3,4,5,6,9))]
 
     @api.multi
     def back_to_screening(self):
@@ -68,9 +67,6 @@ class acesmanpowershortlist(osv.osv):
         self.unlink(cr, uid, ids, context=context)
         
     def import_file(self, cr, uid, ids, context=None):
-        #fileobj = TemporaryFile('w+')
-        #fileobj.write(base64.decodestring(data)) 
-        # your treatment
         return
         
     @api.model
@@ -97,6 +93,68 @@ class acesmanpowershortlist(osv.osv):
             
         return super(acesmanpowershortlist, self).write(values)
     
+    
+    def fetch_data(self, cr, uid, ids, stage=None, context=None):
+        if context is None:
+            context = {}
+        print "-"*25
+        
+        manpower_user_obj = self.pool.get('acesmanpoweruser')
+        shortlist_obj = self.pool.get('acesmanpowershortlist')
+        
+        # Find the log in user and his related property user id
+        
+        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
+            log_in_user = uid
+            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
+            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
+        else:
+            pass
+        
+        # Find property and related property ids of log in user with related to property user
+        if log_in_user and property_user_id:
+            # Direct Property
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id,context).property_id.id
+            # Other Properties
+            for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
+                property_ids = [obj.id for obj in obje.property_ids]
+            property_ids.append(property_id)
+                
+            print "Direct Property ID=",property_id
+            print "Other Property IDS=",property_ids
+            
+        # Find all the short listed candidates who is linked with any of the property
+        if property_ids:
+            shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
+            print "shortlist_ids=",shortlist_ids
+                
+        # Name and Domain selection for final data filtering
+        if isinstance(stage, int):
+            domain = [('stage_id', '=', stage),('id','in',shortlist_ids)]
+            name_dict = {1:'For Assessment',9:'Waiting Results',4:'For Interview',
+                         6:'Approved Data Pool',10:'My candidates'}
+        elif isinstance(stage, tuple):
+            domain = [('stage_id', 'in', stage),('id','in',shortlist_ids)]
+            name_dict = {stage:'Qualified'}
+        else:
+            domain = [('id','in',shortlist_ids)]
+        
+        print "Domain=",domain
+        
+        value = {
+                'name': _(name_dict[stage]),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesmanpowershortlist',
+                'view_id': False,
+                'domain': domain
+                }
+        
+        print "-"*25
+        
+        return value
+    
     _columns = {
         
         'acesjobseeker_id': fields.many2one('acesjobseeker', 'Jobseeker', required=True),
@@ -118,6 +176,7 @@ class acesmanpowershortlist(osv.osv):
         'acesmanpowerevent_id': fields.related('acesmanpowerjob_id', 'acesmanpowerevent_id', type="many2one", relation="acesmanpowerevent", string="Trip Event", store=True),
         
         'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmanpowershortlist_acesuser_rel','acesmanpowershortlist_id','acesmanpoweruser_id'),
+        'interview_sheet_name':fields.char('Filename'),
         'interview_sheet': fields.binary('Interview Sheet'),
         
         # image: all image fields are base64 encoded and PIL-supported

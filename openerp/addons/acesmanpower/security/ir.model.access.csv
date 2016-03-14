@@ -17,10 +17,6 @@ access_acesmanpowerscreening_user,acesmanpowerscreening_user,model_acesmanpowers
 access_acesmanpowerscreening_manager,acesmanpowerscreening_manager,model_acesmanpowerscreening,group_marriot_admin,1,1,1,1
 access_acesmanpowershortlist_user,acesmanpowershortlist_user,model_acesmanpowershortlist,group_marriot_user,1,1,1,0
 access_acesmanpowershortlist_manager,acesmanpowershortlist_manager,model_acesmanpowershortlist,group_marriot_admin,1,1,1,1
-access_cv_dropbox_user,cv.dropbox_user,model_cv_dropbox,group_marriot_user,1,1,1,0
-access_cv_dropbox_manager,cv.dropbox_manager,model_cv_dropbox,group_marriot_admin,1,1,1,1
-access_cv_byemail_user,cv.byemail_user,model_cv_byemail,group_marriot_user,1,1,1,0
-access_cv_byemail_manager,cv.byemail_manager,model_cv_byemail,group_marriot_admin,1,1,1,1
 access_job_position_user,job.position_user,model_job_position,group_marriot_user,1,1,1,0
 access_job_position_manager,job.position_manager,model_job_position,group_marriot_admin,1,1,1,1
 access_job_industry_user,job.industry_user,model_job_industry,group_marriot_user,1,1,1,0
@@ -31,3 +27,7 @@ access_acesmanpower_wizard_user,acesmanpower.wizard_user,model_acesmanpower_wiza
 access_acesmanpower_wizard_manager,acesmanpower.wizard_manager,model_acesmanpower_wizard,group_marriot_admin,1,1,1,1
 access_acesmanpower_notify_agents_user,acesmanpower.notify.agents_user,model_acesmanpower_notify_agents,group_marriot_user,1,1,1,0
 access_acesmanpower_notify_agents_manager,acesmanpower.notify.agents_manager,model_acesmanpower_notify_agents,group_marriot_admin,1,1,1,1
+access_cv_byemail_user,cv.byemail_user,model_cv_byemail,group_marriot_user,1,1,1,0
+access_cv_byemail_manager,cv.byemail_manager,model_cv_byemail,group_marriot_admin,1,1,1,1
+access_cv_dropbox_user,cv.dropbox_user,model_cv_dropbox,group_marriot_user,1,1,1,0
+access_cv_dropbox_manager,cv.dropbox_manager,model_cv_dropbox,group_marriot_admin,1,1,1,1

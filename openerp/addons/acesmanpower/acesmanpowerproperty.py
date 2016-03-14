@@ -62,6 +62,10 @@ class acesmanpowerproperty(osv.osv):
         'country_id': fields.many2one('res.country', 'Country'),
         'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Responsible', track_visibility='onchange'),
         
+        
+        'parent_id': fields.many2one('acesmanpowerproperty', 'Parent Property', select=True),
+        'child_ids': fields.one2many('acesmanpowerproperty', 'parent_id', 'Child Properties'),
+        
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
         'create_date': fields.datetime('Create Date', readonly=True),
         'write_date': fields.datetime('Updated', readonly=True),

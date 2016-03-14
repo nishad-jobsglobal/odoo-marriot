@@ -22,8 +22,8 @@
 import base64
 import urllib
 
-from openerp.osv import osv, fields
 from openerp import api
+from openerp.osv import osv, fields
 
 class acesmanpowerevent(osv.osv):
     _name = 'acesmanpowerevent'

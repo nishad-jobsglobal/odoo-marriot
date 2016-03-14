@@ -24,10 +24,8 @@ import base64
 import subprocess
 
 import logging
-from openerp import tools
 from openerp import api
 from openerp.osv import osv, fields
-from openerp import SUPERUSER_ID
 
 _logger = logging.getLogger(__name__)
 

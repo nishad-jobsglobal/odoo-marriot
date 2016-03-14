@@ -27,9 +27,9 @@ class acesmanpowerscreening(osv.osv):
     _description = "Recruitment Screening"
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     
-    @api.model
-    def _needaction_domain_get(self):
-        return [('state_id', '=', 'new')]
+#     @api.model
+#     def _needaction_domain_get(self):
+#         return [('state_id', '=', 'new')]
 
     _columns = {
         'acesjobseeker_id': fields.many2one('acesjobseeker', 'Jobseeker', required=True),

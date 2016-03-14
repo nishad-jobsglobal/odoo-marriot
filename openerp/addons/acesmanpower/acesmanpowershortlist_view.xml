@@ -7,6 +7,12 @@
                 <link ref="stylesheet" href="/acesmanpower/static/src/css/tripevents.css" />
             </xpath>
         </template>	
+       
+       <!-- ######################################
+        
+        			For Assessment
+        
+        	 ######################################	-->  
     		
         <record id="view_acesmanpowershortlist_tree" model="ir.ui.view">
             <field name="name">acesmanpowershortlist.tree</field>
@@ -43,7 +49,6 @@
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="2601" class="oe_stat_button" icon="fa-clipboard" type="action" string="Request Result" context="{'stage_id': 9}" />
                             <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-clipboard" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
                             
-                            
                             <button type="action"
                             		name="2603" 
                                  	class="oe_stat_button"
@@ -54,14 +59,7 @@
                             			<span> to Interview</span>	
                         			</div>
                             </button>
-                            
-                            
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="back_to_screening" class="oe_stat_button" icon="fa-mail-reply" type="object" string="Back to Screening" />
-                            
-<!--                            <div class="oe_right oe_large_button_box" name="large_button_box" style="width: 350px; ">-->
-<!--                       			<button attrs="{'invisible': [('stage_id','!=',6)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_large_stat_button" type="action"  string="Request For Agency Processing" />-->
-<!--                            	<button attrs="{'invisible': [('stage_id','!=',6)]}" name="2603" class="oe_large_stat_button" type="action" string="Send Request to Interview   " />-->
-<!--                       		</div> -->
                         </div>
                         
                         <div class="oe_title" >
@@ -72,7 +70,7 @@
                                 <field name="acesjobseeker_id" class="oe_inline"/> 
                             </h2>
                         </div>
-                       
+
                        <separator string="Assessment Score"/>
                        <field name="assess_id" readonly="1" />  
                         <notebook>
@@ -91,8 +89,9 @@
                                     </div>
                                 </group>
                                <group>
-                                   <field name="interview_sheet" />
-								   <button name="import_file" string="Upload Sheet" type="object" icon="fa-save" class="oe_stat_button"/>
+                               	   <field name="interview_sheet_name" invisible="1"/>	
+                                   <field widget="binary" name="interview_sheet" filename="interview_sheet_name"/>
+<!--								   <button name="import_file" string="Upload Sheet" type="object" icon="fa-save" class="oe_stat_button"/-->
                                </group> 
                            </page>
                            
@@ -175,6 +174,22 @@
         
         <menuitem name="For Assessment" id="menu_acesmanpowershortlist" parent="menu_prerecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_view"/>
         
+        <!-- ######################################
+        
+        	  Waiting Results			
+        
+        	 ######################################	-->
+        
+        <record id="ir_actions_server_confirmshortlist" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, stage=9,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Waiting Results</field> 
+        </record>	
+        			
         <record id="view_acesmanpowershortlist_confirmshortlist_tree" model="ir.ui.view">
             <field name="name">acesmanpowershortlist_confirmshortlist.tree</field>
             <field name="model">acesmanpowershortlist</field>
@@ -193,6 +208,7 @@
             </field>
         </record>
         
+       	<!-- Not Using -->  
         <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_confirmshortlist_view">
             <field name="name">Waiting Results</field>
             <field name="type">ir.actions.act_window</field>
@@ -215,8 +231,26 @@
             		parent="menu_recruitment_root"
             		sequence="3"/>
         
-        <menuitem name="Waiting Results" id="menu_acesmanpowershortlist_confirmshortlist" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_confirmshortlist_view"/>
+        <menuitem name="Waiting Results" id="menu_acesmanpowershortlist_confirmshortlist" 
+        		parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        		action="ir_actions_server_confirmshortlist"/>
         
+        <!-- ######################################
+        
+        	   Qualified			
+        
+        	 ######################################	-->
+        
+        <record id="ir_actions_server_passed" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, stage=(3,5),context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Qualified</field> 
+        </record>	
+        		
         <record id="view_acesmanpowershortlist_passed_tree" model="ir.ui.view">
             <field name="name">acesmanpowershortlist_passed.tree</field>
             <field name="model">acesmanpowershortlist</field>
@@ -235,6 +269,7 @@
             </field>
         </record>
         
+       	<!-- Not Using --> 
         <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_passed_view">
             <field name="name">Qualified</field>
             <field name="type">ir.actions.act_window</field>
@@ -253,8 +288,26 @@
             <field name="view_id" ref="view_acesmanpowershortlist_passed_tree"/>
         </record>
         
-        <menuitem name="Qualified" id="menu_acesmanpowershortlist_passed" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_passed_view"/>
+        <menuitem name="Qualified" id="menu_acesmanpowershortlist_passed" 
+        parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        	action="ir_actions_server_passed"/>
         
+        <!-- ######################################
+        
+        	   For Interview			
+        
+        	 ######################################	-->
+        
+        <record id="ir_actions_server_forinterview" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, stage=4,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">For Interview</field> 
+        </record>	
+        		
         <record id="view_acesmanpowershortlist_forinterview_tree" model="ir.ui.view">
             <field name="name">acesmanpowershortlist_forinterview.tree</field>
             <field name="model">acesmanpowershortlist</field>
@@ -273,6 +326,7 @@
             </field>
         </record>
         
+        <!-- Not Using --> 
         <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_forinterview_view">
             <field name="name">For Interview</field>
             <field name="type">ir.actions.act_window</field>
@@ -291,9 +345,27 @@
             <field name="view_id" ref="view_acesmanpowershortlist_forinterview_tree"/>
         </record>
         
-        <menuitem name="For Interview" id="menu_acesmanpowershortlist_forinterview" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_forinterview_view"/>
+        <menuitem name="For Interview" id="menu_acesmanpowershortlist_forinterview" 
+        		parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        		action="ir_actions_server_forinterview"/>
         
-        <record id="view_acesmanpowershortlist_approved_tree" model="ir.ui.view">
+        <!-- ######################################
+        
+        		Approved Data Pool
+        
+        	 ######################################	-->
+        
+        <record id="ir_actions_server_approved_data_pool" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, stage=6,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Approved Data Pool</field> 
+        </record>	
+        		
+        <record model="ir.ui.view" id="view_acesmanpowershortlist_approved_tree">
             <field name="name">acesmanpowershortlist_approved.tree</field>
             <field name="model">acesmanpowershortlist</field>
             <field name="priority" eval="8"/>
@@ -311,6 +383,7 @@
             </field>
         </record>
         
+        <!-- Not Using --> 
         <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_approved_view">
             <field name="name">Approved Data Pool</field>
             <field name="type">ir.actions.act_window</field>
@@ -329,9 +402,26 @@
             <field name="view_id" ref="view_acesmanpowershortlist_approved_tree"/>
         </record>
         
-        <menuitem name="Approved Data Pool" id="menu_acesmanpowershortlist_approved" parent="menu_finalrecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_approved_view"/>
+        <menuitem name="Approved Data Pool" id="menu_acesmanpowershortlist_approved" 
+        		parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        		action="ir_actions_server_approved_data_pool"/>
         
+        <!-- ######################################
         
+        	   My Candidates			
+        
+        	 ######################################	-->
+        
+        <record id="ir_actions_server_my_candidates" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, stage=10,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">My candidates</field> 
+        </record>	
+        	
         <record model="ir.ui.view" id="view_acesmanpower_my_candidates_tree">
             <field name="name">view.acesmanpower.my.candidates.tree</field>
             <field name="model">acesmanpowershortlist</field>
@@ -350,6 +440,7 @@
             </field>
         </record>
         
+        <!-- Not Using --> 
         <record model="ir.actions.act_window" id="view_acesmanpower_my_candidates_view">
             <field name="name">My Candidates</field>
             <field name="type">ir.actions.act_window</field>
@@ -368,7 +459,9 @@
             <field name="view_id" ref="view_acesmanpower_my_candidates_tree"/>
         </record>  
 
-        <menuitem name="My Candidates" id="menu_acesmanpower_my_candidates" parent="menu_finalrecruitment_portal_live_modules"  sequence="6" action="view_acesmanpower_my_candidates_view"/>	
+        <menuitem name="My Candidates" id="menu_acesmanpower_my_candidates" 
+        	parent="menu_finalrecruitment_portal_live_modules"  sequence="6" 
+        	action="ir_actions_server_my_candidates"/>	
         
     </data>
 </openerp>

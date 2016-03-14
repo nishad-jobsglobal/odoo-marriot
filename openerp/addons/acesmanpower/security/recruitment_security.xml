@@ -11,7 +11,6 @@
 	  <record id="base.group_marriot_user" model="res.groups">
 	    <field name="name">Property User</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-		<field name="comment">the user will have access to his own data in the recruitment application.</field>
 	  </record> 
 	 
 	 <record id="base.group_marriot_admin" model="res.groups">
@@ -41,6 +40,10 @@
 	  <record id="base.group_marriot_manage_relationship" model="res.groups">
 	    <field name="name">Marriot Manage Relationship</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
+	  </record>
+	  
+	  <record id="base.group_candidates_visibility" model="res.groups">
+	    <field name="name">View All Candidates Data</field>
 	  </record>
 	  
 </data>

@@ -55,7 +55,7 @@
                                 <group>
                                     <group>
                                         <field name="industrypref" />
-                                        <field name="expectedsalary" />
+                                        <field name="expectedsalary" groups="base.group_candidates_visibility"/>
                                     </group>
                                     <group>
                                         <field name="gender" />
@@ -93,7 +93,7 @@
                                 </group>
                             </page>
                             
-                            <page string="Contacts" >
+                            <page string="Contacts" groups="base.group_candidates_visibility">
                                 <group>
                                     <group colspan="4" >
                                         <field name="email" />
@@ -109,7 +109,7 @@
                                 <group>
                                     <group colspan="4" >
                                         <field name="color" />
-                                        <field name="user_id" />
+                                        <field name="user_id" widget="selection"/>
                                         <field name="url_cv"  />
                                         <field name="url_cvpdf" />
                                         <field name="importid" />
@@ -189,7 +189,7 @@
             parent="menu_recruitment_root"
             sequence="2"/>
         
-        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_prerecruitment_portal_live_modules"  sequence="10" action="act_open_acesjobseeker_view"/>
+<!--        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_prerecruitment_portal_live_modules"  sequence="10" action="act_open_acesjobseeker_view"/-->
         
     </data>
 </openerp>

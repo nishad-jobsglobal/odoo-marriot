@@ -40,7 +40,10 @@
                             <h2 style="display: inline-block;">
                                 <field name="acesmanpoweruser_id" class="oe_inline"/> 
                             </h2> -->
-                            </div> 
+                        </div>
+                        <group col="4">
+                        	<field name="parent_id"/>
+                    	</group>  
                         
                         <notebook>
                             <page string="Details">
