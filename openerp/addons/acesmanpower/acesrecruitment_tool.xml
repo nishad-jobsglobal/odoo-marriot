@@ -80,7 +80,7 @@
         
         <menuitem name="CV Processing" id="menu_recruitment_upload_cv" parent="menu_recruitment_tool_root" sequence="1"/>  
         
-        <menuitem name="CV Dropbox" id="menu_cv_dropbox" parent="menu_recruitment_upload_cv"  sequence="10" action="act_open_cv_dropbox_view"/>
+        <menuitem name="CV Dropbox" id="menu_cv_dropbox" parent="menu_recruitment_upload_cv"  sequence="1" action="act_open_cv_dropbox_view"/>
         
         <record model="ir.ui.view" id="open_cv_byemail_tree" >
             <field name="name">cv.byemail.tree</field>
@@ -174,7 +174,7 @@
         
         <menuitem name="CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="2" action="act_open_cv_byemail_view"/>
         	
-        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_recruitment_upload_cv"  sequence="10" action="act_open_acesjobseeker_view"/>
+        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_recruitment_upload_cv"  sequence="3" action="act_open_acesjobseeker_view"/>
         	
         <record model="ir.ui.view" id="open_job_posting_tree">
             <field name="name">job.posting.tree</field>
@@ -253,7 +253,7 @@
          	
         <menuitem name="Job Posting" id="menu_recruitment_job_posting" parent="menu_recruitment_tool_root" sequence="2"/>
         	
-        <menuitem name="Job Posting" id="menu_recruitment_job_posting_data" parent="menu_recruitment_job_posting" sequence="3" action="act_open_job_posting_view"/>
+        <menuitem name="Job Posting" id="menu_recruitment_job_posting_data" parent="menu_recruitment_job_posting" sequence="4" action="act_open_job_posting_view"/>
 		
         <record model="ir.actions.act_window" id="act_open_job_posting_listing_view">
             <field name="name">Job Posting List</field>
@@ -265,6 +265,6 @@
             <field name="context">{}</field>
         </record>	
         	
-        <menuitem name="Job Posting List" id="menu_recruitment_job_posting_list_data" parent="menu_recruitment_job_posting" sequence="4" action="act_open_job_posting_listing_view"/>    	
+        <menuitem name="Job Posting List" id="menu_recruitment_job_posting_list_data" parent="menu_recruitment_job_posting" sequence="5" action="act_open_job_posting_listing_view"/>    	
     </data>
 </openerp>
