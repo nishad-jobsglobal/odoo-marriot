@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-<data noupdate="1">
+<data noupdate="0">
 	
 	<record model="ir.module.category" id="base.marriot_gourp_category">
         <field name="name">Marriot User Access</field>
@@ -8,27 +8,27 @@
         <field name="sequence">10</field>
 	  </record>  
 	   
-	  <record id="base.group_marriot_user" model="res.groups">
+	  <record id="base.group_marriot_property_user" model="res.groups">
 	    <field name="name">Property User</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
 	  </record> 
 	 
-	 <record id="base.group_marriot_admin" model="res.groups">
+	 <record id="base.group_marriot_property_admin" model="res.groups">
 	    <field name="name">Property Manager</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-		<field name="implied_ids" eval="[(4, ref('base.group_marriot_user'))]"/>	    
+		<field name="implied_ids" eval="[(4, ref('base.group_marriot_property_user'))]"/>	    
 	 </record>
 	 
-	 <record id="base.group_marriot_group_user" model="res.groups">
+	 <record id="base.group_marriot_group_property_user" model="res.groups">
 	    <field name="name">Group User</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-	    <field name="implied_ids" eval="[(4, ref('base.group_marriot_user'))]"/>
+	    <field name="implied_ids" eval="[(4, ref('base.group_marriot_property_user'))]"/>
 	 </record> 
 	  
-	 <record id="base.group_marriot_group_admin" model="res.groups">
+	 <record id="base.group_marriot_group_property_admin" model="res.groups">
 	    <field name="name">Group Management</field>
 	    <field name="category_id" ref="base.marriot_gourp_category"/>
-		<field name="implied_ids" eval="[(4, ref('base.group_marriot_admin'))]"/>	    
+		<field name="implied_ids" eval="[(4, ref('base.group_marriot_property_admin'))]"/>	    
 		<field name="users" eval="[(4, ref('base.user_root'))]"/>	    
 	  </record>
 	  
