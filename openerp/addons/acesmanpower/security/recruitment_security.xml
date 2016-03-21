@@ -46,5 +46,9 @@
 	    <field name="name">View All Candidates Data</field>
 	  </record>
 	  
+	  <record id="base.group_processing_team_head_office" model="res.groups">
+	    <field name="name">Member of Head office Processing Team</field>
+	  </record>
+	  
 </data>
 </openerp>

@@ -2,6 +2,13 @@
 <openerp>
     <data>
     	
+    	<template id="assets_backend" name="acesmanpower assets" inherit_id="web.assets_backend" >
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/acesmanpower/static/src/js/dropzone.js" />
+				<script type="text/javascript" src="/acesmanpower/static/src/js/test.js" />                
+            </xpath>
+        </template>	
+    	
     	<menuitem name='Recruitment Tool' id='menu_recruitment_tool_root' sequence='98'></menuitem>
     	<menuitem name="Recruitment Tool" id='menu_recruitment_tool_main' parent='menu_recruitment_tool_root' sequence='0'></menuitem>
     		
@@ -22,18 +29,30 @@
             <field name="arch" type="xml">
                 <form string="CV By Dropbox">
                 	<sheet>
-                		<div class="oe_title">
-                            <label for="name" string="Description" class="oe_edit_only"/>
+    					<div id="drop">
+	                       
+	                        
+	                        
+	                        
+                        </div>            		
+	                		
+                        
+                        
+                        
+                		<!--	
+    					            		
+	                		<div class="oe_title">
+                            <label for="text" string="Description" class="oe_edit_only"/>
                             <h1>
-                                <field name="name"/>
+                                <field name="text" placeholder="Drop your CV here.."/>
                             </h1>
                         </div>
                         
-                    	<group col="4">
+                    		<group col="4">
 							<field name="drop_cv_file_name" invisible="1"/>
 							<field widget="binary" height="64" name="drop_cv" filename="drop_cv_file_name" />
-                    	</group>
-                    	
+                    		</group>
+                    	-->
                 	</sheet>
                 </form>
             </field>
@@ -58,7 +77,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">cv.dropbox</field>
             <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">form</field>
             <field name="search_view_id" ref="open_cv_dropbox_search"/>
             <field name="domain">[]</field>
             <field name="context">{}</field>
@@ -71,12 +90,13 @@
             <field name="view_id" ref="view_cv_dropbox_form"/>
         </record>
 
+        <!--
         <record model="ir.actions.act_window.view" id="act_open_cv_dropbox_view_tree">
             <field name="act_window_id" ref="act_open_cv_dropbox_view"/>
             <field name="sequence" eval="10"/>
             <field name="view_mode">tree</field>
             <field name="view_id" ref="open_cv_dropbox_tree"/>
-        </record>
+        </record> -->
         
         <menuitem name="CV Processing" id="menu_recruitment_upload_cv" parent="menu_recruitment_tool_root" sequence="1"/>  
         
@@ -174,7 +194,7 @@
         
         <menuitem name="CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="2" action="act_open_cv_byemail_view"/>
         	
-        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_recruitment_upload_cv"  sequence="3" action="act_open_acesjobseeker_view"/>
+        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_recruitment_upload_cv"  sequence="3" action="ir_actions_server_acesjobseeker"/>
         	
         <record model="ir.ui.view" id="open_job_posting_tree">
             <field name="name">job.posting.tree</field>
@@ -197,6 +217,9 @@
             <field name="arch" type="xml">
                 <form string="Job Posting">
                     <sheet>
+                    	<field name="image_medium" widget='image' class="oe_left oe_avatar" />
+                        <div class="oe_right oe_button_box" name="button_box" style="width: 180px; ">
+                        </div>
                     	<group>
                     	<field name="posting_intro"/>
 						<field name="posting_title"/>

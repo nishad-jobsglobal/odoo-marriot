@@ -158,6 +158,16 @@
             </search>
             </field>
         </record>
+       
+       <record id="ir_actions_server_acesjobseeker" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesjobseeker"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">CV Search</field> 
+        </record>	  
 
         <record model="ir.actions.act_window" id="act_open_acesjobseeker_view">
             <field name="name">Jobseeker</field>

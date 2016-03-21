@@ -93,68 +93,6 @@ class acesmanpowershortlist(osv.osv):
             
         return super(acesmanpowershortlist, self).write(values)
     
-    
-    def fetch_data(self, cr, uid, ids, stage=None, context=None):
-        if context is None:
-            context = {}
-        print "-"*25
-        
-        manpower_user_obj = self.pool.get('acesmanpoweruser')
-        shortlist_obj = self.pool.get('acesmanpowershortlist')
-        
-        # Find the log in user and his related property user id
-        
-        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
-            log_in_user = uid
-            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
-            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
-        else:
-            pass
-        
-        # Find property and related property ids of log in user with related to property user
-        if log_in_user and property_user_id:
-            # Direct Property
-            property_id = manpower_user_obj.browse(cr,uid,property_user_id,context).property_id.id
-            # Other Properties
-            for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
-                property_ids = [obj.id for obj in obje.property_ids]
-            property_ids.append(property_id)
-                
-            print "Direct Property ID=",property_id
-            print "Other Property IDS=",property_ids
-            
-        # Find all the short listed candidates who is linked with any of the property
-        if property_ids:
-            shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
-            print "shortlist_ids=",shortlist_ids
-                
-        # Name and Domain selection for final data filtering
-        if isinstance(stage, int):
-            domain = [('stage_id', '=', stage),('id','in',shortlist_ids)]
-            name_dict = {1:'For Assessment',9:'Waiting Results',4:'For Interview',
-                         6:'Approved Data Pool',10:'My candidates'}
-        elif isinstance(stage, tuple):
-            domain = [('stage_id', 'in', stage),('id','in',shortlist_ids)]
-            name_dict = {stage:'Qualified'}
-        else:
-            domain = [('id','in',shortlist_ids)]
-        
-        print "Domain=",domain
-        
-        value = {
-                'name': _(name_dict[stage]),
-                'view_type': 'form',
-                'view_mode': 'tree,form',
-                'type': 'ir.actions.act_window',
-                'res_model': 'acesmanpowershortlist',
-                'view_id': False,
-                'domain': domain
-                }
-        
-        print "-"*25
-        
-        return value
-    
     _columns = {
         
         'acesjobseeker_id': fields.many2one('acesjobseeker', 'Jobseeker', required=True),
@@ -210,6 +148,69 @@ class acesmanpowershortlist(osv.osv):
             image_path = get_module_resource('hr', 'static/src/img', 'default_image.png')
             raw_data = open(image_path, 'rb').read().encode('base64')
         return tools.image_resize_image_big(raw_data)
+    
+    def fetch_data(self, cr, uid, ids, stage=None, context=None):
+        if context is None:
+            context = {}
+        print "-"*25
+        
+        manpower_user_obj = self.pool.get('acesmanpoweruser')
+        shortlist_obj = self.pool.get('acesmanpowershortlist')
+        shortlist_ids = []
+        # Find the log in user and his related property user id
+        
+        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
+            log_in_user = uid
+            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
+            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
+        else:
+            pass
+        
+        # Find property and related property ids of log in user with related to property user
+        if log_in_user and property_user_id:
+            # Direct Property
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id,context).property_id.id
+            # Other Properties
+            for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
+                property_ids = [obj.id for obj in obje.property_ids]
+            property_ids.append(property_id)
+                
+            print "Direct Property ID=",property_id
+            print "Other Property IDS=",property_ids
+            
+        # Find all the short listed candidates who is linked with any of the property
+        if property_ids:
+            shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
+            print "shortlist_ids=",shortlist_ids
+                
+        # Name and Domain selection for final data filtering
+        if isinstance(stage, int):
+            domain = [('stage_id', '=', stage),('id','in',shortlist_ids)]
+            name_dict = {1:'For Assessment',9:'Waiting Results',4:'For Interview',
+                         6:'Approved Data Pool',10:'My candidates'}
+        elif isinstance(stage, tuple):
+            domain = [('stage_id', 'in', stage),('id','in',shortlist_ids)]
+            name_dict = {stage:'Qualified'}
+        else:
+            domain = [('id','in',shortlist_ids)]
+            
+        flag = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        if flag:
+            domain = domain[:-1]
+        
+        print "Domain=",domain
+        
+        value = {
+                'name': _(name_dict[stage]),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesmanpowershortlist',
+                'view_id': False,
+                'domain': domain
+                }
+        print "-"*25
+        return value
     
     _defaults = {
         'acesjobseeker_id': lambda self, cr, uid, c: c.get('acesjobseeker_id', False),

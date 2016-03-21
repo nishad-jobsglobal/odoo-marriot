@@ -93,7 +93,19 @@ class Wizard(models.TransientModel):
             else:
                 client_obj._send_message(cr, uid, data, context=context)
         return {}
+    
+class WizardJobseeker(models.TransientModel):
+    _name = 'acesmanpower.jobseeker.wizard'
+    
+    def _default_jobseeker(self):
+        return self.env['acesjobseeker'].browse(self._context.get('active_id'))
 
+    columns = {
+               'jobseeker_id' : fields.many2one('acesjobseeker', string="Jobseeker", required=True, default=_default_jobseeker),
+               'mobile' : fields.char(related='jobseeker_id.mobile', store=True, string='Mobile' ),
+               'message' : fields.text(string="Message"),
+               }
+    
 class WizardNotify(models.TransientModel):
     _name = 'acesmanpower.notify.agents'
     
@@ -137,9 +149,21 @@ class WizardNotify1(models.TransientModel):
     
 class WizardNotify2(models.TransientModel):
     _name = 'acesmanpower.notifyusers'
+    
+    
+    def _default_partner(self):
+        user_id =  self.env['acesmanpoweruser'].browse(self._context.get('active_id')).user_id.id
+        return self.env['res.users'].browse([user_id]).partner_id.id
+    
+    def _default_mobile_no(self):
+        user_id =  self.env['acesmanpoweruser'].browse(self._context.get('active_id')).user_id.id
+        partner_id = self.env['res.users'].browse([user_id]).partner_id.id
+        return self.env['res.partner'].browse([partner_id]).mobile or 000
+    
     _columns = { 
-            'recipient_id' : fields.many2one('res.partner', string="Send to", required=True,  ),
-            'message' : fields.text(string="Message", )
+            'recipient_id' : fields.many2one('res.partner', string="Send to", default=_default_partner),
+            'mobile' : fields.char(size=12, string='Mobile', default=_default_mobile_no),
+            'message' : fields.text(string="Message")
             }
 
 class WizardNotify3(models.TransientModel):

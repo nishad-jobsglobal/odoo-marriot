@@ -110,9 +110,19 @@
             </search>
             </field>
         </record>
+       
+       <record id="ir_actions_server_acesmanpoweruser" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpoweruser"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Users</field> 
+        </record>  
 
         <record model="ir.actions.act_window" id="act_open_acesmanpoweruser_view">
-            <field name="name">Recruitment Events</field>
+            <field name="name">Recruitment User</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">acesmanpoweruser</field>
             <field name="view_type">form</field>
@@ -140,7 +150,8 @@
             		parent="menu_recruitment_root"
             		sequence="1"/>
         
-        <menuitem name="Users" id="menu_acesmanpoweruser" parent="menu_recruitment_process_live_modules"  sequence="99" action="act_open_acesmanpoweruser_view"/>
+        <menuitem name="Users" id="menu_acesmanpoweruser" parent="menu_recruitment_process_live_modules"  
+        sequence="99" action="ir_actions_server_acesmanpoweruser"/>
                 
         <record model = "ir.ui.view" id = "modify_view_users_form">
             <field name="name">res.users.form</field>

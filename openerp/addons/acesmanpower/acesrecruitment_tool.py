@@ -25,6 +25,7 @@ import subprocess
 
 import logging
 from openerp import api
+from openerp import tools
 from openerp.osv import osv, fields
 
 _logger = logging.getLogger(__name__)
@@ -40,7 +41,8 @@ class cv_dropbox(osv.osv):
                 'name' : fields.char("Description"),
                 'cv_filename':fields.char('Filename'),
                 'drop_cv': fields.binary('Drop CV'),
-                'drop_cv_file_name' : fields.char(string='Image Filename')
+                'drop_cv_file_name' : fields.char(string='Image Filename'),
+                'text': fields.text()
                 }
     
     @api.model
@@ -141,6 +143,17 @@ class job_posting(osv.osv):
     _description = "Job Posting"
     _order = "id desc" 
     
+    def _get_image(self, cr, uid, ids, name, args, context=None):
+        result = dict.fromkeys(ids, False)
+        for obj in self.browse(cr, uid, ids, context=context):
+            result[obj.id] = tools.image_get_resized_images(obj.image)
+        return result
+
+    def _set_image(self, cr, uid, ids, name, value, args, context=None):
+        if value:
+            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+        return True
+    
     _columns = {
                 'posting_intro': fields.char("Posting Introduction"),
                 'posting_title':fields.char("Post Title"),
@@ -152,5 +165,17 @@ class job_posting(osv.osv):
                 'jobs':fields.many2many('job.position','job_position_rel','job_id','job_position_id',"Jobs"),
                 'job_industry':fields.many2many('job.industry','job_industry_rel','job_id','industry_id',"Industry"),
                 'job_details':fields.text("Details"),
-                'publish':fields.boolean("Unpublished Avert")
+                'publish':fields.boolean("Unpublished Avert"),
+                'image': fields.binary("Logo",
+                        help="This field holds the image used as photo for the applicant, limited to 1024x1024px."),
+                'image_medium': fields.function(_get_image, fnct_inv=_set_image,
+                    string="Medium-sized photo", type="binary", multi="_get_image",
+                    store = {
+                        'job.posting': (lambda self, cr, uid, ids, c={}: ids, ['image'], 10),
+                    },
+                    help="Medium-sized photo of the job description. It is automatically "\
+                         "resized as a 128x128px image, with aspect ratio preserved. "\
+                         "Use this field in form views or some kanban views."),
+                
+                
                 }

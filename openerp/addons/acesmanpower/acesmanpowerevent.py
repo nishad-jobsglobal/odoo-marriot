@@ -24,6 +24,7 @@ import urllib
 
 from openerp import api
 from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 class acesmanpowerevent(osv.osv):
     _name = 'acesmanpowerevent'
@@ -65,9 +66,21 @@ class acesmanpowerevent(osv.osv):
     def action_view_registration(self):
         return True
     
-    @api.multi
-    def action_view_shortlists(self):
-        return True
+    def action_view_shortlists(self, cr, uid, ids,context=None):
+        active_id = ids[0]
+        shortlist_ids = self.pool.get('acesmanpowershortlist').search(cr,uid,[('acesmanpowerevent_id','=',active_id)])
+        domain = [('id','in',shortlist_ids)]
+        
+        value = {
+                'name': _("Shortlisted Candidates"),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesmanpowershortlist',
+                'view_id': False,
+                'domain': domain
+                }
+        return value
     
 
     _columns = {

@@ -19,8 +19,9 @@
 #
 ##############################################################################
 
-from openerp.osv import osv, fields
 from openerp import api
+from openerp.osv import osv, fields
+from openerp.tools.translate import _
 
 class acesjobseeker(osv.osv):
     _name = 'acesjobseeker'
@@ -30,6 +31,38 @@ class acesjobseeker(osv.osv):
     @api.model
     def _needaction_domain_get(self):
         return [('stage_id', '=', 'new')]
+    
+    def fetch_data(self, cr, uid, ids, stage=None, context=None):
+        if context is None:
+            context = {}
+        print "-"*25
+        
+        manpower_user_obj = self.pool.get('acesmanpoweruser')
+        
+        # Find the log in user and his related property user id
+        
+        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
+            log_in_user = uid
+            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
+            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
+        else:
+            pass
+        
+        domain = [('for_marriot','=',True)]
+        
+        value = {
+                'name': _('CV Search'),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesjobseeker',
+                'view_id': False,
+                'domain': domain
+                }
+        
+        print "-"*25
+        
+        return value
     
     _columns = {
             'name': fields.char(size=256, string='Name', required=True, ),
@@ -63,6 +96,7 @@ class acesjobseeker(osv.osv):
             'url_cv': fields.char(size=500, string='CV', ),
             'url_cvpdf': fields.char(size=500, string='CV PDF', ),
             'importid': fields.integer('Import ID'),
+            'for_marriot': fields.boolean('For Marriot'),
             
             'acesmanpowerscreening_ids': fields.one2many('acesmanpowerscreening','acesjobseeker_id','Screening'),
     }

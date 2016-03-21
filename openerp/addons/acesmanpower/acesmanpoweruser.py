@@ -21,6 +21,7 @@
 
 from openerp import tools
 from openerp.osv import osv, fields
+from openerp.tools.translate import _
 from openerp.modules.module import get_module_resource
 
 class acesmanpoweruser(osv.osv):
@@ -56,7 +57,11 @@ class acesmanpoweruser(osv.osv):
         'description': fields.text(string='Notes', ),
         
         'property_id': fields.many2one('acesmanpowerproperty', 'Property', required=True),
-        'property_ids': fields.one2many('acesmanpowerproperty','acesmanpoweruser_id','Other Properties'),
+        
+        #'property_ids': fields.one2many('acesmanpowerproperty','acesmanpoweruser_id','Other Properties'),
+
+        'property_ids': fields.many2many('acesmanpowerproperty','acesmproperty_acesmuser_rel', 'acesmanpoweruser_id', 'acesmanpowerproperty_id', string="Other Properties"),
+        
         'acesmanpowerevent_ids': fields.one2many('acesmanpowerevent','acesmanpoweruser_id','Recruitment Event'),
         
         # image: all image fields are base64 encoded and PIL-supported
@@ -97,6 +102,55 @@ class acesmanpoweruser(osv.osv):
         if username == '':
             values['username'] = email
         return {'value': values}
+    
+    def fetch_data(self, cr, uid, ids,context=None):
+        if context is None:
+            context = {}
+        print "-"*25
+        
+        manpower_user_obj = self.pool.get('acesmanpoweruser')
+        
+        # Find the log in user and his related property user id
+        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
+            log_in_user = uid
+            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
+        else:
+            pass
+        
+        # Find property and related property ids of log in user with related to property user
+        if log_in_user and property_user_id:
+            # Direct Property
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id,context).property_id.id
+            
+        flag_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_user')
+        flag_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_admin')
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        
+        domain = [('user_id','=',uid)]
+        if flag_user and log_in_user and property_user_id:
+            domain = [('id','=',property_user_id)]
+        if flag_admin and log_in_user and property_user_id:
+            proerty_users = manpower_user_obj.search(cr,uid,[('property_id','=',property_id)])
+            domain = [('id','in',proerty_users)]
+        if flag_group_admin:
+            domain = []
+            
+        print "Domain=",domain
+        
+        value = {
+                'name': _('Users'),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesmanpoweruser',
+                'view_id': False,
+                'domain': domain
+                }
+        
+        print "-"*25
+        
+        return value
     
 class res_users(osv.osv):
     _name = "res.users"

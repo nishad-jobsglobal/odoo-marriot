@@ -84,6 +84,16 @@
             </search>
             </field>
         </record>
+       
+       <record id="ir_actions_server_acesmanpowerjob" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowerjob"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Open Positions</field> 
+        </record>	  
 
         <record model="ir.actions.act_window" id="act_open_acesmanpowerjob_view">
             <field name="name">Jobs</field>
@@ -93,7 +103,6 @@
             <field name="view_mode">tree,form</field>
             <field name="search_view_id" ref="view_acesmanpowerjob_search"/>
             <field name="domain">[('user_id','=',uid)]</field>
-<!--            <field name="domain">[('acesmanpowerproperty_id','=','acesmanpowerjob.user_id.acesmanpoweruser_id.property_id')]</field-->
             <field name="context">{}</field>
         </record>
 
@@ -111,7 +120,8 @@
             <field name="view_id" ref="view_acesmanpowerjob_tree"/>
         </record>
         
-       <menuitem name="Open positions" id="menu_acesmanpowerjob" parent="menu_recruitment_process_live_modules"  sequence="5" action="act_open_acesmanpowerjob_view"/>
+       <menuitem name="Open positions" id="menu_acesmanpowerjob" parent="menu_recruitment_process_live_modules"  
+       sequence="5" action="ir_actions_server_acesmanpowerjob"/>
         
     </data>
 </openerp>

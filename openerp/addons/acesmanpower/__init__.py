@@ -27,3 +27,6 @@ import acesmanpowerproperty
 import acesmanpowerjob
 import acesmanpowershortlist
 import acesrecruitment_tool
+import acesrelationship
+import trip
+import tapplicant

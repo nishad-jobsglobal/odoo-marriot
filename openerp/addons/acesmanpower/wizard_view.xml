@@ -9,7 +9,7 @@
                     <group>
                         <field name="jobseeker_id"/>
                         <field name="mobile_to"/>
-                        <field name="text"/>
+                        <field name="text" string="TEST"/>
                     </group>
                    	<footer>
                         <button string="Send SMS" name="send_sms" type="object" class="oe_stat_button" 
@@ -29,20 +29,35 @@
             <field name="view_type">form</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
-        </record>  
+        </record>
+       
+      <!--
+       <record model="ir.ui.view" id="wizard_jobseeker_form_view">
+            <field name="name">wizardjobseeker.form</field>
+            <field name="model">acesmanpower.jobseeker.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Send SMS">
+                    <group>
+                        <field name="jobseeker_id"/>
+                        <field name="mobile"/>
+                        <field name="message"/>
+                    </group>
+                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+                </form>
+            </field>
+        </record>    
+       
 
-       <!-- 
-         
-        <act_window id="launch_acesmanpower_wizard"
+        <act_window id="launch_acesjobseeker_wizard"
                     name="Send SMS"
                     src_model="acesjobseeker"
-                    res_model="acesmanpower.wizard"
+                   	res_model="acesmanpower.jobseeker.wizard"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"/>
-        
+        -->       	
                     
-        <record model="ir.ui.view" id="wizard_form_view">
+        <record model="ir.ui.view" id="wizard_sms_form_view">
             <field name="name">wizardsms.form</field>
             <field name="model">acesmanpower.wizardsms</field>
             <field name="arch" type="xml">
@@ -64,7 +79,7 @@
                     res_model="acesmanpower.wizardsms"
                     view_mode="form"
                     target="new"
-                    key2="client_action_multi"/>		-->
+                    key2="client_action_multi"/>		
        
          
                     
@@ -129,10 +144,11 @@
             <field name="arch" type="xml">
                 <form string="Request Info">
                     <group>
-                        <field name="recipient_id"/>
+                        <field name="recipient_id" readonly="1"/>
+                        <field name="mobile"/>
                         <field name="message"/>
                     </group>
-                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send Request" context="{'recipient_id': recipient_id, 'message': message,}"  />
+                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send Request" context="{'recipient_id': recipient_id,'mobile': mobile, 'message': message,}"  />
                 </form>
             </field>
         </record>

@@ -14,7 +14,7 @@ openerp.acesmanpower = function(instance, local) {
 	    _lt = instance.web._lt;
 	var QWeb = instance.web.qweb;
     
-    var manpowerUser;
+    	var manpowerUser;
 	
 	local.TripeventsPage = instance.Widget.extend({
 		template: "DashBoarder",
@@ -47,6 +47,7 @@ openerp.acesmanpower = function(instance, local) {
                     });
             }); 
             
+	    /* Count shortlisted candidates */
             var acesmanpowershortlist = new instance.web.Model("acesmanpowershortlist");
             acesmanpowershortlist.query(['id'])
                  .all()
@@ -54,15 +55,19 @@ openerp.acesmanpower = function(instance, local) {
                     $('#acesmanpowershortlist').html( results.length );
             });
             
+	    /* Count applied candidates */
             var acesjobseeker = new instance.web.Model("acesjobseeker");
             acesjobseeker.query(['id'])
+		 .filter([['for_marriot', '=', 'True']])
                  .all()
                  .then(function (results) {
                     $('#acesjobseeker').html( results.length );
             });
             
+	    /* Count total trips/events */
             var acesmanpowerevent = new instance.web.Model("acesmanpowerevent");
             acesmanpowerevent.query(['id'])
+		 .filter([['stage_id', '!=', 'disapproved']])
                  .all()
                  .then(function (results) {
                     $('#acesmanpowerevent').html( results.length );
@@ -72,8 +77,6 @@ openerp.acesmanpower = function(instance, local) {
             var cgtrips = new instance.web.Model("acesmanpowerevent");
             var cgtriphtml = "";
             cgtrips.query(['id', 'name', 'can_country_id'])
-                 //.filter([['datestart', '>', "today"]])
-                 //.limit(10)
                  .group_by(['can_country_id'])
                  .then(function (groups) {
                     _(groups).each(function (group) {
@@ -94,7 +97,6 @@ openerp.acesmanpower = function(instance, local) {
             cgtripjobs.query(['id', 'name', 'quantity'])
                  .filter([['quantity', '>', 0]])
                  .all()
-                 //.limit(10)
                  .then(function (items) {
                     $('table#gpjobs').html(
                         "<tr><th>Position</th><th>Required</th></tr>"
@@ -112,9 +114,7 @@ openerp.acesmanpower = function(instance, local) {
             var cgmessaging = "";
             var cgmanager = "";
             cgtripprop.query(['id', 'acesmanpoweruser_id', 'name', 'mobile', 'email'])
-                 //.filter([['quantity', '>', 0]])
                  .all()
-                 //.limit(10)
                  .then(function (items) {
                     _(items).each(function (item) {
                         if (item.acesmanpoweruser_id) {
@@ -131,25 +131,25 @@ openerp.acesmanpower = function(instance, local) {
 		},
         
         events: {
-            'click table#generalpurpose a': 'selected_item1',
-            'click table#gpjobs a': 'selected_jobss1',
-            'click table#gprecruitproperties td.cgpropitem a': 'selected_prop1',
+            'click table#generalpurpose a': 'selected_item1', 			/* Upcoming Trips */
+            'click table#gpjobs a': 'selected_jobss1',				/* Open Positions */
+            'click table#gprecruitproperties td.cgpropitem a': 'selected_prop1',/* Recruiting Properties */
              /* Start Buttons   */
-            'click div#generalpurposewrap p a.btn.btn-info': 'showalllist',
-            'click div#generalpurposewrap p a.btn.btn-primary': 'createitem',
+            'click div#generalpurposewrap p a.btn.btn-info': 'showalllist',     /* View All */
+            'click div#generalpurposewrap p a.btn.btn-primary': 'createitem',   /* Propose a Trip,Add Position,Add Property */
             /* End Buttons   */
-            'click div.small-box.bg-green a.small-box-footer': 'showalllist',
-	    'click div.small-box.bg-yellow a.small-box-footer': 'showalllist',
-	    'click div.small-box.bg-red a.small-box-footer': 'showalllist',
+            'click div.small-box.bg-green a.small-box-footer': 'showalllist',   /* View All - Candidates on Process*/
+	    'click div.small-box.bg-yellow a.small-box-footer': 'showalllist',  /* View All - Total Applications*/
+	    'click div.small-box.bg-red a.small-box-footer': 'showalllist',     /* View All - Recruitment Trips*/
             
-            'click td.cgaction a': 'openwizard',
-            'dblclick div.jvectormap-container path': 'mapcountrysel',
+            'click td.cgaction a': 'openwizard',				/* Send SMS Wizard */
+            'dblclick div.jvectormap-container path': 'mapcountrysel',		/* Upcoming Recruitment Events Locations */
             
         },
         
+	/* Upcoming Recruitment Events Locations */
         mapcountrysel: function (event) {
             var cid = 0
-            
             for (var key in country_code1) {
                 if (country_code1.hasOwnProperty(key))
                     if ( country_code1[key] == $(event.currentTarget).attr('data-code') ){
@@ -157,9 +157,7 @@ openerp.acesmanpower = function(instance, local) {
                         break;
                     }
             }
-            
             if (cid == 0) return;
-            
             var self = this;
             this.rpc('/web/action/run', {
                 action_id: 2771,
@@ -169,7 +167,7 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
         
-        
+        /* Upcoming Trips  */
         selected_item1: function (event) {
             var $thiselement = $(event.currentTarget);
             var cid = $thiselement.attr('data-cid');
@@ -183,6 +181,7 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
         
+	/* Open Positions   */
         selected_jobss1: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
@@ -195,6 +194,7 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
          
+	/* Recruiting Properties   */
         selected_prop1: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
@@ -207,10 +207,10 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
         
+	/* View All */
         showalllist: function (event) {
             var self = this;
             this.rpc('/web/action/run', {
-                //action_id: $(event.currentTarget).data('id'),
 		action_id: 2772,
                 context: {'themodule':$(event.currentTarget).data('module')}
             }).done(function (action) {
@@ -218,7 +218,7 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
 
-	        
+	/* Propose a Trip,Add Position,Add Property */        
         createitem: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
@@ -230,6 +230,7 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
         
+	/* Send SMS Wizard */
         openwizard: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
@@ -245,7 +246,6 @@ openerp.acesmanpower = function(instance, local) {
 	});
 	
 	instance.web.client_actions.add('acesmanpower.homepage', 'instance.acesmanpower.TripeventsPage');
-	
 }
 
 

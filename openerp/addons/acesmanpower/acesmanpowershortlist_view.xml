@@ -91,7 +91,6 @@
                                <group>
                                	   <field name="interview_sheet_name" invisible="1"/>	
                                    <field widget="binary" name="interview_sheet" filename="interview_sheet_name"/>
-<!--								   <button name="import_file" string="Upload Sheet" type="object" icon="fa-save" class="oe_stat_button"/-->
                                </group> 
                            </page>
                            
@@ -461,7 +460,6 @@
 
         <menuitem name="My Candidates" id="menu_acesmanpower_my_candidates" 
         	parent="menu_finalrecruitment_portal_live_modules"  sequence="6" 
-        	action="ir_actions_server_my_candidates"/>	
-        
+        	action="ir_actions_server_my_candidates"/>
     </data>
 </openerp>

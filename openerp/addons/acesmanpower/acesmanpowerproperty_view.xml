@@ -35,11 +35,6 @@
                         <div class="oe_title" >
                             <label for="name" class="oe_edit_only"/>
                             <h1><field name="name"/></h1>
-                            <!--  
-                            <label for="acesmanpoweruser_id" class="oe_edit_only"/>
-                            <h2 style="display: inline-block;">
-                                <field name="acesmanpoweruser_id" class="oe_inline"/> 
-                            </h2> -->
                         </div>
                         <group col="4">
                         	<field name="parent_id"/>
@@ -69,7 +64,7 @@
                                     <field name="acesmanpowerevent_ids" nolabel="1" />
                                 </group>
                             </page>
-                           <page string="Agency Consultants" groups="base.marriot_consultant">
+                           <page string="Agency Consultants" groups="base.group_marriot_consultant">
                             	<group>
                                 	<field name="agency_consultant_ids" nolabel="1" />
                             	</group>

@@ -61,7 +61,7 @@
                 <div class="icon">
                   <i class="ion ion-ios-contact-outline"></i>
                 </div>
-                <a href="#" class="mall-box-footer" data-module="acesjobseeker" >More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" data-module="acesjobseeker" >More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -94,7 +94,7 @@
                 <div class="icon">
                   <i class="ion-ios-speedometer"></i>
                 </div>
-                <a href="#" class="small-box-footer" id="2772" data-module="acesmanpowerjob">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" data-module="acesmanpowershortlist">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->

@@ -19,12 +19,18 @@
 #
 ##############################################################################
 
+import openerp
 from openerp import api
 from openerp import tools
 from openerp.osv import osv, fields
 from openerp.modules.module import get_module_resource
 
 class acesmanpowerproperty(osv.osv):
+    
+    _inherits = {
+        'res.partner': 'partner_id',
+                    }
+     
     _name = 'acesmanpowerproperty'
     _description = "Property"
     _order = "name asc"
@@ -52,9 +58,10 @@ class acesmanpowerproperty(osv.osv):
         return res 
 
     _columns = {
-        'name': fields.char(size=256, string='Name', required=True, ),
-
-        'email': fields.related('acesmanpoweruser_id', 'email', type='char', string='Email', readonly=True),
+        # Name & Email will inherit from res_partner
+        #'name': fields.char(size=256, string='Name', required=True, ),
+        #'email': fields.related('acesmanpoweruser_id', 'email', type='char', string='Email', readonly=True),
+        
         'mobile': fields.related('acesmanpoweruser_id', 'mobile', type='char', string='Mobile', readonly=True),
         
         'street': fields.char(size=256, string='Street', ),
@@ -62,8 +69,10 @@ class acesmanpowerproperty(osv.osv):
         'country_id': fields.many2one('res.country', 'Country'),
         'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Responsible', track_visibility='onchange'),
         
-        
-        'parent_id': fields.many2one('acesmanpowerproperty', 'Parent Property', select=True),
+        'partner_id': fields.many2one('res.partner', required=True,
+            string='Related Partner/Customer', ondelete='restrict',
+            help='Partner-related data of the property', auto_join=True),
+        'parent_id': fields.many2one('res.partner', 'Parent Property', select=True),
         'child_ids': fields.one2many('acesmanpowerproperty', 'parent_id', 'Child Properties'),
         
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
@@ -98,6 +107,9 @@ class acesmanpowerproperty(osv.osv):
                  "Use this field anywhere a small image is required."),
         
     }
+    
+    name = openerp.fields.Char(related='partner_id.name', inherited=True)
+    email = openerp.fields.Char(related='partner_id.email', inherited=True)
     
     def _get_default_image(self, cr, uid, context=None):
         image_path = get_module_resource('hr', 'static/src/img', 'default_image.png')

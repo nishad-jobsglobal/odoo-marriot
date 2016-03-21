@@ -64,7 +64,7 @@
                                         <field name="create_date" />
                                         <field name="write_date" />
                                         <field name="write_uid" />
-                                        <field name="company_id" />
+                                        <field name="company_id" invisible="1"/>
                                     </group>
                                     
                                 </group>
