@@ -64,7 +64,7 @@
                                     <group>
                                         <field name="access_id" />
                                         <field name="user_id" />
-                                        <field name="company_id" string="Parent Company" />
+                                        <field name="company_id"/>
                                     </group>
                                     <group>
                                         <field name="write_date" />

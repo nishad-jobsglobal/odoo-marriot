@@ -22,7 +22,6 @@ from openerp.osv import osv, fields
 from datetime import datetime
 
 
-
 class trip_stage(osv.osv):
     """ Stage of Recruitment Trip """
     _name = "trip.stage"
@@ -81,7 +80,6 @@ class trip(osv.osv):
         'visalen': fields.selection([(1, '1 month'),(2, '2 months'),(3, '3 months'),(4, 'above 3 months')], 'Visa Length'),
         'job_country_id': fields.many2one('res.country', 'Job Location'),
         'can_country_id': fields.many2one('res.country', 'Recruit Location'),
-        
         
         
         'tapplicant_ids_level1': fields.one2many('tapplicant','trip_id','Level 1', domain=[('stage_id','<',2)], store=False ,readonly=True),

@@ -121,6 +121,21 @@ class WizardNotify(models.TransientModel):
             'message' : fields.text(string="Message")
             }
     
+class WizardNotifyEmployee(models.TransientModel):
+    _name = 'acesmanpower.notify.employee'
+    
+    def _default_consultant(self):
+        return self.env['hr.employee'].browse(self._context.get('active_id'))
+    
+    def _default_mobile_no(self):
+        return self.env['hr.employee'].browse([self._context.get('active_id')]).mobile_phone or 0000
+    
+    _columns = { 
+            'agency_consultant_ids' : fields.many2one('hr.employee', string="Agency Consultant",default=_default_consultant),
+            'mobile' : fields.char(size=12, string='Mobile', default=_default_mobile_no),
+            'message' : fields.text(string="Message")
+            }
+    
     
 class WizardNotify1(models.TransientModel):
     _name = 'acesmanpower.notifyassess'

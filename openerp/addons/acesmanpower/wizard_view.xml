@@ -111,7 +111,37 @@
         			groups="base.user_root"
                    />	
       
-       <!--======= -->				
+       <!--======= -->	
+       
+       <!-- 
+       'This is to notify agency consultants/employee from property'
+       -->		           
+       
+       <record model="ir.ui.view" id="wizardnotify_employee_form_view">
+            <field name="name">wizardnotify_employee.form.view</field>
+            <field name="model">acesmanpower.notify.employee</field>
+            <field name="arch" type="xml">
+                <form string="Request Contacts">
+                    <group>
+                        <field name="agency_consultant_ids" readonly="1" widget="selection"/>
+                        <field name="mobile"/>
+                        <field name="message"/>
+                    </group>
+                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardnotify_employee"
+                    name="Agency Request"
+                   	src_model="acesmanpowerproperty"
+                   	res_model="acesmanpower.notify.employee"
+                    view_mode="form"
+                    target="new"
+        			groups="base.user_root"
+                   />	
+      
+       <!--======= -->						
         		
         
         <record model="ir.ui.view" id="wizardnotify1_form_view">

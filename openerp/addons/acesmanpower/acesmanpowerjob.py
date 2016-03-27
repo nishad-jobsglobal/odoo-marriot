@@ -59,7 +59,8 @@ class acesmanpowerjob(osv.osv):
         
         manpower_user_obj = self.pool.get('acesmanpoweruser')
         jobposition_obj = self.pool.get('acesmanpowerjob')
-        jobposition_ids = []
+        jobposition_ids = property_ids = []
+        log_in_user = property_user_id = False
         # Find the log in user and his related property user id
         
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):

@@ -85,10 +85,9 @@ class acesmanpowershortlist(osv.osv):
             else:
                 pass
         
-        job_id = values.get('acesmanpowerjob_id',False)
-        if job_id:
-            property_id = self.env['acesmanpowerjob'].browse([job_id]).acesmanpowerproperty_id.id
-            agency_consultant_ids = [consultants.id for consultants in self.env['acesmanpowerproperty'].browse([property_id]).agency_consultant_ids]
+        if not values.get('agency_consultant_ids',''):
+            # TO DO - check if already any consultant id linked with this
+            agency_consultant_ids = [ user_id.id for user_id in self.env['hr.employee'].search([('consultant','=',True)])]
             values['agency_consultant_ids'] = [(6, 0, agency_consultant_ids)]
             
         return super(acesmanpowershortlist, self).write(values)
@@ -113,7 +112,9 @@ class acesmanpowershortlist(osv.osv):
         'acesmanpowerproperty_id': fields.related('acesmanpowerjob_id', 'acesmanpowerproperty_id', type="many2one", relation="acesmanpowerproperty", string="Property", store=True),
         'acesmanpowerevent_id': fields.related('acesmanpowerjob_id', 'acesmanpowerevent_id', type="many2one", relation="acesmanpowerevent", string="Trip Event", store=True),
         
-        'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmanpowershortlist_acesuser_rel','acesmanpowershortlist_id','acesmanpoweruser_id'),
+        #'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmanpowershortlist_acesuser_rel','acesmanpowershortlist_id','acesmanpoweruser_id'),
+        'agency_consultant_ids':fields.many2many('hr.employee','shortlist_consultant_rel','shortlist_id','consultant_id'),
+        
         'interview_sheet_name':fields.char('Filename'),
         'interview_sheet': fields.binary('Interview Sheet'),
         
@@ -156,7 +157,9 @@ class acesmanpowershortlist(osv.osv):
         
         manpower_user_obj = self.pool.get('acesmanpoweruser')
         shortlist_obj = self.pool.get('acesmanpowershortlist')
-        shortlist_ids = []
+        shortlist_ids = property_ids = []
+        log_in_user = property_user_id = False
+        
         # Find the log in user and his related property user id
         
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):

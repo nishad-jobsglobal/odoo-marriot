@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	<!-- ######################################
+        
+        	   Post Recruitment - Trips			
+        
+        	 ######################################	
+        -->
+    	
+		<record id="view_trip_form_inherit" model="ir.ui.view">
+            <field name="name">trip.form.inherit</field>
+            <field name="model">trip</field>
+            <field name="inherit_id" ref="trip.view_trip_form" />
+            <field name="arch" type="xml">	
+        		<xpath expr="//field[@name='triptype']" position="before">
+      				<field name="property_id"/>
+    			</xpath>		
+            </field>
+        </record>
+        	        
+        <record id="view_post_trip_form" model="ir.ui.view">
+            <field name="name">post.trip.form</field>
+            <field name="model">trip</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Trip" version="7.0" create="false" edit="false">
+                    <header>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1><field name="name"/></h1>
+                            <label for="partner_id" class="oe_edit_only"/>
+                            <h2 style="display: inline-block;">
+                                <field name="partner_id" class="oe_inline" readonly="1"/>
+                            </h2>
+                        </div>
+                        <notebook>
+                            <page string="General">
+                                <group>
+                                    <group>
+                                        <field name="trip_start" />
+                                        <field name="trip_end" />
+                                    </group>
+                                    <group>
+                                        <field name="company_id" />
+                                        <field name="user_id" />
+                                    </group>
+                                    <group>
+                                    	<field name="property_id"/>
+                                        <field name="triptype" />
+                                        <field name="visalen" />
+                                    </group>
+                                    <group>
+                                        <field name="job_country_id" />
+                                        <field name="can_country_id" />
+                                    </group>
+                                </group>
+                                <group>
+                                <separator string="Trip Applicants"/>
+                                <field name="tapplicant_ids" nolabel="1" colspan="2">
+                                	<form>
+					                    <sheet>
+					                    <field name="image_medium" widget='image' class="oe_left oe_avatar" />
+					                    <div class="oe_right oe_button_box" name="button_box" style="width: 180px; ">
+					                    </div>
+					                    <div class="oe_title"  >
+					                        <label for="name" class="oe_edit_only"/>
+					                        <h1><field name="name"/></h1>
+					                        <label for="trip_id" class="oe_edit_only"/>
+					                        <h2 style="display: inline-block;">
+					                            <field name="trip_id" class="oe_inline"/>
+					                        </h2><br /> 
+					                        <label for="partner_id" class="oe_edit_only"/>
+					                        <h3 style="display: inline-block;">
+					                            <field name="partner_id" class="oe_inline"/>
+					                        </h3>
+					                    </div>
+					                    <notebook>
+			                            <page string="Profile" >
+			                                <group>
+			                                    <group>
+			                                        <field name="user_email"/>
+			                                        <field name="phone" placeholder="Put only one phone" />
+			                                        <field name="mobile" placeholder="Put only one mobile" />
+			                                        <field name="mobile2" placeholder="Put only one mobile" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="date_birth" />
+			                                        <field name="age" />
+			                                        <field name="gender" />
+			                                        <field name="homeaddress" />
+			                                        <field name="currentaddress" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="trjob_id" string="Job" domain="[('trip_id','=', trip_id)]" />
+			                                        <field name="currency_id" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="company_id" />
+			                                        <field name="user_id" />
+			                                        <field name="create_date" />
+			                                        <field name="write_date" />
+			                                        <field name="write_uid" />
+			                                    </group>
+			                                </group>
+			                            </page>
+			                            <page string="Documentation">
+			                                <group>
+			                                    <group>
+			                                        <field name="hascv" />
+			                                        <field name="hasinterviewsheet" />
+			                                        <field name="hasoffersigned" />
+			                                        <field name="hasphoto" />
+			                                        <field name="haspassport" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="nationality" />
+			                                        <field name="passportnumber" />
+			                                        <field name="passportexpiry" />
+			                                        <field name="passportnotes" />
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="dateformscompleted" />
+			                                        <field name="tappforms" widget="many2many_tags" string="Forms Completed"/>
+			                                        <field name="medicalclinic" on_change="onchange_medicalclinic(medicalclinic, context)" placeholder="Setting this field puts this applicant to the medical processing stage" string="Other Clinic"/>
+			                                        <field name="clinic_id" />
+			                                    </group>
+			                                </group>
+			                            </page>
+			                            <page string="Medical Process">
+			                                <group>
+			                                    <group>
+			                                        <field name="medicalnotneeded" />
+			                                        <field name="unfit" />
+			                                        <field name="medicalpassed" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="datemedicalstart" />
+			                                        <field name="datemedicalfit" />
+			                                        <field name="datemedicaluploaded" />
+			                                        <field name="datemedicalexpire" />
+			                                        <field name="medicalexpirenote" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="gamcanotneeded" />
+			                                        <field name="mofanotneeded" />
+			                                        <field name="gamcaunfit" />
+			                                        <field name="gamcapassed" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="dategamcastart" />
+			                                        <field name="dategamcafit" />
+			                                        <field name="dategamcauploaded" />
+			                                        <field name="dategamcaexpire" />
+			                                        <field name="gamcaexpirenote" />
+			                                        <field name="datemofauploaded" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="forremedical" />
+			                                        <field name="remedicalunfit" />
+			                                        <field name="remedicalpassed" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="dateremedicalstart" />
+			                                        <field name="dateremedicalfit" />
+			                                        <field name="dateremedicaluploaded" />
+			                                        <field name="dateremedicalexpire" />
+			                                        <field name="remedicalexpirenote" />
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="medicalnote" />
+			                                    </group>
+			                                </group>
+			                            </page>
+			                            <page string="Visa Process">
+			                                <group>
+			                                    <group>
+			                                        <field name="dateendorsedvisa" />
+			                                        <field name="datevisarequested" />
+			                                        <field name="datevisareceived" />
+			                                        <field name="datevisaexpire" />
+			                                        <field name="visaexpirenote" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="dateendorsedvisastamp" />
+			                                        <field name="dateclearedvisastamp" />
+			                                        <field name="gamcaclinic" string="Gamca Clinic" />
+			                                        <field name="datenbi" />
+			                                        <field name="datevisastampembassy" />
+			                                        <field name="datevisastampreceived" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="datevisarenewrequested" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="isstarttravelprocess" />  <em>This will trigger the next applicant stage</em>
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="visanote" />
+			                                    </group>
+			                                </group>
+			                            </page>
+			                            <page string="Traveling">
+			                                <group>
+			                                    <group>
+			                                        <field name="datetravelproccleared" />
+			                                        <field name="datetraveldocscompleted" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="dateoecsubmit" />
+			                                        <field name="dateoecreceieved" />
+			                                        <field name="dateoecexpire" />
+			                                        <field name="dateinsurancereceived" />
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="tapptraveldocs" widget="many2many_tags" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="dateticketendorse" />
+			                                        <field name="dateticketissueclear"  />
+			                                        <field name="dateticketrequest" attrs="{'readonly':[('dateticketissueclear','!=','')]}" />
+			                                        <field name="datetravel" />
+			                                        <field name="flightdetails" />
+			                                        <field name="hastravelled" />
+			                                    </group>
+			                                </group>
+			                            </page>
+			                            <page string="Other Actions">
+			                                <group>
+			                                    <group>
+			                                        <field name="promissoryrequested" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="promissoryconfirmed" />
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="promissorynote" string="Reason" />
+			                                        <separator string=""/>
+			                                    </group>
+			                                    <group>
+			                                        <field name="cancelrequested" on_change="onchange_cancelrequest(cancelrequested, context)"/>
+			                                    </group>
+			                                    <group>
+			                                        <field name="cancelrequestedby" /> 
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="cancelnote" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="cancelendorsed" on_change="onchange_cancelendorsed(cancelendorsed, context)" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="cancelendorsedby" /> 
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="cancelendosernote" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="cancelconfirmed" on_change="onchange_cancelconfirmed(cancelconfirmed, context)" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="cancelconfirmedby" /> 
+			                                    </group>
+			                                    <group colspan="4">
+			                                        <field name="cancelconfirmnote" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="shoutout" />
+			                                        <field name="smslog" />
+			                                        <field name="datemal_ro" />
+			                                        <field name="datemal_os" />
+			                                        <field name="datemal_am" />
+			                                        <field name="datemal_ev" />
+			                                        <field name="datemal_ef" />
+			                                        <field name="datemal_vr" />
+			                                        <field name="datemal_gn" />
+			                                        <field name="datemal_ct" />
+			                                        <field name="datemal_ti" />
+			                                        <field name="datemal_tt" />
+			                                    </group>
+			                                    <group>
+			                                        <field name="datesms_ro" />
+			                                        <field name="datesms_os" />
+			                                        <field name="datesms_am" />
+			                                        <field name="datesms_ev" />
+			                                        <field name="datesms_ef" />
+			                                        <field name="datesms_vr" />
+			                                        <field name="datesms_gn" />
+			                                        <field name="datesms_ct" />
+			                                        <field name="datesms_ti" />
+			                                        <field name="datesms_tt" />
+			                                    </group>
+			                                </group>
+			                            </page>
+                        				</notebook>
+					                </sheet>
+                                	</form>
+                                    <tree>
+                                        <field name="image_small" widget="image" string="" />
+                                        <field name="name" string="Applicant"/>
+                                        <field name="user_email"  /> 
+                                        <field name="phone" />
+                                        <field name="create_date"  />
+                                    </tree>
+                                </field>
+                                <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 1">
+                                <group>
+                                    <field name="tapplicant_ids_level1" nolabel="1" colspan="2">
+                                        <tree colors="red:frprflng &gt; 0;pink:frdcmntcllctn &gt; 0">
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"/>
+                                            <field name="user_email"  /> 
+                                            <field name="phone" />
+                                            <field name="create_date"  />
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 2">
+                                <group>
+                                    <field name="tapplicant_ids_level2" nolabel="1" colspan="2">
+                                        <tree >
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"  />
+                                            <field name="datemedicalstart" />
+                                            <field name="dategamcauploaded" />
+                                            <field name="dategamcastart" />
+                                            <field name="dategamcauploaded" />
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 3">
+                                <group>
+                                    <field name="tapplicant_ids_level3" nolabel="1" colspan="2">
+                                        <tree colors="red:frvsrqst &gt; 0;pink:wtngvsrls &gt; 0">
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"  />
+                                            <field name="datevisarequested" string="Visa Requested"/>
+                                            <field name="visaexpirenote" string="Visa Expire"/>
+                                            <field name="gamcaclinic" string="Clinic"/>
+                                            <field name="datevisastampreceived" string="Stampped"/>
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Level 4">
+                                <group>
+                                    <field name="tapplicant_ids_level4" nolabel="1" colspan="2">
+                                        <tree colors="red:ndrsdttrvl &gt; 0;pink:clrdfrtrvlprcss &gt; 0">
+                                            <field name="image_small" widget="image" string="" />
+                                            <field name="name" string="Applicant"  />
+                                            <field name="dateoecexpire" string="OEC Expire"/>
+                                            <field name="datetraveldocscompleted" string="Docs Completed On"/>
+                                            <field name="datetravel" />
+                                            <field name="flightdetails" />
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                            <page string="Jobs">
+                                <group>
+                                    <field name="trjob_ids" nolabel="1" colspan="2">
+                                        <tree>
+                                            <field name="name"/>
+                                            <field name="candidatesrequired"/>
+                                            <field name="candidatesplaced"/>
+                                            <field name="user_id" string="Responsible"/>
+                                        </tree>
+                                    </field>
+                                    <separator string=""/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+       <record id="view_post_trip_tree" model="ir.ui.view">
+            <field name="name">trip.tree</field>
+            <field name="model">trip</field>
+            <field name="inherit_id" ref="trip.view_trip_tree" />
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            	<xpath expr="//field[@name='trip_end']" position="after">
+      				<field name="property_id"/>
+    			</xpath>
+            </field>
+        </record>
+        
+        <record id="ir_actions_server_post_trip" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_trip"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Trip</field> 
+        </record>  	
+        
+        <record model="ir.actions.act_window" id="act_open_post_trip_view">
+            <field name="name">Trip</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">trip</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="trip.view_trip_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>
+       
+       <record model="ir.actions.act_window.view" id="act_open_post_trip_view_form">
+            <field name="act_window_id" ref="act_open_post_trip_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_post_trip_form"/>
+        </record>
+       
+       <record model="ir.actions.act_window.view" id="act_open_post_trip_view_tree">
+            <field name="act_window_id" ref="act_open_post_trip_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_post_trip_tree"/>
+        </record>  
+
+        <menuitem name="Post Recruitment" id="menu_post_recruitment"
+            		parent="menu_recruitment_root"
+            		sequence="4"/>
+        
+        <menuitem name="Trips" id="menu_post_recruitment_trips" 
+        			parent="menu_post_recruitment"  sequence="0" 
+        			action="ir_actions_server_post_trip"/>			
+    	
+    </data>
+</openerp>

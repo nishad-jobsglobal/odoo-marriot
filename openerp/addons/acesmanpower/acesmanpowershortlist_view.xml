@@ -109,11 +109,25 @@
                                 </group>
                             </page>
                            
-                           <page string="Agency Consultants" groups="base.marriot_consultant">
-                            	<group>
-                                	<field name="agency_consultant_ids" readonly="1" nolabel="1" />
-                            	</group>
-                           </page>
+                           <page string="Agency Consultants" groups="base.group_marriot_consultant">
+                        	<group>
+								<field name="agency_consultant_ids" domain="[('consultant', '=', True)]" nolabel="1" >
+									<form>
+										<sheet>
+												<field name="name"/>	
+										</sheet>
+									</form>	
+									<tree >
+                                    	<field name="image_small" widget="image" string="" />
+                                        <field name="name" string="Consultant"/>
+                                        <field name="work_email"  /> 
+                                        <field name="work_phone" />
+                                        <field name="mobile_phone" />
+                                        <button name="%(launch_acesmanpower_wizardnotify_employee)d" type="action" icon="terp-mail-" string="SMS"/>
+                            		</tree>
+                            	</field>	
+                        	</group>
+                            </page> 
                         </notebook>
                         <separator string="Notes"/>
                         <field name="description" nolabel="1" />

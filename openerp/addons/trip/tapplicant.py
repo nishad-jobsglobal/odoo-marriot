@@ -90,7 +90,8 @@ class tapplicant(osv.osv):
         return result
 	
     def _set_image(self, cr, uid, id, name, value, args, context=None):
-        return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+        if value:
+            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
     
 	
     def compute_t_age(self, cr, uid, ids, field_name, arg, context=None):

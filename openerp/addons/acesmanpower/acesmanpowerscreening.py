@@ -19,7 +19,6 @@
 #
 ##############################################################################
 
-from openerp import api
 from openerp.osv import osv, fields
 
 class acesmanpowerscreening(osv.osv):

@@ -25,6 +25,7 @@ import urllib
 from openerp import api
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
+from psycopg2 import IntegrityError
 
 class acesmanpowerevent(osv.osv):
     _name = 'acesmanpowerevent'
@@ -51,7 +52,6 @@ class acesmanpowerevent(osv.osv):
         for w in self.browse(cr, uid, ids, context=context):
             for r in users:
                 result[w.id] = base64.b64encode((str(uid) or '') + '---' + r.password)
-        
         return result
     
     @api.multi
@@ -70,7 +70,6 @@ class acesmanpowerevent(osv.osv):
         active_id = ids[0]
         shortlist_ids = self.pool.get('acesmanpowershortlist').search(cr,uid,[('acesmanpowerevent_id','=',active_id)])
         domain = [('id','in',shortlist_ids)]
-        
         value = {
                 'name': _("Shortlisted Candidates"),
                 'view_type': 'form',
@@ -81,6 +80,74 @@ class acesmanpowerevent(osv.osv):
                 'domain': domain
                 }
         return value
+    
+    
+    @api.multi
+    def write(self, values):
+        stage_id = values.get('stage_id',False)
+        
+        # Find out if a trip is already created with respect to this event.
+        marriot_trip_id = self.env['trip'].search([('marriot_trip_id','=',self.id)])
+        
+        if not marriot_trip_id and stage_id == 'approved':
+            event_obj = self.env['acesmanpowerevent'].search([('id','=',self.id)])
+            manpower_user_obj = self.env['acesmanpoweruser']
+            property_id = manpower_user_obj.browse([event_obj.acesmanpoweruser_id.id]).property_id.id
+            partner_id = self.env['acesmanpowerproperty'].browse([property_id]).partner_id.id
+            
+            # Create new Trip details
+            vals = {
+                  'name':event_obj.name,
+                  'trip_start':event_obj.datestart,
+                  'trip_end':event_obj.dateend,
+                  'property_id':property_id,
+                  'triptype':'trip',
+                  'can_country_id':event_obj.can_country_id.id,
+                  'partner_id':partner_id,
+                  'marriot_trip_id':self.id,
+                    }
+            trip_id = self.env['trip'].create(vals)
+            
+            # Find all new jobs created in this event and create the same in Trip jobs
+            job_ids = [obj.id for obj in event_obj.acesmanpowerjob_ids]
+            if job_ids:
+                for job_id in job_ids:
+                    job_obj = self.env['acesmanpowerjob'].browse([job_id])
+                    vals = {
+                          'name':job_obj.name,
+                          'description':job_obj.jobdescription or '',
+                          'candidatesrequired':job_obj.quantity or 0,
+                          'trip_id':trip_id.id,
+                          }
+                    self.env['trjob'].create(vals)
+            
+            # Add followers(who belong to processing team) to the newly created Trip 
+            self.env.cr.execute("SELECT id FROM res_groups WHERE name='Member of Head office Processing Team'")
+            group_id = self.env.cr.fetchone()[0]
+            self.env.cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
+            users=self.env.cr.fetchall()
+            follower_ids = []
+            for user_id in users:
+                if not user_id[0] == self.env.uid:
+                    follower_ids.append(user_id[0])
+            
+            for user_id in follower_ids:
+                partner_id = self.env['res.users'].browse([user_id]).partner_id.id
+                followers = {
+                            'res_model':'trip',
+                            'res_id':trip_id.id,
+                            'partner_id':partner_id
+                            }
+                try:
+                    self.env['mail.followers'].create(followers)
+                except IntegrityError:
+                    continue
+            # Update Marriot Event with newly created Trip
+            values.update({'trip_id':trip_id.id})
+        #elif marriot_trip_id and not stage_id:
+            # TO DO
+        print "values",values
+        return super(acesmanpowerevent, self).write(values)
     
 
     _columns = {
@@ -120,6 +187,7 @@ class acesmanpowerevent(osv.osv):
             
             'getbase64enc' : fields.function(getbase64, method=True, string='Secure', type='char', size=500, readonly=True),
             
+            'trip_id':fields.many2one('trip',"Trip")
     }
     
     _defaults = {

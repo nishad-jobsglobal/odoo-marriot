@@ -23,10 +23,10 @@
     'name': 'ACES Manpower Module',
     'version': '1.0',
     'category': 'HR',
-    'summary': 'manpower pooling and job advertising',
+    'summary': 'Manpower pooling and job advertising',
     'description': """
 Manpower pooling and Job advertising
-================================
+====================================
 
 This module manages the testing
 """,
@@ -35,6 +35,7 @@ This module manages the testing
         'security/recruitment_security.xml',
         'security/ir.model.access.csv',
         'view/assets.xml',
+        'wizard_view.xml',
         'acesmanpower_view.xml',
         'acesmanpowerevent_view.xml',
         'acesmanpoweruser_view.xml',
@@ -42,19 +43,16 @@ This module manages the testing
         'acesmanpowerproperty_view.xml',
         'acesmanpowerjob_view.xml',
         'acesmanpowershortlist_view.xml',
-        'wizard_view.xml',
         'dashboard_view.xml',
         'acesrecruitment_tool.xml',
         'website_add_terms_conditions.xml',
         'trip_view.xml',
         'tapplicant_view.xml',
-        'acesrelationship_view.xml',
+        #'acesrelationship_view.xml',
     ],
      'js': [
         'static/src/js/resource.js',
         'static/src/js/tripevents.js',
-        'static/src/js/dropzone.js',
-        'static/src/js/test.js',
         'static/src/adminlte/js/plugins/jquery-jvectormap-usa-en.js',
         'static/src/adminlte/js/plugins/jquery-jvectormap-world-mill-en.js',
         

@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+from openerp import api
 from openerp import tools
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
@@ -49,17 +49,16 @@ class acesmanpoweruser(osv.osv):
         'email': fields.char(size=100, string='Email', required=True ),
         'mobile': fields.char(size=100, string='Mobile', required=True),
         
-        'company_id': fields.many2one('res.company', 'Company Group', required=True),
+        'company_id': fields.many2one('res.company', 'Parent Company', required=True),
         'user_id': fields.many2one('res.users', 'Related User'),
         'create_date': fields.datetime('Create Date', readonly=True),
         'write_date': fields.datetime('Updated', readonly=True),
         'write_uid': fields.many2one('res.users', 'Updated by', readonly=True),
         'description': fields.text(string='Notes', ),
+        'consultant':fields.boolean('Consultant'),
         
         'property_id': fields.many2one('acesmanpowerproperty', 'Property', required=True),
-        
         #'property_ids': fields.one2many('acesmanpowerproperty','acesmanpoweruser_id','Other Properties'),
-
         'property_ids': fields.many2many('acesmanpowerproperty','acesmproperty_acesmuser_rel', 'acesmanpoweruser_id', 'acesmanpowerproperty_id', string="Other Properties"),
         
         'acesmanpowerevent_ids': fields.one2many('acesmanpowerevent','acesmanpoweruser_id','Recruitment Event'),
@@ -109,6 +108,7 @@ class acesmanpoweruser(osv.osv):
         print "-"*25
         
         manpower_user_obj = self.pool.get('acesmanpoweruser')
+        log_in_user = property_id = property_user_id = False
         
         # Find the log in user and his related property user id
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
@@ -156,6 +156,49 @@ class res_users(osv.osv):
     _name = "res.users"
     _inherit = "res.users"
     _columns = {
-        'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Recruitment User'),
+                    'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Recruitment User'),
+                }
+    
+    @api.multi
+    def write(self, vals):
+        print "="*25
+        print "Users =",vals
+        
+        self.env.cr.execute("SELECT id FROM res_groups WHERE name='Member of Head office Processing Team'")
+        group_id = self.env.cr.fetchone()[0]
+        self.env.cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
+        initial_users = self.env.cr.fetchall()
+        initial_users = [user[0] for user in initial_users]
+        
+        # Update user with all the other updates.
+        res = super(res_users, self).write(vals)
+        
+        self.env.cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
+        final_users = self.env.cr.fetchall()
+        final_users = [user[0] for user in final_users]
+        
+        if len(list(set(initial_users)-set(final_users))) > 0:
+            users = list(set(initial_users)-set(final_users))
+            status = False
+        elif len(list(set(final_users)-set(initial_users))) > 0:
+            users = list(set(final_users)-set(initial_users))
+            status = True
+        else:
+            users = list(set(initial_users)  & set(final_users))
+            status = True
+            
+        for user_id in users:
+            employee_id = self.env['hr.employee'].search([('user_id','=',user_id)])
+            employee_obj = self.env['hr.employee'].browse([employee_id.id])
+            employee_obj.write({'consultant':status})
+        return res
+    
+    
+    
+class hr_employee(osv.osv):
+    _name = "hr.employee"
+    _inherit = "hr.employee"
+    _columns = {
+        'consultant':fields.boolean('Consultant'),
     }
     

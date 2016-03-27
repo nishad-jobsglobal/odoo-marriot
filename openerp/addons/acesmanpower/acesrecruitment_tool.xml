@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    	
-    	<template id="assets_backend" name="acesmanpower assets" inherit_id="web.assets_backend" >
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/acesmanpower/static/src/js/dropzone.js" />
-				<script type="text/javascript" src="/acesmanpower/static/src/js/test.js" />                
-            </xpath>
-        </template>	
-    	
     	<menuitem name='Recruitment Tool' id='menu_recruitment_tool_root' sequence='98'></menuitem>
     	<menuitem name="Recruitment Tool" id='menu_recruitment_tool_main' parent='menu_recruitment_tool_root' sequence='0'></menuitem>
     		

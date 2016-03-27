@@ -52,10 +52,17 @@ class acesmanpowerproperty(osv.osv):
     
     @api.model
     def create(self, vals):
-        agency_consultant_ids = [ user_id.id for user_id in self.env['acesmanpoweruser'].search([])]
-        vals['agency_consultant_ids'] = [(6, 0, agency_consultant_ids)] 
-        res = super(acesmanpowerproperty, self).create(vals)
-        return res 
+        agency_consultant_ids = [ user_id.id for user_id in self.env['hr.employee'].search([('consultant','=',True)])]
+        vals['agency_consultant_ids'] = [(6, 0, agency_consultant_ids)]
+        return super(acesmanpowerproperty, self).create(vals)
+    
+    @api.multi
+    def write(self, vals):
+        if not vals.get('agency_consultant_ids',''):
+            # TO DO - check if already any consultant id linked with this
+            agency_consultant_ids = [ user_id.id for user_id in self.env['hr.employee'].search([('consultant','=',True)])]
+            vals['agency_consultant_ids'] = [(6, 0, agency_consultant_ids)]
+        return super(acesmanpowerproperty, self).write(vals)
 
     _columns = {
         # Name & Email will inherit from res_partner
@@ -82,7 +89,8 @@ class acesmanpowerproperty(osv.osv):
         'description': fields.text(string='Notes', ),
         
         'acesmanpowerevent_ids': fields.many2many('acesmanpowerevent', 'acesmproperty_acesmevent_rel', 'acesmanpowerproperty_id', 'acesmanpowerevent_id'),
-        'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmproperty_acesuser_rel','acesmanpowerproperty_id','acesmanpoweruser_id'),
+        #'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmproperty_acesuser_rel','acesmanpowerproperty_id','acesmanpoweruser_id'),
+        'agency_consultant_ids':fields.many2many('hr.employee','property_consultant_rel','property_id','consultant_id'), 
         
         'website': fields.char(size=160, string='Website', ),
         

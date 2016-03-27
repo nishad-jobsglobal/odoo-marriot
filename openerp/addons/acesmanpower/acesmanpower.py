@@ -38,9 +38,7 @@ class acesjobseeker(osv.osv):
         print "-"*25
         
         manpower_user_obj = self.pool.get('acesmanpoweruser')
-        
         # Find the log in user and his related property user id
-        
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
             log_in_user = uid
             property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
@@ -49,7 +47,6 @@ class acesjobseeker(osv.osv):
             pass
         
         domain = [('for_marriot','=',True)]
-        
         value = {
                 'name': _('CV Search'),
                 'view_type': 'form',
@@ -59,9 +56,7 @@ class acesjobseeker(osv.osv):
                 'view_id': False,
                 'domain': domain
                 }
-        
         print "-"*25
-        
         return value
     
     _columns = {
@@ -97,6 +92,7 @@ class acesjobseeker(osv.osv):
             'url_cvpdf': fields.char(size=500, string='CV PDF', ),
             'importid': fields.integer('Import ID'),
             'for_marriot': fields.boolean('For Marriot'),
+            'shortlist_tags':fields.many2many('shortlist.tags','shortlist_tags_rel','jobseeker_id','tag_id',"Tag your Shortlists"),
             
             'acesmanpowerscreening_ids': fields.one2many('acesmanpowerscreening','acesjobseeker_id','Screening'),
     }
@@ -116,3 +112,14 @@ class acesjobseeker(osv.osv):
                 "target":"new",
             }
         return action
+    
+class shortlist_tags(osv.osv):
+    
+    _name = 'shortlist.tags'
+    _description = "Tag your shortlists"
+    _order = "id desc"
+    
+    _columns = {
+                'name':fields.char('Name'),
+                }
+    

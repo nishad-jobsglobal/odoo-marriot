@@ -37,7 +37,7 @@ class trjob(osv.osv):
     def _candidatesplaced(self, cr, uid, ids, field_name, arg, context=None):
         result = {}
         for r in self.browse(cr, uid, ids, context=context):
-          result[r.id] = len(r.tapplicant_id)
+            result[r.id] = len(r.tapplicant_id)
         
         return result
 
@@ -45,10 +45,10 @@ class trjob(osv.osv):
     def compute_balancepercent(self, cr, uid, ids, field_name, arg, context=None):
         result = {}
         for r in self.browse(cr, uid, ids, context=context):
-          if  r.candidatesrequired:
-            result[r.id] = (len(r.tapplicant_id) * 100) / r.candidatesrequired
-          else:
-            result[r.id] = 0
+            if  r.candidatesrequired:
+                result[r.id] = (len(r.tapplicant_id) * 100) / r.candidatesrequired
+            else:
+                result[r.id] = 0
         
         return result
         

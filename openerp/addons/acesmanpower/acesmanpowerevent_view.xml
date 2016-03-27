@@ -55,7 +55,6 @@
                                         <field name="dateend" />
                                     </group>
                                     <group string="Contacts for the Event">
-                                        <field name="partner_id" invisible="1" />
                                         <field name="user_id" string="Contact" />
                                         <field name="email" placeholder="This will be auto filled with the contacts email"/>
                                         <field name="mobile" placeholder="This will be auto filled with the contacts mobile"/>
@@ -64,7 +63,6 @@
                                         <field name="create_date" />
                                         <field name="write_date" />
                                         <field name="write_uid" />
-                                        <field name="company_id" invisible="1"/>
                                     </group>
                                     
                                 </group>
@@ -81,16 +79,12 @@
                             </page>
                             <page string="Other Info">
                                 <group>
-                                    <group>
-                                        <field name="acesmanpoweruser_id" />
-                                        <field name="twitterhashtag" />
-                                        <field name="url_image" />
-                                        <field name="secu" string="****" invisible="1" />
-                                        <field name="getbase64enc" string="****"  />
-                                    </group>
-                                    <group string="Venue">
+                                	<group string="Venue">
                                         <field name="city" />
                                         <field name="street" />
+                                    </group>	
+                                    <group>
+                                        <field name="acesmanpoweruser_id" />
                                     </group>
                                 </group>
                             </page>
