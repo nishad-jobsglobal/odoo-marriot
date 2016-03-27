@@ -30,7 +30,7 @@ Manpower pooling and Job advertising
 
 This module manages the testing
 """,
-    'depends' : ['base','web', 'hr','smsclient','trip','crm'],
+    'depends' : ['base','web', 'hr','smsclient','trip'],
     'data' : [
         'security/recruitment_security.xml',
         'security/ir.model.access.csv',

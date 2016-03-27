@@ -9,7 +9,7 @@
                     <group>
                         <field name="jobseeker_id"/>
                         <field name="mobile_to"/>
-                        <field name="text" string="TEST"/>
+                        <field name="text"/>
                     </group>
                    	<footer>
                         <button string="Send SMS" name="send_sms" type="object" class="oe_stat_button" 

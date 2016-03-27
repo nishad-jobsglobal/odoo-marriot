@@ -14,7 +14,47 @@ openerp.acesmanpower = function(instance, local) {
 	    _lt = instance.web._lt;
 	var QWeb = instance.web.qweb;
     
-    	var manpowerUser;
+    var manpowerUser;
+    
+    
+    
+    local.UploadPager = instance.Widget.extend({
+		template: "MyQWebTemplate1",
+		init: function(parent) {
+			this._super(parent);
+		},
+        
+        start: function() {
+            //var s = instance.web.qweb.render('MyQWebTemplate1');
+            
+            var cUser = this.rpc("/web/session/get_session_info", {}).then(function(result) {
+                //console.log(result);
+                //return result.uid;
+                
+                $('div#uid').html(
+                "<pre>" +
+                "\nUser id   : " + result.uid +
+                "\nCompany id: " + result.company_id +
+                "\nUsername  : " + result.username +
+                "\nDatabase  : " + result.db +
+                "\n</pre>"
+                
+                );
+                
+                var payload = [result.uid, result.company_id, result.username, result.db];
+                payload = btoa(JSON.stringify(payload));
+                
+                $('#uploaddest').attr('src', 'http://odoo.jobsglobal-hr.com/?id=' + payload);
+                
+                
+            }); 
+            
+             
+            
+        },
+        
+    });
+        
 	
 	local.TripeventsPage = instance.Widget.extend({
 		template: "DashBoarder",
@@ -246,6 +286,8 @@ openerp.acesmanpower = function(instance, local) {
 	});
 	
 	instance.web.client_actions.add('acesmanpower.homepage', 'instance.acesmanpower.TripeventsPage');
+    instance.web.client_actions.add('acesmanpower.uploadpage', 'instance.acesmanpower.UploadPager');
+	
 }
 
 

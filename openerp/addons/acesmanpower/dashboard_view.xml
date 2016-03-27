@@ -15,5 +15,14 @@
             <field name="tag">acesmanpower.homepage</field>
         </record>
         <menuitem id="homepage_acesmanpower_menu" sequence="0" name="My Dashboard" parent="menu_recruitment_portal_live_modules" action="act_open_tripevents_page1" />
+        
+        
+        <record id="act_open_tripevents_page2" model="ir.actions.client" >
+            <field name="name">Upload Page</field>
+            <field name="tag">acesmanpower.uploadpage</field>
+        </record>
+        
+        <menuitem id="uploadpage_acesmanpower_menu" sequence="0" name="Upload CV" parent="menu_recruitment_portal_live_modules" action="act_open_tripevents_page2" />
+
     </data>
 </openerp>
