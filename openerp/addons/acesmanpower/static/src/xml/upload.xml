@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates >
+<t t-name="MyQWebTemplate1" >
+  <style>
+    
+  </style>
+  
+  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/chris/acesmanpower.css" />
+  
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/jvectormap/jquery-jvectormap-1.2.2.css" />
+  
+  <script src="http://jobsglobal.com/cdn/plugins/chris/acesmanpowers.js"></script>
+
+  <div class="content">
+  <!-- Content Wrapper. Contains page content -->
+  <div class="wrapper">
+      <div class="content-wrapper" >
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Marriott
+          	
+            <small>Drag Cvs to upload</small>
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Upload CV</li>
+          </ol>
+        </section>
+        
+        <!-- Main content -->
+        <section class="content">
+        <div style="margin: 20px; padding: 0;" >
+            
+            <iframe id="uploaddest" style="width:650px; height: 300px; border: 0; " src=""></iframe>
+            <br />
+            <em style="font-size: 10px;"> <strong>Important note:</strong> It might take up to 60 minutes before you see the uploaded data on your cv search due to server processing.</em>
+        </div>
+        
+        <div id="uid" style="font-size: 10px;"></div>
+        
+        </section>
+        
+      </div>
+  </div>
+  
+  </div>
+  
+   <script>
+   
+   </script>
+  
+</t>
+
+</templates>
