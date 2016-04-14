@@ -70,16 +70,16 @@ class tapplicant(osv.osv):
         result = {}
         now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         for r in self.browse(cr, uid, ids, context=context):
-          if r.write_date:
-            date1 = datetime.strptime(r.write_date, '%Y-%m-%d %H:%M:%S')
-            date2 = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
-            delta=relativedelta (date2, date1)
-            
-            if delta.days > 0:
-                result[r.id] = int(delta.days)
+            if r.write_date:
+                date1 = datetime.strptime(r.write_date, '%Y-%m-%d %H:%M:%S')
+                date2 = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
+                delta=relativedelta (date2, date1)
+                
+                if delta.days > 0:
+                    result[r.id] = int(delta.days)
+                else:
+                    result[r.id] = 0
             else:
-                result[r.id] = 0
-          else:
                 result[r.id] = 0
         return result
     
@@ -381,6 +381,10 @@ class tapplicant(osv.osv):
         'datevisarenewrequested': fields.date('Visa Renewal Requested'),
         
         'isstarttravelprocess': fields.boolean('Start Travel Processing'),
+        'fathers_name': fields.char('Fathers Name'),
+        'fathers_birthdate': fields.date('Fathers Birthday'),
+        'mothers_name': fields.char('Mothers Name'),
+        'mothers_birthdate': fields.date('Mothers Birthday'),
         'visanote': fields.char('Visa Note', size=256),
         
         'datetravelproccleared': fields.date('Cleared Travel Processing'),

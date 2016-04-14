@@ -158,6 +158,12 @@
                                     <group>
                                         <field name="isstarttravelprocess" />  <em>This will trigger the next applicant stage</em>
                                     </group>
+                                    <group>
+                                        <field name="fathers_name" placeholder="(Surname,First Name,Middle Name)"/>
+                                        <field name="fathers_birthdate" />
+                                        <field name="mothers_name" placeholder="(Surname,First Name,Middle Name)"/>
+                                        <field name="mothers_birthdate" />
+                                    </group> 
                                     <group colspan="4">
                                         <field name="visanote" />
                                     </group>

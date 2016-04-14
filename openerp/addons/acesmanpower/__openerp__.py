@@ -30,7 +30,7 @@ Manpower pooling and Job advertising
 
 This module manages the testing
 """,
-    'depends' : ['base','web', 'hr','smsclient','trip'],
+    'depends' : ['base','web', 'hr','smsclient','trip','edi'],
     'data' : [
         'security/recruitment_security.xml',
         'security/ir.model.access.csv',
@@ -48,7 +48,9 @@ This module manages the testing
         'website_add_terms_conditions.xml',
         'trip_view.xml',
         'tapplicant_view.xml',
-        #'acesrelationship_view.xml',
+        'acesrelationship_view.xml',
+        'edi/property_action_data.xml',
+        'menu_view.xml',
     ],
      'js': [
         'static/src/js/resource.js',
@@ -60,6 +62,7 @@ This module manages the testing
     'qweb': [
         'static/src/xml/resource.xml',
         'static/src/xml/dashboard.xml',
+        'static/src/xml/upload.xml',
     
     ],
     'css': [

@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-#/#############################################################################
+#############################################################################
 #
 #    Jobs Global
 #    Copyright (C) 2014-TODAY Jobs Global(http://www.jobsglobal.com).
@@ -18,9 +17,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #/#############################################################################
+
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
-
 
 class trip(osv.osv):
     _inherit = 'trip'
@@ -50,7 +49,7 @@ class trip(osv.osv):
         # Find property and related property ids of log in user with related to property user
         if log_in_user and property_user_id:
             # Direct Property
-            property_id = manpower_user_obj.browse(cr,uid,property_user_id,context).property_id.id
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id[0],context).property_id.id
             # Other Properties
             for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
                 property_ids = [obj.id for obj in obje.property_ids]
@@ -79,5 +78,4 @@ class trip(osv.osv):
                 'domain': domain
                 }
         print "-"*25
-        return value
-    
+        return value    

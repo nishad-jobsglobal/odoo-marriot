@@ -30,6 +30,7 @@
                     <sheet>
                         <field name="image_medium" widget='image' class="oe_left oe_avatar" />
                         <div class="oe_right oe_button_box" name="button_box" style="width: 180px; ">
+                        	<button name="action_sent_mail" class="oe_stat_button" icon="fa-share-square-o" type="object" string="Send Email" />	
                         </div>
                        
                         <div class="oe_title" >
@@ -138,7 +139,8 @@
             <field name="view_id" ref="view_acesmanpowerproperty_tree"/>
         </record>
         
-        <menuitem name="Properties" id="menu_acesmanpowerproperty" parent="menu_recruitment_process_live_modules"  sequence="0" action="act_open_acesmanpowerproperty_view"/>
+        <menuitem name="Properties" id="menu_acesmanpowerproperty" groups="base.group_marriot_property_user"
+        parent="menu_recruitment_process_live_modules"  sequence="0" action="act_open_acesmanpowerproperty_view"/>
    
     </data>
 </openerp>

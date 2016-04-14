@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data> 
+    	
+    	<menuitem name='Relationship Mgmt' id='menu_relationship_management_root' groups="base.group_marriot_manage_relationship" sequence='99'></menuitem>
+    	<menuitem name="Relationship" id='menu_relationship_management_main' parent='menu_relationship_management_root' sequence='0'></menuitem>
+    	
+    	<record id="view_manpower_referral_form" model="ir.ui.view">
+            <field name="name">manpower.referral.form</field>
+            <field name="model">manpower.referral</field>
+            <field name="arch" type="xml">
+                <form string="Manpower Referral">
+                	<header>
+                    </header>
+                    <sheet>
+                    	<div class="oe_title" style="width: 380px;">
+                            <label for="action_upload_cv" string="Upload your connection CV " attrs="{'invisible':[('no_cv','=',True)]}" class="oe_edit_only"/>
+                            <button name="action_upload_cv" attrs="{'invisible':[('no_cv','=',True)]}" class="oe_stat_button" icon="fa-share-square-o" type="object" string="Upload CV" />
+                        </div> 
+						<group>
+							<field name="no_cv" string="Dont have a CV to upload"/>
+							<group colspan="2" attrs="{'invisible':[('no_cv','!=',True)]}" string="Connection Personal Data">
+								<group>
+		                    		<field name="first_name"/>
+		                    		<field name="sur_name"/>
+									<field name="age"/>
+								</group>								
+		                    	<group attrs="{'invisible':[('no_cv','!=',True)]}">
+									<field name="location"/>
+									<field name="nationality"/>								
+									<field name="position_referred"/>
+									<field name="current_position"/> 								
+		                    	</group>
+		                    </group>
+		                </group>
+		                    
+						<group attrs="{'invisible':[('no_cv','!=',True)]}" string="Work Experience of your connection">
+	                		<field name="work_experience_ids" nolabel="1" colspan="2">
+	                			<form>
+	                				<sheet>
+	                					<group colspan="2">
+	                					<field name="employer_name"/>
+	                                    <field name="job_title"/>
+										</group>
+										<group colspan="2">
+										<field name="start_date"/>                                    
+	                                    <field name="end_date"/>
+										</group>	                                    
+	                				</sheet>
+	                			</form>
+								<tree>
+                                    <field name="employer_name"/>
+                                    <field name="job_title"/>
+									<field name="start_date"/>                                    
+                                    <field name="end_date"/>
+                                </tree>
+                           </field> 	                		
+						</group>	
+	                    	
+                    	<group attrs="{'invisible':[('no_cv','!=',True)]}" string="Education of your connection">
+                    		<field name="education_ids" nolabel="1" colspan="2">
+                    			<form>
+                    				<sheet>
+                    					<group colspan="2">
+                    					<field name="highest_qualification"/>
+	                                    <field name="institute"/>
+	                                    <field name="end_date"/>
+										</group>	                                    
+                    				</sheet>
+                    			</form>
+								<tree>
+                                    <field name="highest_qualification"/>
+                                    <field name="institute"/>
+                                    <field name="end_date"/>
+                                </tree>
+                            </field>                    		
+                    	</group>
+                    	
+                    	<group attrs="{'invisible':[('no_cv','!=',True)]}">
+                    		<field name="skill_ids" widget="many2many_tags" string="Your connnection skills if any."/>
+							<field name="contact_date" string="Dont contact my referral contact before this date "/>                    		
+                    	</group>
+                    	
+	                    <group attrs="{'invisible':[('no_cv','!=',True)]}">
+	                    	<div class="oe_title" style="width: 880px;">
+	                            <button name="send_email" class="oe_stat_button" 
+	                                          icon="fa-share-square-o" type="object" string="Send Email" />
+	                            
+								<button class="oe_inline oe_stat_button" type="object"
+	                                    icon="fa-calendar" name="schedule_meeting" >
+								<field string="Meetings" name="meeting_count" widget="statinfo"/>
+								</button> 
+                        	</div>  
+	                    </group>
+	                    
+	                    <group attrs="{'invisible':[('no_cv','!=',True)]}" string="Joined Activities">
+                    		<field name="activity_ids" nolabel="1" colspan="2">
+                    			<form>
+                    				<sheet>
+                    					<group colspan="2">
+                    					<field name="date"/>
+	                                    <field name="description"/>
+										</group>	                                    
+                    				</sheet>
+                    			</form>
+								<tree>
+                                    <field name="date"/>
+	                                <field name="description"/>
+                                </tree>
+                            </field>                    		
+                    	</group>
+	                    	
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="view_manpower_referral_tree" model="ir.ui.view">
+            <field name="name">manpower.referral.tree</field>
+            <field name="model">manpower.referral</field>
+            <field name="arch" type="xml">
+            	<tree string="Manpower Referral">
+	                <field name="no_cv" string="CV Status"/>
+					<field name="first_name"/>     
+					<field name="location"/>
+					<field name="nationality"/>	  
+					<field name="position_referred"/>
+					<field name="current_position"/>
+					<field name="contact_date"/>        
+            	</tree>
+            </field>
+        </record>
+        
+        <record id="view_manpower_referral_search" model="ir.ui.view">
+            <field name="name">manpower.referral.search</field>
+            <field name="model">manpower.referral</field>
+            <field name="arch" type="xml">
+            <search string="Manpower Referral">
+                <newline/>
+                <field name="no_cv" string="CV Status"/>
+				<field name="location"/>
+				<field name="nationality"/>	  
+				<field name="position_referred"/>
+				<field name="current_position"/>                
+                <group expand="0" string="Group By...">
+                    <filter string="CV Status" domain="[]" context="{'group_by':'no_cv'}"/>
+					<filter string="Location" domain="[]" context="{'group_by':'location'}"/>
+					<filter string="Nationality" domain="[]" context="{'group_by':'nationality'}"/>
+					<filter string="Position Preffered" domain="[]" context="{'group_by':'position_referred'}"/>
+					<filter string="Current Position" domain="[]" context="{'group_by':'current_position'}"/>                 
+                </group>
+            </search>
+            </field>
+        </record>
+        
+        
+        <record id="act_open_manpower_referral_view" model="ir.actions.act_window" >
+            <field name="name">Referral Engagement</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">manpower.referral</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_manpower_referral_search"/>
+<!--            <field name="domain">[('contact_date','&lt;=', __import__('time').strftime('%%Y-12-31')),('contact_date','&gt;=',__import__('time').strftime('%%Y-01-01'))]</field-->
+            <field name="domain">[]</field>
+			<field name="context">{}</field>
+        </record>
+        
+        <menuitem name="Referral Engagement" id="menu_relationship_management_referral" 
+        		parent="menu_relationship_management_main"  sequence="0" 
+        			action="act_open_manpower_referral_view"
+        		groups="base.group_marriot_manage_relationship"/>
+        
+		<menuitem name="Referral Search" id="menu_relationship_management_referral_search" 
+        		parent="menu_relationship_management_main"  sequence="1" 
+        		action="act_open_manpower_referral_view"
+				groups="base.group_marriot_consultant" />
+		
+		<!-- Referral Anaysis Report	-->
+		
+		<record id="view_referral_analysis_report_graph" model="ir.ui.view">
+            <field name="name">referral.analysis.report.graph</field>
+            <field name="model">referral.analysis.report</field>
+            <field name="arch" type="xml">
+                <graph string="Referral Analysis" type="pivot" stacked="True">
+                    <field name="user_id" type="row"/>
+                    <field name="create_date" interval="month" type="col"/>
+                    <field name="nbr_cases" type="measure"/>
+                    <field name="total_activities" type="measure"/>
+                </graph>
+            </field>
+        </record>
+				
+		<record id="action_referral_analysis_report" model="ir.actions.act_window">
+           <field name="name">Referral Analysis</field>
+           <field name="res_model">referral.analysis.report</field>
+           <field name="view_type">form</field>
+           <field name="view_mode">graph</field>
+           <field name="context">{}</field>
+           <field name="domain">[]</field>
+           <field name="help">Referral Analysis allows you to check different related informations and activities</field>
+       </record>
+       <record model="ir.actions.act_window.view" id="action_referral_analysis_graph">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">graph</field>
+            <field name="view_id" ref="view_referral_analysis_report_graph"/>
+            <field name="act_window_id" ref="action_referral_analysis_report"/>
+       </record>
+										
+		<menuitem name="Referrels" id='menu_referral_analysis_report_main' parent='menu_relationship_management_root' sequence='1'></menuitem>
+		
+<!--		<menuitem name="Referral Analysis" id="menu_referral_analysis_report"
+        		parent="menu_referral_analysis_report_main"  sequence="0" 
+        		action="action_referral_analysis_report"/> -->
+							
+   	</data>
+</openerp>
+    	

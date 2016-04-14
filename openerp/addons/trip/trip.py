@@ -20,7 +20,7 @@
 #/#############################################################################
 from openerp.osv import osv, fields
 from datetime import datetime
-
+from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
 
 class trip_stage(osv.osv):
     """ Stage of Recruitment Trip """
@@ -123,10 +123,89 @@ class res_partner(osv.osv):
         'agreedfees': fields.text('Agreed Fees Summary'),
         'conterms': fields.text('Guarantee Terms Summary'),
         
-        
         }
 
 res_partner()
+
+class res_users(osv.osv):
+    _name = "res.users"
+    _inherit = "res.users"
+    _columns = {
+                'callerid': fields.char('Caller ID', size=50,help="Caller ID used for the calls initiated by this user."),
+                'internal_number': fields.char('Internal Number', size=15,help="User's internal phone number."),
+                }
+
+
+class recruitment_phonecall(osv.osv):
+    
+    """ Model for Recruitment phonecalls """
+    _name = "recruitment.phonecall"
+    _description = "Recruitment phonecalls"
+    _order = "id desc"
+    _inherit = ['mail.thread']
+    
+    _columns = {
+        'create_date': fields.datetime('Creation Date' , readonly=True),
+        'state': fields.selection(
+            [('ANSWERED', 'Answered'),
+             ('BUSY', 'Busy'),
+             ('FAILED', 'Failed'),
+             ('NO ANSWER', 'No Answer')
+             ], string='Status', readonly=True, track_visibility='onchange',
+            help='The status is set to Confirmed, when a case is created.\n'
+                 'When the call is over, the status is set to Held.\n'
+                 'If the call is not applicable anymore, the status can be set to Cancelled.'),
+                
+        'name': fields.char('Call Summary', required=True),
+        'user_id': fields.many2one('res.users', 'Responsible'),
+        'section_id': fields.many2one('crm.case.section', 'Sales Team', \
+                        select=True, help='Sales team to which Case belongs to.'),
+        'duration': fields.float('Duration', help='Duration in minutes and seconds.'),
+        'partner_id': fields.many2one('res.partner', 'Contact'),
+        'partner_phone': fields.char('Phone'),
+        'partner_mobile': fields.char('Mobile'),
+        'origin_phone': fields.char('Origin Phone'),
+        'priority': fields.selection([('0','Low'), ('1','Normal'), ('2','High')], 'Priority'),
+        'date': fields.datetime('Date'),
+        'time': fields.float('Time'),
+        'hour': fields.char('Hour'),
+        'day':fields.integer('Day'),
+        'month':fields.integer('Month'),
+        'year':fields.integer('Year'),
+        'company_id': fields.many2one('res.company', 'Company'),
+        'description': fields.text('Description'),
+        'nbr_cases': fields.integer('# of Cases', readonly=True),
+    }
+    
+    def _get_default_state(self, cr, uid, context=None):
+        if context and context.get('default_state'):
+            return context.get('default_state')
+        return 'open'
+
+    _defaults = {
+        'date': fields.datetime.now,
+        'priority': '1',
+        'state':  _get_default_state,
+        'user_id': lambda self, cr, uid, ctx: uid,
+    }
+    
+    def on_change_partner_id(self, cr, uid, ids, partner_id, context=None):
+        values = {}
+        if partner_id:
+            partner = self.pool.get('res.partner').browse(cr, uid, partner_id, context=context)
+            values = {
+                'partner_phone': partner.phone,
+                'partner_mobile': partner.mobile,
+            }
+        return {'value': values}
+    
+    def compute_duration(self, cr, uid, ids, context=None):
+        for phonecall in self.browse(cr, uid, ids, context=context):
+            if phonecall.duration <= 0:
+                duration = datetime.now() - datetime.strptime(phonecall.date, DEFAULT_SERVER_DATETIME_FORMAT)
+                values = {'duration': duration.seconds/float(60)}
+                self.write(cr, uid, [phonecall.id], values, context=context)
+        return True
 
 
 

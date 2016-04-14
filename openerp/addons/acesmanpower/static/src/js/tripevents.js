@@ -14,11 +14,10 @@ openerp.acesmanpower = function(instance, local) {
 	    _lt = instance.web._lt;
 	var QWeb = instance.web.qweb;
     
-    var manpowerUser;
+    	var manpowerUser;
     
-    
-    
-    local.UploadPager = instance.Widget.extend({
+    	
+    	local.UploadPager = instance.Widget.extend({
 		template: "MyQWebTemplate1",
 		init: function(parent) {
 			this._super(parent);
@@ -47,13 +46,11 @@ openerp.acesmanpower = function(instance, local) {
                 $('#uploaddest').attr('src', 'http://odoo.jobsglobal-hr.com/?id=' + payload);
                 
                 
-            }); 
+            	}); 
             
-             
-            
-        },
-        
-    });
+        	},
+    	});
+    
         
 	
 	local.TripeventsPage = instance.Widget.extend({
@@ -286,7 +283,7 @@ openerp.acesmanpower = function(instance, local) {
 	});
 	
 	instance.web.client_actions.add('acesmanpower.homepage', 'instance.acesmanpower.TripeventsPage');
-    instance.web.client_actions.add('acesmanpower.uploadpage', 'instance.acesmanpower.UploadPager');
+        instance.web.client_actions.add('acesmanpower.uploadpage', 'instance.acesmanpower.UploadPager');
 	
 }
 

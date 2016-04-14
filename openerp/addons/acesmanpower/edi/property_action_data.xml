@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<openerp>
+    <data>
+        <!-- EDI related Email Templates menu -->
+        <record model="ir.actions.act_window" id="action_property_email_templates">
+            <field name="name">Email Templates</field>
+            <field name="res_model">email.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="email_template.email_template_tree" />
+            <field name="search_view_id" ref="email_template.view_email_template_search"/>
+            <field name="context">{'search_default_model_id':'acesmanpowerproperty'}</field>
+            <field name="context" eval="{'search_default_model_id': ref('acesmanpower.model_acesmanpowerproperty')}"/>
+        </record>
+        <menuitem id="menu_property_email_templates" parent="account.menu_configuration_misc" action="action_property_email_templates" sequence="31" groups="base.group_no_one"/>
+
+    </data>
+
+    <!-- Mail template are declared in a NOUPDATE block so users can freely customize/delete them -->
+    <data noupdate="1">
+        <!--Email template -->
+        <record id="email_template_edi_acesmanpowerproperty" model="email.template">
+            <field name="name">Property - Send by Email</field>
+            <field name="email_from">${(object.user_id.email or object.company_id.email or 'noreply@localhost')|safe}</field>
+            <field name="subject">Service Requests </field>
+            
+            <!--<field name="partner_to">${object.partner_id.id}</field>-->
+            <field name="model_id" ref="acesmanpower.model_acesmanpowerproperty"/>
+            <field name="auto_delete" eval="True"/>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="body_html"/>
+        </record>
+    </data>
+</openerp>

@@ -121,7 +121,7 @@
         </record>
         
        <menuitem name="Open positions" id="menu_acesmanpowerjob" parent="menu_recruitment_process_live_modules"  
-       sequence="5" action="ir_actions_server_acesmanpowerjob"/>
+       sequence="1" action="ir_actions_server_acesmanpowerjob"/>
         
     </data>
 </openerp>

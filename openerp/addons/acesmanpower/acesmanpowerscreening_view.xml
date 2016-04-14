@@ -120,7 +120,7 @@
             <field name="view_id" ref="view_acesmanpowerscreening_tree"/>
         </record>
         
-        <menuitem name="Agency Screening" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowerscreening_view"/>
+        <menuitem name="Agency Screening" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  sequence="0" action="act_open_acesmanpowerscreening_view"/>
         
     </data>
 </openerp>

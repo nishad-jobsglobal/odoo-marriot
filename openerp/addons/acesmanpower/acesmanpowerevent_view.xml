@@ -2,9 +2,6 @@
 <openerp>
     <data>
     
-    	<menuitem name='Recruitment' id='menu_recruitment_root' sequence='99'></menuitem>
-    	<menuitem name="Recruitment" id='menu_recruitment_main' parent='menu_recruitment_root' sequence='0'></menuitem>
-    			
         <record id="view_acesmanpowerevent_tree" model="ir.ui.view">
             <field name="name">acesmanpowerevent.tree</field>
             <field name="model">acesmanpowerevent</field>
@@ -160,9 +157,10 @@
        
        <menuitem name="Recruitment" id="menu_recruitment_process_live_modules"
 					parent="menu_recruitment_root"
-            		sequence="1"/>  
+       				groups="base.group_marriot_property_user"
+            			sequence="1"/>  
         
-        <menuitem name="Events" id="menu_acesmanpowerevent" parent="menu_recruitment_process_live_modules"  sequence="6" action="act_open_acesmanpowerevent_view"/>
+        <menuitem name="Events" id="menu_acesmanpowerevent" parent="menu_recruitment_process_live_modules"  sequence="2" action="act_open_acesmanpowerevent_view"/>
         
         <record model = "ir.ui.view" id = "modify_view_hr_job_form">
             <field name="name">hr.job.form</field>

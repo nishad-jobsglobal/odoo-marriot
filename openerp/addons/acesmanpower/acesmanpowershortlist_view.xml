@@ -185,7 +185,7 @@
             <field name="view_id" ref="view_acesmanpowershortlist_tree"/>
         </record>
         
-        <menuitem name="For Assessment" id="menu_acesmanpowershortlist" parent="menu_prerecruitment_portal_live_modules"  sequence="5" action="act_open_acesmanpowershortlist_view"/>
+        <menuitem name="For Assessment" id="menu_acesmanpowershortlist" parent="menu_prerecruitment_portal_live_modules"  sequence="1" action="act_open_acesmanpowershortlist_view"/>
         
         <!-- ######################################
         
@@ -242,10 +242,10 @@
         
         <menuitem name="Final Assessment" id="menu_finalrecruitment_portal_live_modules"
             		parent="menu_recruitment_root"
-            		sequence="3"/>
+            		sequence="4"/>
         
         <menuitem name="Waiting Results" id="menu_acesmanpowershortlist_confirmshortlist" 
-        		parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        	parent="menu_finalrecruitment_portal_live_modules"  sequence="0" 
         		action="ir_actions_server_confirmshortlist"/>
         
         <!-- ######################################
@@ -302,7 +302,7 @@
         </record>
         
         <menuitem name="Qualified" id="menu_acesmanpowershortlist_passed" 
-        parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        parent="menu_finalrecruitment_portal_live_modules"  sequence="1" 
         	action="ir_actions_server_passed"/>
         
         <!-- ######################################
@@ -359,7 +359,7 @@
         </record>
         
         <menuitem name="For Interview" id="menu_acesmanpowershortlist_forinterview" 
-        		parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        		parent="menu_finalrecruitment_portal_live_modules"  sequence="2" 
         		action="ir_actions_server_forinterview"/>
         
         <!-- ######################################
@@ -416,7 +416,7 @@
         </record>
         
         <menuitem name="Approved Data Pool" id="menu_acesmanpowershortlist_approved" 
-        		parent="menu_finalrecruitment_portal_live_modules"  sequence="5" 
+        		parent="menu_finalrecruitment_portal_live_modules"  sequence="3" 
         		action="ir_actions_server_approved_data_pool"/>
         
         <!-- ######################################
@@ -473,7 +473,7 @@
         </record>  
 
         <menuitem name="My Candidates" id="menu_acesmanpower_my_candidates" 
-        	parent="menu_finalrecruitment_portal_live_modules"  sequence="6" 
+        	parent="menu_finalrecruitment_portal_live_modules"  sequence="4" 
         	action="ir_actions_server_my_candidates"/>
     </data>
 </openerp>

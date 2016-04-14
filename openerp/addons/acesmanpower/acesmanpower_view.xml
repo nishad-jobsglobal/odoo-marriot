@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+    	
+    	<menuitem name='Recruitment' id='menu_recruitment_root' sequence='97'></menuitem>
+	
+    	<menuitem name="Dashboards" id="menu_recruitment_portal_live_modules"
+            		parent="menu_recruitment_root"
+            		sequence="0"/>
+    		
         <record id="view_acesjobseeker_tree" model="ir.ui.view">
             <field name="name">acesjobseeker.tree</field>
             <field name="model">acesjobseeker</field>
@@ -36,10 +43,8 @@
                             <button name="%(launch_acesmanpower_wizard)d" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS"/>
                             <button name="open_document" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Original CV" context="{'url': url_cv, }" />
                             <button name="open_document" class="oe_stat_button" icon="fa-file-pdf-o" type="object" string="Formatted CV" context="{'url': url_cvpdf, }" />
-                            
-                           <button name="2597" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Assessment" help="Set this candidate to take the assessment exam"
+                            <button name="2597" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Assessment" help="Set this candidate to take the assessment exam"
                             context="{'url_image': url_image, 'acesjobseeker_id': active_id }" />
-                            
                         </div>
                         <div class="oe_title" style="width: 380px;">
                             <label for="name" class="oe_edit_only"/>
@@ -112,11 +117,9 @@
                             <page string="Other Info">
                                 <group>
                                     <group colspan="4" >
-                                        <field name="color" />
                                         <field name="user_id" widget="selection"/>
-                                        <field name="url_cv"  />
-                                        <field name="url_cvpdf" />
-                                        <field name="importid" />
+                                        <field name="url_cv"  readonly="1"/>
+                                        <field name="url_cvpdf" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
@@ -202,9 +205,6 @@
         <menuitem name="Pre Assessment"
             id="menu_prerecruitment_portal_live_modules"
             parent="menu_recruitment_root"
-            sequence="2"/>
-        
-<!--        <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_prerecruitment_portal_live_modules"  sequence="10" action="act_open_acesjobseeker_view"/-->
-        
+            sequence="3"/>
     </data>
 </openerp>

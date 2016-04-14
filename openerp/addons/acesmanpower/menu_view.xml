@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+    	
+    	<menuitem name='Configure' id='menu_configure_root' sequence='499'></menuitem>
+    		
+    	<menuitem name="Configuration" id="menu_configuration_permission" parent="menu_configure_root" sequence="0"/>
+    	
+    	<menuitem name="Companies" id="menu_user_company"  
+				parent="menu_configuration_permission" sequence="0" 
+					action="base.action_res_company_form" 
+    			groups="base.group_marriot_group_property_admin" />
+        <menuitem name="Users" id="menu_user_configuration" 
+        			parent="menu_configuration_permission"  sequence="1" 
+        			action="base.action_res_users"
+        		groups="base.group_marriot_group_property_admin" />
+         
+        
+        <record id="view_company_form_inherit" model="ir.ui.view">
+            <field name="name">company.form.inherit</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form" />
+            <field name="arch" type="xml">	
+        		<xpath expr="//page[@string='Report Configuration']" position="after">
+      				<page string="Access Restricted Groups">
+			            <field name='groups_id'/>
+			        </page>
+    			</xpath>		
+            </field>
+        </record>
+        			 			        			    	
+    </data>
+</openerp>

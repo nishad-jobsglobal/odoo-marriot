@@ -23,6 +23,7 @@ import openerp
 from openerp import api
 from openerp import tools
 from openerp.osv import osv, fields
+from openerp.tools.translate import _
 from openerp.modules.module import get_module_resource
 
 class acesmanpowerproperty(osv.osv):
@@ -33,7 +34,7 @@ class acesmanpowerproperty(osv.osv):
      
     _name = 'acesmanpowerproperty'
     _description = "Property"
-    _order = "name asc"
+    _order = "id asc"
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     
     def _default_user(self, cr, uid, context=None):
@@ -118,6 +119,35 @@ class acesmanpowerproperty(osv.osv):
     
     name = openerp.fields.Char(related='partner_id.name', inherited=True)
     email = openerp.fields.Char(related='partner_id.email', inherited=True)
+    
+    
+    @api.multi
+    def action_sent_mail(self):
+        """ Open a window to compose an email, with the edi invoice template
+            message loaded by default
+        """
+        assert len(self) == 1, 'This option should only be used for a single id at a time.'
+        template = self.env.ref('acesmanpower.email_template_edi_acesmanpowerproperty', False)
+        compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
+        ctx = dict(
+            default_model='acesmanpowerproperty',
+            default_res_id=self.id,
+            default_use_template=bool(template),
+            default_template_id=template.id,
+            default_composition_mode='comment',
+            mark_invoice_as_sent=True,
+        )
+        return {
+            'name': _('Compose Email'),
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form.id, 'form')],
+            'view_id': compose_form.id,
+            'target': 'new',
+            'context': ctx,
+        }
     
     def _get_default_image(self, cr, uid, context=None):
         image_path = get_module_resource('hr', 'static/src/img', 'default_image.png')

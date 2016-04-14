@@ -146,12 +146,8 @@
             <field name="view_id" ref="view_acesmanpoweruser_tree"/>
         </record>
         
-        <menuitem name="Dashboards" id="menu_recruitment_portal_live_modules"
-            		parent="menu_recruitment_root"
-            		sequence="1"/>
-        
         <menuitem name="Users" id="menu_acesmanpoweruser" parent="menu_recruitment_process_live_modules"  
-        sequence="99" action="ir_actions_server_acesmanpoweruser"/>
+        sequence="3" action="ir_actions_server_acesmanpoweruser"/>
                 
         <record model = "ir.ui.view" id = "modify_view_users_form">
             <field name="name">res.users.form</field>

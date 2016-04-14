@@ -18,11 +18,12 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-from openerp import api
 from openerp import tools
 from openerp.osv import osv, fields
+from openerp import SUPERUSER_ID
 from openerp.tools.translate import _
 from openerp.modules.module import get_module_resource
+from stdnum.at import uid
 
 class acesmanpoweruser(osv.osv):
     _name = 'acesmanpoweruser'
@@ -120,7 +121,7 @@ class acesmanpoweruser(osv.osv):
         # Find property and related property ids of log in user with related to property user
         if log_in_user and property_user_id:
             # Direct Property
-            property_id = manpower_user_obj.browse(cr,uid,property_user_id,context).property_id.id
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id[0],context).property_id.id
             
         flag_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_user')
         flag_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_admin')
@@ -137,7 +138,6 @@ class acesmanpoweruser(osv.osv):
             domain = []
             
         print "Domain=",domain
-        
         value = {
                 'name': _('Users'),
                 'view_type': 'form',
@@ -147,52 +147,95 @@ class acesmanpoweruser(osv.osv):
                 'view_id': False,
                 'domain': domain
                 }
-        
         print "-"*25
-        
         return value
     
 class res_users(osv.osv):
     _name = "res.users"
     _inherit = "res.users"
     _columns = {
-                    'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Recruitment User'),
+                'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Recruitment User'),
                 }
     
-    @api.multi
-    def write(self, vals):
-        print "="*25
-        print "Users =",vals
-        
-        self.env.cr.execute("SELECT id FROM res_groups WHERE name='Member of Head office Processing Team'")
-        group_id = self.env.cr.fetchone()[0]
-        self.env.cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
-        initial_users = self.env.cr.fetchall()
-        initial_users = [user[0] for user in initial_users]
-        
-        # Update user with all the other updates.
-        res = super(res_users, self).write(vals)
-        
-        self.env.cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
-        final_users = self.env.cr.fetchall()
-        final_users = [user[0] for user in final_users]
-        
-        if len(list(set(initial_users)-set(final_users))) > 0:
-            users = list(set(initial_users)-set(final_users))
-            status = False
-        elif len(list(set(final_users)-set(initial_users))) > 0:
-            users = list(set(final_users)-set(initial_users))
-            status = True
-        else:
-            users = list(set(initial_users)  & set(final_users))
-            status = True
-            
-        for user_id in users:
-            employee_id = self.env['hr.employee'].search([('user_id','=',user_id)])
-            employee_obj = self.env['hr.employee'].browse([employee_id.id])
-            employee_obj.write({'consultant':status})
+    def _get_company_restricted_groups(self,cr,uid):
+        comapny_id = self.pool['res.users']._get_company(cr,uid)
+        cr.execute("SELECT gid FROM res_company_groups_rel WHERE cid="+str(comapny_id))
+        company_groups = cr.fetchall()
+        company_groups_ids = [gp[0] for gp in company_groups]
+        return company_groups_ids or []
+    
+    def _get_groups_of_users(self,cr,uid):
+        cr.execute("SELECT gid FROM res_groups_users_rel WHERE uid="+str(uid))
+        user_groups = cr.fetchall()
+        user_groups_ids = [gp[0] for gp in user_groups]
+        return user_groups_ids or []
+    
+    def _get_users_of_group(self,cr,uid,group_id):
+        cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
+        all_users = cr.fetchall()
+        all_users = [user[0] for user in all_users]
+        return all_users
+    
+    
+    def validate_groups(self,cr,uid,context=None):
+        vals = {}
+        company_groups_ids = self._get_company_restricted_groups(cr,uid)
+        user_groups_ids = self._get_groups_of_users(cr,uid)
+        if company_groups_ids and user_groups_ids:
+            common_group_ids = set(company_groups_ids).intersection(user_groups_ids)
+            if common_group_ids:
+                unlink_ids = list(set(user_groups_ids).difference(common_group_ids))
+                vals = {'groups_id': [(6,0,unlink_ids)]}
+            elif user_groups_ids:
+                vals = {'groups_id': [(6,0,user_groups_ids)]}
+        return vals
+    
+    def create(self, cr, uid, values, context=None):
+        res = super(res_users, self).create(cr, uid, values, context)
+        #self.validate_groups(cr,res,context=context)
         return res
     
+    def write(self, cr, uid, ids, vals, context=None):
+        admin_comapny_id = self.pool['res.users']._get_company(cr,SUPERUSER_ID) or None
+        user_comapny_id = self.pool['res.users']._get_company(cr,ids[0]) or None
+        if user_comapny_id == admin_comapny_id:
+            
+            # Check and update the head office processing teams status in the Employee master
+            cr.execute("SELECT id FROM res_groups WHERE name='Member of Head office Processing Team'")
+            group_id = cr.fetchone()[0]
+            
+            initial_users = self._get_users_of_group(cr,uid,group_id)
+            
+            # Update user with all the other updates.
+            res = super(res_users, self).write(cr, uid, ids, vals, context)
+            
+            final_users = self._get_users_of_group(cr,uid,group_id)
+            
+            if len(list(set(initial_users)-set(final_users))) > 0:
+                users = list(set(initial_users)-set(final_users))
+                status = False
+            elif len(list(set(final_users)-set(initial_users))) > 0:
+                users = list(set(final_users)-set(initial_users))
+                status = True
+            else:
+                users = list(set(initial_users)  & set(final_users))
+                status = True
+                
+            for user_id in users:
+                employee_id = self.pool['hr.employee'].search(cr,uid,[('user_id','=',user_id)])
+                if not employee_id:
+                    user_name = self.pool['res.users'].browse(cr,uid,[user_id]).name
+                    raise osv.except_osv(_('Warning!'),_('User %s is not linked with an employee, Please link it first !')%(user_name))
+                employee_obj = self.pool['hr.employee'].browse(cr,uid,[employee_id[0]])
+                employee_obj.write({'consultant':status})
+        else:
+            res = super(res_users, self).write(cr, uid, ids, vals, context)
+            # Check for all the possible groups with which this user is able to associate with
+            for user_id in self.browse(cr, uid, ids, context=context):
+                vals = self.validate_groups(cr,user_id.id,context=context)
+            if vals:
+                super(res_users, self).write(cr, uid, ids, vals, context)
+        return res
     
     
 class hr_employee(osv.osv):
