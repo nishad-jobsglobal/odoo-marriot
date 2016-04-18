@@ -17,7 +17,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-import psycopg2
 import requests
 import json
 import re
@@ -32,9 +31,9 @@ class acesjobseeker(osv.osv):
     _description = "Jobseeker"
     _order = "id desc"
     
-    @api.model
-    def _needaction_domain_get(self):
-        return [('stage_id', '=', 'new')]
+#     @api.model
+#     def _needaction_domain_get(self):
+#         return [('stage_id', '=', 'new')]
     
     def fetch_data(self, cr, uid, ids, stage=None, context=None):
         if context is None:
@@ -92,6 +91,7 @@ class acesjobseeker(osv.osv):
             'color': fields.integer('Color Index'),
             'user_id': fields.many2one('res.users', 'Responsible', track_visibility='onchange'),
             'company_id': fields.many2one('res.company', 'Company'),
+            'jobseeker_mail_server_id': fields.many2one('mail.jobseeker', 'Mail Server'),
             'url_image': fields.char(size=500, string='Image', ),
             'url_cv': fields.char(size=500, string='CV', ),
             'url_cvpdf': fields.char(size=500, string='CV PDF', ),

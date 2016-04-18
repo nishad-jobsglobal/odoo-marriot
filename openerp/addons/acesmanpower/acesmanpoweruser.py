@@ -23,7 +23,6 @@ from openerp.osv import osv, fields
 from openerp import SUPERUSER_ID
 from openerp.tools.translate import _
 from openerp.modules.module import get_module_resource
-from stdnum.at import uid
 
 class acesmanpoweruser(osv.osv):
     _name = 'acesmanpoweruser'
@@ -134,7 +133,9 @@ class acesmanpoweruser(osv.osv):
         if flag_admin and log_in_user and property_user_id:
             proerty_users = manpower_user_obj.search(cr,uid,[('property_id','=',property_id)])
             domain = [('id','in',proerty_users)]
-        if flag_group_admin:
+        #if flag_group_admin:
+        #    domain = []
+        if uid == 1:
             domain = []
             
         print "Domain=",domain
@@ -237,11 +238,9 @@ class res_users(osv.osv):
                 super(res_users, self).write(cr, uid, ids, vals, context)
         return res
     
-    
 class hr_employee(osv.osv):
     _name = "hr.employee"
     _inherit = "hr.employee"
     _columns = {
         'consultant':fields.boolean('Consultant'),
     }
-    

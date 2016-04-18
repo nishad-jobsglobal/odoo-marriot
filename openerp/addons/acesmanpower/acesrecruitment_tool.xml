@@ -5,6 +5,99 @@
         
         <menuitem name="CV Processing" id="menu_recruitment_upload_cv" parent="menu_recruitment_tool_root" sequence="0"/>  
         
+        	
+        <!--  Jobseekers by Email -->
+        	
+        		
+        <record model="ir.ui.view" id="mail_jobseeker_tree" >
+            <field name="name">mail.jobseeker.tree</field>
+            <field name="model">mail.jobseeker</field>
+            <field name="arch" type="xml">
+	            <tree string="CV By Email">
+	                <field name="name"/>
+	                <field name="company_id"/>
+					<field name="user_id"/>
+					<field name="primary_email"/>
+					<field name="auto_email"/>                     
+					<field name="description"/>	                
+	            </tree>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="mail_jobseeker_form" >
+            <field name="name">mail.jobseeker.form</field>
+            <field name="model">mail.jobseeker</field>
+            <field name="arch" type="xml">
+                <form string="CV By Email">
+                    <sheet>
+		                <group>
+	                        <field name="name"/>
+			                <field name="company_id"/>
+							<field name="user_id"/>
+							<field name="primary_email"/>
+							<field name="auto_email" readonly='1'/>                     
+							<field name="description"/>	   						
+		                </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.ui.view" id="open_mail_jobseeker_search">
+            <field name="name">mail.jobseeker.search</field>
+            <field name="model">mail.jobseeker</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="CV By Email">
+                <newline/>
+                <group expand="0" string="Group By...">
+                    <filter string="Name" context="{'group_by':'name'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+        
+        <record model="ir.actions.server" id="ir_actions_server_mail_jobseeker" >
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_mail_jobseeker"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">CV By Email</field> 
+        </record>
+        
+        <record model="ir.actions.act_window" id="act_open_mail_jobseeker_view">
+            <field name="name">CV By Email</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mail.jobseeker</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="open_mail_jobseeker_search"/>
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+        </record>	
+        	
+        <record model="ir.actions.act_window.view" id="act_open_mail_jobseeker_view_form">
+            <field name="act_window_id" ref="act_open_mail_jobseeker_view"/>
+            <field name="sequence" eval="20"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="mail_jobseeker_form"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="act_open_mail_jobseeker_view_tree">
+            <field name="act_window_id" ref="act_open_mail_jobseeker_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="mail_jobseeker_tree"/>
+        </record>
+        
+        <menuitem name="CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="1" action="ir_actions_server_mail_jobseeker"/>
+        	
+        <!--  Jobseekers by Email -->
+        	
+        <!--  CV by Email ( Not Using ) -->
+        	
         <record model="ir.ui.view" id="open_cv_byemail_tree" >
             <field name="name">cv.byemail.tree</field>
             <field name="model">cv.byemail</field>
@@ -95,7 +188,7 @@
             <field name="view_id" ref="open_cv_byemail_tree"/>
         </record>
         
-        <menuitem name="CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="1" action="act_open_cv_byemail_view"/>
+<!--        <menuitem name="CV by Email" id="menu_cv_mail" parent="menu_recruitment_upload_cv"  sequence="1" action="act_open_cv_byemail_view"/-->
         	
         <menuitem name="CV Search" id="menu_acesjobseeker" parent="menu_recruitment_upload_cv"  sequence="2" action="ir_actions_server_acesjobseeker"/>
         	
