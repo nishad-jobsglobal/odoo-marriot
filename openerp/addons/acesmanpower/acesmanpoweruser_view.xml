@@ -33,16 +33,17 @@
                         
                         <div class="oe_right oe_button_box" name="button_box" style="width: 180px; " >
                             <button name="%(acesmanpower.launch_acesmanpower_wizardnotify2)d" class="oe_stat_button" icon="fa-phone-square" type="action" string="Send Request"/>
-                            <button name="%(launch_acesmanpower_wizardnotify3)d" class="oe_stat_button" icon="fa-user" type="action" string="Create User"/>
+                            <button name="%(launch_acesmanpower_wizardnotify3)d" class="oe_stat_button" icon="fa-user" type="action" string="Create User"
+                            groups="base.group_marriot_property_admin,base.group_marriot_group_property_user,base.group_marriot_group_property_admin,account.group_marriot_consultant" />
                         </div>
                         
                         <div class="oe_title" >
                             <label for="name" class="oe_edit_only"/>
                             <h1><field name="name"/></h1>
                             <label for="property_id" class="oe_edit_only"/>
-                            <h2 style="display: inline-block;">
-                                <field name="property_id" class="oe_inline"/> 
-                            </h2>
+                            <h4 style="display: inline-block;">
+                                <field name="property_id" widget="selection" class="oe_inline"/> 
+                            </h4>
                         </div>
                         
                         <notebook>
@@ -58,13 +59,13 @@
                                         <field name="email" string="Email/Username" on_change="onchange_email(email, username)" />
                                         <field name="password" password="True" />
                                     </group>
-                                    <group>
+                                    <group string="Contact Details">
                                         <field name="mobile" />
                                     </group>
                                     <group>
-                                        <field name="access_id" />
-                                        <field name="user_id" />
+                                        <field name="user_id" widget="selection"/>
                                         <field name="company_id"/>
+                                        <field name="access_id"/>
                                     </group>
                                     <group>
                                         <field name="write_date" />
@@ -72,9 +73,9 @@
                                     </group>
                                 </group>
                             </page>
-                            <page string="Other Properties">
+                            <page string="Other Properties" groups="base.group_marriot_group_property_user,base.group_marriot_group_property_admin,account.group_marriot_consultant">
                                 <group>
-                                    <field name="property_ids" nolabel="1" context="{'acesmanpoweruser_id': active_id}" />
+                                    <field name="property_ids" nolabel="1" context="{'acesmanpoweruser_id': active_id}" />111
                                 </group>
                             </page>
                             <page string="Notes">

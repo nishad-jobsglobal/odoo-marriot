@@ -43,6 +43,10 @@
                             <label for="acesjobseeker_id" class="oe_edit_only"/>
                             <h1><field name="acesjobseeker_id"/></h1>
                         </div>
+                        <div class="oe_title" style="width: 480px;">
+                            <label for="trip_id" class="oe_edit_only"/>
+                            <h2><field name="trip_id"/></h2>
+                        </div> 
                         <group>
                             <group>
                                 <field name="q1" widget="radio" class="oe_myrad" />
@@ -86,6 +90,7 @@
                 <newline/>
                 <field name="name" string="Name"/>
                 <group expand="0" string="Group By...">
+                	<filter context="{'group_by':'trip_id'}" string="Trip" />	
                     <filter domain="[('q1','&gt;',6)]" context="{'group_by':'q1'}" string="Q1" />
                     <filter domain="[('q2','&gt;',6)]" context="{'group_by':'q2'}" string="Q2" />
                     <filter domain="[('q3','&gt;',6)]" context="{'group_by':'q3'}" string="Q3" />
@@ -105,6 +110,16 @@
           	<field name="domain">[('state_id','=','new')]</field>
             <field name="context">{}</field>
         </record>
+       
+       <record id="ir_actions_server_acesmanpowerscreening" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowerscreening"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Jobseeker Screening</field> 
+        </record>   
 
         <record model="ir.actions.act_window.view" id="act_open_acesmanpowerscreening_view_form">
             <field name="act_window_id" ref="act_open_acesmanpowerscreening_view"/>
@@ -120,7 +135,8 @@
             <field name="view_id" ref="view_acesmanpowerscreening_tree"/>
         </record>
         
-        <menuitem name="Agency Screening" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  sequence="0" action="act_open_acesmanpowerscreening_view"/>
+        <menuitem name="Agency Screening" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  
+        sequence="0" action="ir_actions_server_acesmanpowerscreening"/>
         
     </data>
 </openerp>

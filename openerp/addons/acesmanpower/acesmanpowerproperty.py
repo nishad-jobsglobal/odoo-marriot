@@ -70,17 +70,16 @@ class acesmanpowerproperty(osv.osv):
         #'name': fields.char(size=256, string='Name', required=True, ),
         #'email': fields.related('acesmanpoweruser_id', 'email', type='char', string='Email', readonly=True),
         
-        'mobile': fields.related('acesmanpoweruser_id', 'mobile', type='char', string='Mobile', readonly=True),
-        
         'street': fields.char(size=256, string='Street', ),
         'city': fields.char(size=256, string='City', ),
         'country_id': fields.many2one('res.country', 'Country'),
         'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Responsible', track_visibility='onchange'),
+        'mobile': fields.related('acesmanpoweruser_id', 'mobile', type='char', string='Mobile', readonly=True),
         
         'partner_id': fields.many2one('res.partner', required=True,
             string='Related Partner/Customer', ondelete='restrict',
             help='Partner-related data of the property', auto_join=True),
-        'parent_id': fields.many2one('res.partner', 'Parent Property', select=True),
+        'parent_id': fields.many2one('acesmanpowerproperty', 'Parent Property', select=True),
         'child_ids': fields.one2many('acesmanpowerproperty', 'parent_id', 'Child Properties'),
         
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
@@ -90,7 +89,6 @@ class acesmanpowerproperty(osv.osv):
         'description': fields.text(string='Notes', ),
         
         'acesmanpowerevent_ids': fields.many2many('acesmanpowerevent', 'acesmproperty_acesmevent_rel', 'acesmanpowerproperty_id', 'acesmanpowerevent_id'),
-        #'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmproperty_acesuser_rel','acesmanpowerproperty_id','acesmanpoweruser_id'),
         'agency_consultant_ids':fields.many2many('hr.employee','property_consultant_rel','property_id','consultant_id'), 
         
         'website': fields.char(size=160, string='Website', ),
@@ -155,6 +153,55 @@ class acesmanpowerproperty(osv.osv):
     
     _defaults = {
         'image': _get_default_image,
-        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'hr.applicant', context=c),
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'acesmanpowerproperty', context=c),
         'acesmanpoweruser_id': lambda self, cr, uid, c: c.get('acesmanpoweruser_id', False),
     }
+    
+    def fetch_data(self, cr, uid, ids,context=None):
+        if context is None:
+            context = {}
+        print "-"*25
+        manpower_user_obj = self.pool.get('acesmanpoweruser')
+        property_obj = self.pool.get('acesmanpowerproperty')
+        all_property_ids = property_ids = []
+        log_in_user = property_user_id = False
+        # Find the log in user and his related property user id
+        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
+            log_in_user = uid
+            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
+            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
+        
+        # Find property and related property ids of log in user with related to property user
+        if log_in_user and property_user_id:
+            # Direct Property
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id[0],context).property_id.id
+            # Other Properties
+            for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
+                property_ids = [obj.id for obj in obje.property_ids]
+            property_ids.append(property_id)
+            print "property_id=",property_id,property_ids
+                
+        # Find all the short listed candidates who is linked with any of the property
+        if property_ids:
+            all_property_ids = property_obj.search(cr,uid,[('id','in',list(set(property_ids)))],context=context)
+            print "all_property_ids=",all_property_ids
+        domain = [('id','in',all_property_ids)]
+            
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if flag_grop_user or flag_group_admin or flag_group_consultant:     
+            domain = []
+        print "Domain=",domain
+        value = {
+                'name': _('Properties'),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesmanpowerproperty',
+                'view_id': False,
+                'domain': domain
+                }
+        print "-"*25
+        return value

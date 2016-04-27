@@ -45,6 +45,7 @@
                             <page string="Details">
                                 <group>
                                     <group string="Contacts">
+                                    	<field name="acesmanpoweruser_id" widget="selection"/>	
                                         <field name="email" />
                                         <field name="mobile" />
                                         <field name="website" />
@@ -113,6 +114,16 @@
             </search>
             </field>
         </record>
+       
+       <record id="ir_actions_server_acesmanpowerproperty" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowerproperty"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Properties</field> 
+        </record>	  
 
         <record model="ir.actions.act_window" id="act_open_acesmanpowerproperty_view">
             <field name="name">Properties</field>
@@ -139,8 +150,7 @@
             <field name="view_id" ref="view_acesmanpowerproperty_tree"/>
         </record>
         
-        <menuitem name="Properties" id="menu_acesmanpowerproperty" groups="base.group_marriot_property_user"
-        parent="menu_recruitment_process_live_modules"  sequence="0" action="act_open_acesmanpowerproperty_view"/>
-   
+        <menuitem name="Properties" id="menu_acesmanpowerproperty_admin"
+        parent="menu_recruitment_process_live_modules"  sequence="0" action="ir_actions_server_acesmanpowerproperty"/>
     </data>
 </openerp>

@@ -15,19 +15,59 @@
         			action="base.action_res_users"
         		groups="base.group_marriot_group_property_admin" />
          
-        
+    	<!--  Hide few pages in company which are not relevant for property managers     -->    
+	        			
         <record id="view_company_form_inherit" model="ir.ui.view">
             <field name="name">company.form.inherit</field>
             <field name="model">res.company</field>
             <field name="inherit_id" ref="base.view_company_form" />
-            <field name="arch" type="xml">	
-        		<xpath expr="//page[@string='Report Configuration']" position="after">
-      				<page string="Access Restricted Groups">
+            <field name="arch" type="xml">
+            	<xpath expr="//group[@string='Bank Accounts']" position="attributes">
+					<attribute name="groups">base.group_system</attribute>      				
+    			</xpath>
+            	<xpath expr="//page[@string='Report Configuration']" position="after">
+      				<page string="Access Restricted Groups" groups="base.group_system">
 			            <field name='groups_id'/>
 			        </page>
+    			</xpath>
+    			<xpath expr="//page[@string='Configuration']" position="attributes">
+					<attribute name="groups">base.group_system</attribute>      				
+    			</xpath>
+    			<xpath expr="//page[@string='Report Configuration']" position="attributes">
+      				<attribute name="groups">base.group_system</attribute>
+    			</xpath>
+            </field>
+        </record>
+        			 	
+        <record id="view_company_form_inherit2" model="ir.ui.view">
+            <field name="name">company.form.inherit2</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="account.view_company_inherit_form" />
+            <field name="arch" type="xml">
+    			<xpath expr="//page[@string='Overdue Payments']" position="attributes">
+      				<attribute name="groups">base.group_system</attribute>
     			</xpath>		
             </field>
         </record>
-        			 			        			    	
+        
+		<!--  Hide few pages in users view which are not relevant for property managers     -->
+        
+        <record id="view_users_form_inherit" model="ir.ui.view">
+            <field name="name">users.form.inherit</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form" />
+            <field name="arch" type="xml">
+    			<xpath expr="//page[@string='Preferences']" position="attributes">
+      				<attribute name="groups">base.group_system</attribute>
+    			</xpath>
+    			<xpath expr="//page[@string='Telephony']" position="attributes">
+      				<attribute name="groups">base.group_system</attribute>
+    			</xpath>
+    			<xpath expr="//page[@string='Calendar']" position="attributes">
+      				<attribute name="groups">base.group_system</attribute>
+    			</xpath>		
+            </field>
+        </record>
+        		        			    	
     </data>
 </openerp>

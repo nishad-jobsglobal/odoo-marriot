@@ -123,6 +123,12 @@
                                     </group>
                                 </group>
                             </page>
+                           
+                           	<page string="CV">	
+                           		<iframe width="100%" height="300" src="http://dps.jobsglobal.com/aHR0cDovL2pvYnNnbG9iYWwuY29tL2NvbXBhbnkvdGhlY3YvZ2V0X2N2LnBocD9jdj00MDk4NC5kb2N4.html">
+									<p>Your browser does not support iframes.</p>
+								</iframe>	
+                           	</page>  
                         </notebook>
                         <separator string="Notes"/>
                         <field name="description" nolabel="1" />

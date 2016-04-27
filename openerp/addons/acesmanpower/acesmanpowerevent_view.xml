@@ -30,9 +30,9 @@
                     </header>
                     <sheet>
                         <div class="oe_right oe_button_box" name="button_box" style="width: 300px; ">
-                            <button name="action_view_invite" class="oe_stat_button" icon="fa-check-square-o" type="object" string="Invite"/>
-                            <button name="action_view_participant" class="oe_stat_button" icon="fa-share-square" type="object" string="Participants"/>
-                            <button name="action_view_registration" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Registrations"/>
+                            <button name="action_view_invite" class="oe_stat_button" icon="fa-check-square-o" type="object" string="Invite" invisible="1"/>
+                            <button name="action_view_participant" class="oe_stat_button" icon="fa-share-square" type="object" string="Participants" invisible="1"/>
+                            <button name="action_view_registration" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Registrations" invisible="1"/>
                             <button name="action_view_shortlists" class="oe_stat_button" icon="fa-file-pdf-o" type="object" string="Shortlists"/>
                         </div>
                         <div class="oe_title" style="width: 480px;">
@@ -51,7 +51,8 @@
                                         <field name="datestart" />
                                         <field name="dateend" />
                                     </group>
-                                    <group string="Contacts for the Event">
+                                    <group string="Contacts for the Event" groups="base.group_marriot_group_property_user,
+                                        							      base.group_marriot_group_property_admin">
                                         <field name="user_id" string="Contact" />
                                         <field name="email" placeholder="This will be auto filled with the contacts email"/>
                                         <field name="mobile" placeholder="This will be auto filled with the contacts mobile"/>
@@ -59,7 +60,8 @@
                                     <group string=" ">
                                         <field name="create_date" />
                                         <field name="write_date" />
-                                        <field name="write_uid" />
+                                        <field name="write_uid" groups="base.group_marriot_group_property_user,
+                                        							 base.group_marriot_group_property_admin" />
                                     </group>
                                     
                                 </group>
@@ -129,9 +131,20 @@
                 </calendar>
             </field>
         </record>
+       
+       
+       <record id="ir_actions_server_acesmanpowerevent" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowerevent"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Recruitment Trips</field> 
+        </record>   
 
         <record model="ir.actions.act_window" id="act_open_acesmanpowerevent_view">
-            <field name="name">Recruitment Events</field>
+            <field name="name">Recruitment Trips</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">acesmanpowerevent</field>
             <field name="view_type">form</field>
@@ -155,12 +168,10 @@
             <field name="view_id" ref="view_acesmanpowerevent_tree"/>
         </record>
        
-       <menuitem name="Recruitment" id="menu_recruitment_process_live_modules"
-					parent="menu_recruitment_root"
-       				groups="base.group_marriot_property_user"
-            			sequence="1"/>  
+       <menuitem name="Recruitment" id="menu_recruitment_process_live_modules" parent="menu_recruitment_root"
+       	groups="base.group_marriot_property_user" sequence="1"/>  
         
-        <menuitem name="Events" id="menu_acesmanpowerevent" parent="menu_recruitment_process_live_modules"  sequence="2" action="act_open_acesmanpowerevent_view"/>
+        <menuitem name="Recruitment Trips" id="menu_acesmanpowerevent" parent="menu_recruitment_process_live_modules"  sequence="2" action="ir_actions_server_acesmanpowerevent"/>
         
         <record model = "ir.ui.view" id = "modify_view_hr_job_form">
             <field name="name">hr.job.form</field>
@@ -172,6 +183,17 @@
                 </xpath>
             </field>
         </record>
+       
+	   <!--  This is a special server action for showing the data in dash board      -->
+       <record id="ir_actions_server_individual_acesmanpowerevent" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowerevent"/>
+            <field name="code">action = self.fetch_recruitment_trip(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Dashboard  - Individual Recruitment Trip</field> 
+        </record>   
         
     </data>
 </openerp>

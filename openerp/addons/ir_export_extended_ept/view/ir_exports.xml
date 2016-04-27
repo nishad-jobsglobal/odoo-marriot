@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-<!--		<menuitem id="exports_data_parent_menu_ept" name="Export Data-->
-<!--			parent="base.menu_reporting" sequence="2" /-->
-		
-
 		<menuitem id="exports_data_parent_menu_ept" name="Export Data"
-				parent="acesmanpower.menu_recruitment_root" sequence="2" />		
-				
+			parent="base.menu_reporting" sequence="2" />
+
         <record id="view_ieee_search_form" model="ir.ui.view">
             <field name="name">Export Data search</field>
             <field name="model">ir.exports</field>

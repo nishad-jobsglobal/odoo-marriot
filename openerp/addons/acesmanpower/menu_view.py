@@ -19,7 +19,6 @@
 #
 #/#############################################################################
 from openerp.osv import osv, fields
-from openerp.tools.translate import _
 
 class res_company(osv.osv):
     _inherit = 'res.company'
@@ -34,11 +33,7 @@ class res_users(osv.osv):
     _name = 'res.users'
     _description = "Users"
     
-    
     def fields_get(self, cr, uid, allfields=None, context=None, write_access=True, attributes=None):
-        # uid is SUPERUSER_ID, so we need to change it
-        #uid = self.pool['ir.config_parameter'].get_param(cr, uid, IR_CONFIG_NAME, context=context)
-        
         if uid != 1:
             uid = 1
         ctx = (context or {}).copy()    

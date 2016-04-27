@@ -63,6 +63,7 @@ This module manages the testing
         'static/src/xml/resource.xml',
         'static/src/xml/dashboard.xml',
         'static/src/xml/upload.xml',
+        'static/src/xml/cvbyemail.xml',
     
     ],
     'css': [

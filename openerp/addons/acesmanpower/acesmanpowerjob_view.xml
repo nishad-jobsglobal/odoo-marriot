@@ -22,7 +22,7 @@
             <field name="arch" type="xml">
                 <form string="Vacancy" version="7.0">
                     <header>
-                        
+                        <field name="stage" widget="statusbar" clickable="False"/>
                     </header>
                     <sheet>
                         <div class="oe_right oe_button_box" name="button_box" style="width: 180px; ">
@@ -31,19 +31,20 @@
                             <label for="name" class="oe_edit_only"/>
                             <h1><field name="name"/></h1>
                             <label for="acesmanpowerproperty_id" class="oe_edit_only"/>
-                            <h2 style="display: inline-block;">
-                                <field name="acesmanpowerproperty_id" class="oe_inline"/> 
-                            </h2>
+                            <h4 style="display: inline-block;">
+                                <field name="acesmanpowerproperty_id" class="oe_inline" widget="selection"/> 
+                            </h4>
                             <label for="acesmanpowerevent_id" class="oe_edit_only"/>
-                            <h2 style="display: inline-block;">
-                                <field name="acesmanpowerevent_id" class="oe_inline"/> 
-                            </h2>
+                            <h4 style="display: inline-block;">
+                                <field name="acesmanpowerevent_id" class="oe_inline" widget="selection"/> 
+                            </h4>
                         </div>
                         <notebook>
                             <page string="Details">
                                 <group>
                                     <group>
                                         <field name="quantity" />
+                                        <field name="user_id" />	
                                     </group>
                                     <group>
                                         <field name="write_date" />

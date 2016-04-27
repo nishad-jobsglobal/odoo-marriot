@@ -62,10 +62,14 @@ class trip(osv.osv):
             print "trip_ids=",trip_ids
                 
         domain = [('id','in',trip_ids)]
-        flag = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
-        if flag:
-            domain = [('property_id','!=',False)]
         
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if flag_grop_user or flag_group_admin or flag_group_consultant:     
+            domain = [('property_id','!=',False)]
+            
         print "Domain=",domain
         
         value = {

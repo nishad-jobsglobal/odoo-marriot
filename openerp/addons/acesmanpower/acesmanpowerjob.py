@@ -34,22 +34,32 @@ class acesmanpowerjob(osv.osv):
         'jobdescription': fields.text(string='Job Description', ),
         'qualification': fields.text(string='Qualifications', ),
         
-        'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Owner', track_visibility='onchange'),
+        'stage': fields.selection([('new', 'New'),('approve', 'Approved'),('reject','Rejected'),('done','Done')]),
+        'user_id': fields.many2one('res.users', 'Created by', readonly=True),
+        'acesmanpoweruser_id': fields.related('user_id', 'acesmanpoweruser_id', type="many2one", relation="acesmanpoweruser", string="Recruitment User", store=True),
+        #'acesmanpoweruser_id': fields.many2one('acesmanpoweruser', 'Owner', track_visibility='onchange'),
         'acesmanpowerproperty_id': fields.many2one('acesmanpowerproperty', 'Property',required=True),
         'acesmanpowerevent_id': fields.many2one('acesmanpowerevent', 'Recruitment Event'),
         
         'company_id': fields.many2one('res.company', 'Company', readonly=True),
         'create_date': fields.datetime('Create Date', readonly=True),
-        'write_date': fields.datetime('Updated', readonly=True),
+        'write_date': fields.datetime('Updated On', readonly=True),
         'write_uid': fields.many2one('res.users', 'Updated by', readonly=True),
-        'user_id': fields.many2one('res.users', 'Updated by', readonly=True),
+        
     }
     
     _defaults = {
-        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'hr.applicant', context=c),
-        'acesmanpoweruser_id': lambda self, cr, uid, c: c.get('acesmanpoweruser_id', False),
+        'stage' : 'new',
         'user_id': lambda s, cr, uid, c: uid,
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'acesmanpowerjob', context=c),
+        'acesmanpoweruser_id': lambda self, cr, uid, c: c.get('acesmanpoweruser_id', False),
     }
+    
+    def unlink(self, cr, uid, ids, context=None):
+        for rec in self.browse(cr, uid, ids, context=context):
+            if rec.stage != 'new':
+                raise osv.except_osv(_('Warning!'),_('You can only delete draft records!'))
+        return super(acesmanpowerjob, self).unlink(cr, uid, ids, context)
     
     
     def fetch_data(self, cr, uid, ids,context=None):
@@ -81,15 +91,18 @@ class acesmanpowerjob(osv.osv):
             
             print "property_id=",property_id,property_ids
                 
-        # Find all the short listed candidates who is linked with any of the property
+        # Find all the job positions which is linked with any of the property
         if property_ids:
             jobposition_ids = jobposition_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
             print "jobposition_ids=",jobposition_ids
                 
         domain = [('id','in',jobposition_ids)]
-            
-        flag = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
-        if flag:
+        
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if flag_grop_user or flag_group_admin or flag_group_consultant:     
             domain = []
         
         print "Domain=",domain

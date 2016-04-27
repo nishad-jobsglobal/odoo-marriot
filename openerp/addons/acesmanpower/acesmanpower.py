@@ -31,10 +31,6 @@ class acesjobseeker(osv.osv):
     _description = "Jobseeker"
     _order = "id desc"
     
-#     @api.model
-#     def _needaction_domain_get(self):
-#         return [('stage_id', '=', 'new')]
-    
     def fetch_data(self, cr, uid, ids, stage=None, context=None):
         if context is None:
             context = {}
@@ -108,6 +104,7 @@ class acesjobseeker(osv.osv):
         'user_id': lambda s, cr, uid, c: uid,
         'company_id': lambda self, cr, uid, ctx=None: self.pool.get('res.company')._company_default_get(cr, uid, 'acesjobseeker', context=ctx),
         'color': 0,
+        'for_marriot': True
     }
     
     @api.multi
@@ -190,7 +187,8 @@ class acesjobseeker(osv.osv):
                 except ValueError:
                     continue
                 for i in exp_vals:
-                    exp_data += i[1] + ':' + re.sub(r'\s+', ' ', item[i[0]]) + '\n'
+                    if item.get(i[0],'') != '':
+                        exp_data += i[1] + ':' + re.sub(r'\s+', ' ', item[i[0]]) + '\n'
                 exp_data += '--------------------------------\n'
             formated_data = exp_data
             
@@ -204,7 +202,8 @@ class acesjobseeker(osv.osv):
                 except ValueError:
                     continue
                 for i in edu_vals:
-                    edu_data += i[1] + ':' + re.sub(r'\s+', ' ', item[i[0]]) + '\n'
+                    if item.get(i[0],'') != '':
+                        edu_data += i[1] + ':' + re.sub(r'\s+', ' ', item[i[0]]) + '\n'
                 edu_data += '--------------------------------\n'
             formated_data = edu_data
             
@@ -218,8 +217,9 @@ class acesjobseeker(osv.osv):
                 except ValueError:
                     continue
                 for i in per_vals:
-                    personal_data += i[1] + ':' + re.sub(r'\s+', ' ', item[i[0]]) + '\n'
-                personal_data += '--------------------------------\n'
+                    if item.get(i[0],'') != '':
+                        personal_data += i[1] + ':' + re.sub(r'\s+', ' ', item[i[0]]) + '\n'
+                #personal_data += '--------------------------------\n'
             formated_data = personal_data
             
         elif key == 'positionpreferred':
@@ -235,7 +235,7 @@ class acesjobseeker(osv.osv):
         cr.execute(""" SELECT datecreate,personalinfo,education,language,industrypreferred,
                                  positionpreferred,email,birthdate,nationality,name,phone1,experience,
                                  skills,gender,socialinfo,locationcurrent_city,odoo_user_id,odoo_company_id,
-                                 url,photofilename FROM jobseeker WHERE idjobseeker='%s' """%(jobseeker_id))
+                                 url,photofilename,pushmail_server_id FROM jobseeker WHERE idjobseeker='%s' """%(jobseeker_id))
         rst = cr.fetchone()
         try:
             if rst not in (None,[],[None]):
@@ -263,8 +263,10 @@ class acesjobseeker(osv.osv):
                 importid = int(jobseeker_id)
                 url_profile = self._get_profile_url(rst[18])
                 photofilename = self._fetch_jobseeker_image(rst[19])
+                pushmail_server_id = rst[20] or 0
                 
-                cr.execute(""" INSERT INTO acesjobseeker 
+                if pushmail_server_id <> 0:
+                    cr.execute(""" INSERT INTO acesjobseeker 
                          (  
                             create_date,
                             personalinfo,
@@ -293,15 +295,56 @@ class acesjobseeker(osv.osv):
                             url_cvpdf,
                             importid,
                             url_profile,
-                            url_image
+                            url_image,
+                            jobseeker_mail_server_id
                             )
                         VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                                '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'
+                                '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'
                                 ) """%(create_date,personalinfo,education,language,industrypreferred,
                                        positionpreferred,email,birthdate,nationality,name,phone1,
                                        experience,skills,gender,socialinfo,city,stage_id,True,user_id,
                                        company_id,user_id,user_id,create_date,url_riginal_cv,url_cv_pdf,
-                                       importid,url_profile,photofilename))
+                                       importid,url_profile,photofilename,pushmail_server_id))
+                    
+                else:
+                    cr.execute(""" INSERT INTO acesjobseeker 
+                             (  
+                                create_date,
+                                personalinfo,
+                                education,
+                                languages,
+                                industrypref,
+                                positionpref,
+                                email,
+                                dob,
+                                nationality,
+                                name,
+                                mobile,
+                                experience,
+                                skills,
+                                gender,
+                                socialinfo,
+                                city,
+                                stage_id,
+                                for_marriot,
+                                user_id,
+                                company_id,
+                                create_uid,
+                                write_uid,
+                                write_date,
+                                url_cv,
+                                url_cvpdf,
+                                importid,
+                                url_profile,
+                                url_image                                
+                                )
+                            VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
+                                    '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s'
+                                    ) """%(create_date,personalinfo,education,language,industrypreferred,
+                                           positionpreferred,email,birthdate,nationality,name,phone1,
+                                           experience,skills,gender,socialinfo,city,stage_id,True,user_id,
+                                           company_id,user_id,user_id,create_date,url_riginal_cv,url_cv_pdf,
+                                           importid,url_profile,photofilename))
         except:
             pass
         return True   

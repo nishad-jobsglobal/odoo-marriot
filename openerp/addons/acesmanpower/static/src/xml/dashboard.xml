@@ -2,7 +2,12 @@
 <templates >
 <t t-name="DashBoarder" >
   <style>
-    
+    .trip {
+  		}
+  	.position {
+  		}
+  	.property {
+  		}		
   </style>
   
   <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/chris/acesmanpower.css" />
@@ -20,9 +25,7 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Marriott
-          	
-            <small>Summary of recruitment activities</small>
+            Summary of Recruitment Activities
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -128,7 +131,7 @@
         <table id="generalpurpose" border="1px" >
         </table>
         <p>
-            <a href="#" class="btn btn-info" data-module="acesmanpowerevent" data-iractid="2771" role="button">View All</a>
+            <a href="#" class="btn btn-info trip" data-module="acesmanpowerevent" role="button">View All</a>
             <a href="#" class="btn btn-primary" data-module="acesmanpowerevent" role="button">Propose a Trip</a>
         </p>
         </div>
@@ -138,7 +141,7 @@
         <table id="gpjobs" border="1px" >
         </table>
         <p>
-            <a href="#" class="btn btn-info" data-module="acesmanpowerjob" data-iractid="2772" role="button">View All</a>
+            <a href="#" class="btn btn-info position" data-module="acesmanpowerjob" role="button">View All</a>
             <a href="#" class="btn btn-primary" data-module="acesmanpowerjob" role="button">Add Position</a>
         </p>
         </div>
@@ -149,7 +152,7 @@
         <tr><th>Property</th><th>Manager</th><th>Task</th></tr>
         </table>
         <p>
-            <a href="#" class="btn btn-info" data-module="acesmanpowerproperty" data-iractid="2772" role="button">View All</a>
+            <a href="#" class="btn btn-info property" data-module="acesmanpowerproperty" role="button">View All</a>
             <a href="#" class="btn btn-primary" data-module="acesmanpowerproperty" role="button">Add Property</a>
         </p>
         </div>

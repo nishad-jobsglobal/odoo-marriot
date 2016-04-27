@@ -197,7 +197,7 @@ class referral_analysis_report(osv.Model):
             )""")
 
     
-class manpower_referral_line(osv.osv):
-    _name = 'manpower.referral.line'
-    _description = "Manpower Referral Details"
+# class manpower_referral_line(osv.osv):
+#     _name = 'manpower.referral.line'
+#     _description = "Manpower Referral Details"
     

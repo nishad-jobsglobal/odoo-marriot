@@ -19,11 +19,11 @@
       <div class="content-wrapper" >
         <!-- Content Header (Page header) -->
         <section class="content-header">
-          <h1>
-            Marriott
-          	
-            <small>Drag Cvs to upload</small>
-          </h1>
+           <div style="margin: 20px; padding: 0;" >	
+	          <h2>
+	            Drag Cvs to upload
+	          </h2>
+	      </div> 
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
             <li class="active">Upload CV</li>
@@ -36,10 +36,14 @@
             
             <iframe id="uploaddest" style="width:650px; height: 300px; border: 0; " src=""></iframe>
             <br />
+            <em style="font-size: 15px;"> <strong>Explanation:</strong> Any CV you drop in the CV box will be
+            processed by the system and all information of the CV will be classified in the right fields automatically
+           by the system and these CV's will be searchable by you under <strong> CV Search</strong>  </em>
+            <br/>
             <em style="font-size: 10px;"> <strong>Important note:</strong> It might take up to 60 minutes before you see the uploaded data on your cv search due to server processing.</em>
         </div>
         
-        <div id="uid" style="font-size: 10px;"></div>
+<!--        <div id="uid" style="font-size: 10px;"></div>-->
         
         </section>
         

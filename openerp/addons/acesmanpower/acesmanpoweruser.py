@@ -18,6 +18,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+from psycopg2 import IntegrityError
+
 from openerp import tools
 from openerp.osv import osv, fields
 from openerp import SUPERUSER_ID
@@ -52,13 +54,12 @@ class acesmanpoweruser(osv.osv):
         'company_id': fields.many2one('res.company', 'Parent Company', required=True),
         'user_id': fields.many2one('res.users', 'Related User'),
         'create_date': fields.datetime('Create Date', readonly=True),
-        'write_date': fields.datetime('Updated', readonly=True),
+        'write_date': fields.datetime('Updated On', readonly=True),
         'write_uid': fields.many2one('res.users', 'Updated by', readonly=True),
         'description': fields.text(string='Notes', ),
         'consultant':fields.boolean('Consultant'),
         
         'property_id': fields.many2one('acesmanpowerproperty', 'Property', required=True),
-        #'property_ids': fields.one2many('acesmanpowerproperty','acesmanpoweruser_id','Other Properties'),
         'property_ids': fields.many2many('acesmanpowerproperty','acesmproperty_acesmuser_rel', 'acesmanpoweruser_id', 'acesmanpowerproperty_id', string="Other Properties"),
         
         'acesmanpowerevent_ids': fields.one2many('acesmanpowerevent','acesmanpoweruser_id','Recruitment Event'),
@@ -84,6 +85,10 @@ class acesmanpoweruser(osv.osv):
                  "Use this field anywhere a small image is required."),
     }
     
+    _sql_constraints = [
+        ('email_key', 'UNIQUE (email)',  'You can not have two users with the same username !')
+    ]
+    
     def _get_default_image(self, cr, uid, context=None):
         image_path = get_module_resource('hr', 'static/src/img', 'default_image.png')
         return tools.image_resize_image_big(open(image_path, 'rb').read().encode('base64'))
@@ -101,6 +106,61 @@ class acesmanpoweruser(osv.osv):
         if username == '':
             values['username'] = email
         return {'value': values}
+    
+#     @api.model
+#     def create(self,values):
+#         # Create System user
+#         userobject = super(acesmanpoweruser, self).create(values)
+#         
+#         auser = {}
+#         auser['name'] = userobject.name
+#         auser['email'] = userobject.email
+#         auser['acesmanpoweruser_id'] = userobject.id
+#         auser['login'] = userobject.email
+#         auser['password'] = userobject.password
+#         auser['new_password'] = userobject.password
+#         auser['mobile'] = userobject.mobile
+#          
+#         auser['company_id'] = userobject.company_id.id
+#         company_ids = []
+#         company_ids.append(userobject.company_id.id)
+#         auser['company_ids'] = company_ids
+#          
+#         external_id_model = self.pool.get('ir.model.data')
+#         group_portal_ref = external_id_model.get_object_reference(self._cr,self._uid, 'base', 'recruitment_portal')
+#         group_portal_id = group_portal_ref and group_portal_ref[1] or False
+#          
+#         group_portal_ref1 = external_id_model.get_object_reference(self._cr,self._uid, 'base', 'recruitment_portal_special')
+#         group_portal_id1 = group_portal_ref1 and group_portal_ref1[1] or False
+#          
+#         if group_portal_id:
+#             auser['groups_id'] = [(6, 0, [group_portal_id, group_portal_id1])]
+#          
+#         print "auser",auser
+#         try:
+#             idw = self.env['res.users'].sudo().create(auser)
+#         except IntegrityError:
+#             idw = None
+#             #user_name = userobject.email
+#             osv.except_osv(_('Warning!'),_('User  is already existing, Please choose another username !'))
+#         except InternalError:
+#             idw = None
+#             #user_name = userobject.email
+#             osv.except_osv(_('Warning!'),_('User  is already existing, Please choose another username !'))
+#         except:
+#             print "AM here"
+#             raise
+#         else:
+#             idw = None
+#         
+#         # Update Manpower user with System user ID
+#         if idw:
+#             st = {}
+#             st['user_id'] = idw
+#             self.write(st)
+#         #_____end
+#              
+#         return userobject
     
     def fetch_data(self, cr, uid, ids,context=None):
         if context is None:
@@ -126,16 +186,15 @@ class acesmanpoweruser(osv.osv):
         flag_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_admin')
         flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
         flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
         
         domain = [('user_id','=',uid)]
         if flag_user and log_in_user and property_user_id:
             domain = [('id','=',property_user_id)]
         if flag_admin and log_in_user and property_user_id:
-            proerty_users = manpower_user_obj.search(cr,uid,[('property_id','=',property_id)])
-            domain = [('id','in',proerty_users)]
-        #if flag_group_admin:
-        #    domain = []
-        if uid == 1:
+            property_users = manpower_user_obj.search(cr,uid,[('property_id','=',property_id)])
+            domain = [('id','in',property_users)]
+        if flag_grop_user or flag_group_admin or flag_group_consultant:
             domain = []
             
         print "Domain=",domain
@@ -162,6 +221,12 @@ class res_users(osv.osv):
         comapny_id = self.pool['res.users']._get_company(cr,uid)
         cr.execute("SELECT gid FROM res_company_groups_rel WHERE cid="+str(comapny_id))
         company_groups = cr.fetchall()
+        if not company_groups:
+            cr.execute("SELECT parent_id FROM res_company WHERE id="+str(comapny_id))
+            rst = cr.fetchone()
+            parent_company_id = rst[0]
+            cr.execute("SELECT gid FROM res_company_groups_rel WHERE cid="+str(parent_company_id))
+            company_groups = cr.fetchall()
         company_groups_ids = [gp[0] for gp in company_groups]
         return company_groups_ids or []
     
@@ -191,27 +256,36 @@ class res_users(osv.osv):
                 vals = {'groups_id': [(6,0,user_groups_ids)]}
         return vals
     
-    def create(self, cr, uid, values, context=None):
-        res = super(res_users, self).create(cr, uid, values, context)
-        #self.validate_groups(cr,res,context=context)
-        return res
+#     def create(self, cr, uid, values, context=None):
+#         print "values",values
+#         res = ''
+#         try:
+#             res = super(res_users, self).create(cr, uid, values, context)
+#         except IntegrityError as e:
+#             user_name = values['login']
+#             print "user_name==",user_name
+#             #raise exceptions.ValidationError("Entered Date Should be greter then Today")
+#             osv.except_osv(_('Warning!'),_('User %s is already existing, Please choose another username !')%(user_name))
+#         except ValueError:
+#             user_name = values['login']
+#             print "user_name==",user_name
+#             osv.except_osv(_('Warning!'),_('User %s is already existing, Please choose another username !')%(user_name))
+#              
+#         return res or ''
     
     def write(self, cr, uid, ids, vals, context=None):
+        if not isinstance(ids, list):
+            ids = [ids]
         admin_comapny_id = self.pool['res.users']._get_company(cr,SUPERUSER_ID) or None
         user_comapny_id = self.pool['res.users']._get_company(cr,ids[0]) or None
         if user_comapny_id == admin_comapny_id:
-            
             # Check and update the head office processing teams status in the Employee master
             cr.execute("SELECT id FROM res_groups WHERE name='Member of Head office Processing Team'")
             group_id = cr.fetchone()[0]
-            
             initial_users = self._get_users_of_group(cr,uid,group_id)
-            
             # Update user with all the other updates.
             res = super(res_users, self).write(cr, uid, ids, vals, context)
-            
             final_users = self._get_users_of_group(cr,uid,group_id)
-            
             if len(list(set(initial_users)-set(final_users))) > 0:
                 users = list(set(initial_users)-set(final_users))
                 status = False

@@ -94,10 +94,14 @@ class tapplicant(osv.osv):
                 tapplicant_ids.extend([obj.id for obj in current_trip_obj.tapplicant_ids])
                 
         domain = [('id','in',tapplicant_ids)]
-        flag = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
-        if flag:
-            domain = []
+            
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
         
+        if flag_grop_user or flag_group_admin or flag_group_consultant:     
+            domain = []
+                    
         print "Domain=",domain
         value = {
                 'name': _("Trip Applicants"),

@@ -23,6 +23,12 @@
             <field name="tag">acesmanpower.uploadpage</field>
         </record>
         <menuitem id="uploadpage_acesmanpower_menu" sequence="0" name="CV Dropbox" parent="menu_recruitment_upload_cv" action="act_open_tripevents_page2" />
-
+        
+		<record id="act_open_tripevents_page3" model="ir.actions.client" >
+            <field name="name">CV by Email</field>
+            <field name="tag">acesmanpower.cvbyemail</field>
+        </record>
+        <menuitem id="recruiting_mailserver_menu" sequence="0" name="CV by Email" parent="menu_recruitment_upload_cv" action="act_open_tripevents_page3" />
+        	
     </data>
 </openerp>

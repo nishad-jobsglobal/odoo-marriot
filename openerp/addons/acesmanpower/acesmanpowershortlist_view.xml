@@ -26,7 +26,6 @@
                 <field name="acesmanpowerjob_id"/>
                 <field name="acesmanpowerproperty_id"/>
                 <field name="acesmanpowerevent_id"/>
-                <field name="assess_id" />
                 <field name="stage_id" />
             </tree>
             </field>
@@ -47,18 +46,8 @@
                             <button attrs="{'invisible': [('assess_id','=',False)]}" name="2601" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Interview" context="{'stage_id': 4}" />
                             <button attrs="{'invisible': [('assess_id','=',False)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_stat_button" icon="fa-phone-square" type="action" context="{'agency_consultant_ids':agency_consultant_ids}" string="Assessment Done" help="Ask JobsGlobal more info regarding this applicant" />
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="2601" class="oe_stat_button" icon="fa-clipboard" type="action" string="Request Result" context="{'stage_id': 9}" />
-                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-clipboard" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
-                            
-                            <button type="action"
-                            		name="2603" 
-                                 	class="oe_stat_button"
-                            		icon="fa-keyboard-o"	 
-                            		>
-                            		<div>
-                            			<span>Send Request</span>
-                            			<span> to Interview</span>	
-                        			</div>
-                            </button>
+                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-close" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
+                            <button name="2603" class="oe_stat_button" icon="fa-keyboard-o" type="action" string="Send Request to Interview"/>
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="back_to_screening" class="oe_stat_button" icon="fa-mail-reply" type="object" string="Back to Screening" />
                         </div>
                         
@@ -475,5 +464,17 @@
         <menuitem name="My Candidates" id="menu_acesmanpower_my_candidates" 
         	parent="menu_finalrecruitment_portal_live_modules"  sequence="4" 
         	action="ir_actions_server_my_candidates"/>
+        
+		<!--  This is a special server action for showing the data in dash board      -->
+        <record id="ir_actions_server_process_candidates" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.candidates_on_process(cr, uid, None, stage=None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Dashboard - Candidates On Processing</field> 
+        </record>		
+        			
     </data>
 </openerp>

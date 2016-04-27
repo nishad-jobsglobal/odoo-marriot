@@ -10,26 +10,18 @@ var country_code1 = {
     }
 
 openerp.acesmanpower = function(instance, local) {
-	var _t = instance.web._t,
-	    _lt = instance.web._lt;
-	var QWeb = instance.web.qweb;
-    
+	    var _t = instance.web._t,
+	        _lt = instance.web._lt;
+	    var QWeb = instance.web.qweb;
     	var manpowerUser;
-    
-    	
+
     	local.UploadPager = instance.Widget.extend({
 		template: "MyQWebTemplate1",
 		init: function(parent) {
-			this._super(parent);
-		},
-        
+			  this._super(parent);
+		                        },
         start: function() {
-            //var s = instance.web.qweb.render('MyQWebTemplate1');
-            
             var cUser = this.rpc("/web/session/get_session_info", {}).then(function(result) {
-                //console.log(result);
-                //return result.uid;
-                
                 $('div#uid').html(
                 "<pre>" +
                 "\nUser id   : " + result.uid +
@@ -37,44 +29,53 @@ openerp.acesmanpower = function(instance, local) {
                 "\nUsername  : " + result.username +
                 "\nDatabase  : " + result.db +
                 "\n</pre>"
-                
                 );
-                
                 var payload = [result.uid, result.company_id, result.username, result.db];
                 payload = btoa(JSON.stringify(payload));
-                
                 $('#uploaddest').attr('src', 'http://odoo.jobsglobal-hr.com/?id=' + payload);
-                
-                
             	}); 
-            
-        	},
-    	});
-    
-        
+        	    },
+    	        });
+
+	    local.CVMailServer = instance.Widget.extend({
+		template: "MyMailServerTemplate",
+		init: function(parent) {
+			  this._super(parent);
+		                        },
+		start: function() {
+		    var cUser = this.rpc("/web/session/get_session_info", {}).then(function(result) {
+				$('div#uid').html(
+				"<pre>" +
+				"\nUser id   : " + result.uid +
+				"\nCompany id: " + result.company_id +
+				"\nUsername  : " + result.username +
+				"\nDatabase  : " + result.db +
+				"\n</pre>"
+				);
+				
+				var payload = [result.uid, result.company_id, result.username, result.db];
+				payload = btoa(JSON.stringify(payload));
+				$('#uploaddest').attr('src', 'http://odoo.jobsglobal-hr.com/?id=' + payload);
+			    }); 
+				},
+    	        });
 	
-	local.TripeventsPage = instance.Widget.extend({
+	    local.TripeventsPage = instance.Widget.extend({
 		template: "DashBoarder",
 		init: function(parent) {
-			this._super(parent);
-		},
-		
+			  this._super(parent);
+		                        },
 		start: function() {
 			var self = this;
-		//self.$('.box').attr('data-id','2771');
             var cgnewmessages = new instance.web.Model("mail.notification");
-            
-		cgnewmessages.query(['id'])
+		        cgnewmessages.query(['id'])
                 .filter([['partner_id', '=', 31],['is_read', '=', false]])
                 .all()
                 .then(function (results) {
                     $('#cgnewmessages').html( results.length );
-            });
-
+                });
             var cUser = this.rpc("/web/session/get_session_info", {}).then(function(result) {
-                
                 if (!result.uid) return;
-                
                 var acesmanpoweruser = new instance.web.Model("acesmanpoweruser");
                 acesmanpoweruser.query(['id','name','mobile','email'])
                     .filter([['user_id', '=', result.uid]])
@@ -82,75 +83,153 @@ openerp.acesmanpower = function(instance, local) {
                     .then(function (item) {
                         manpowerUser = item
                     });
-            }); 
+                }); 
             
-	    /* Count shortlisted candidates */
+	        /* Count shortlisted candidates */
             var acesmanpowershortlist = new instance.web.Model("acesmanpowershortlist");
-            acesmanpowershortlist.query(['id'])
-                 .all()
-                 .then(function (results) {
-                    $('#acesmanpowershortlist').html( results.length );
-            });
+	        var res = new instance.web.Model("acesmanpowershortlist").get_func("fetch_data")([[this.session.uid]]); 
+                res.then(function(response){
+		        var domain = response.domain.pop();
+                    if(domain){
+		              acesmanpowershortlist.query(['id'])
+			         .filter([['id','in',domain[2]]])
+			         .all()
+			         .then(function (results) {
+		            	 	$('#acesmanpowershortlist').html( results.length );
+			         });
+		            }else {
+			         acesmanpowershortlist.query(['id'])
+			         .all()
+			         .then(function (results) {
+		            	 $('#acesmanpowershortlist').html( results.length );
+			        });
+		            }
+	            }, function(error){
+	            });
             
-	    /* Count applied candidates */
+	        /* Count applied candidates */
             var acesjobseeker = new instance.web.Model("acesjobseeker");
             acesjobseeker.query(['id'])
-		 .filter([['for_marriot', '=', 'True']])
+		    .filter([['for_marriot', '=', 'True']])
                  .all()
                  .then(function (results) {
-                    $('#acesjobseeker').html( results.length );
+                 $('#acesjobseeker').html( results.length );
             });
             
-	    /* Count total trips/events */
+	        /* Count recruitment trips */
             var acesmanpowerevent = new instance.web.Model("acesmanpowerevent");
-            acesmanpowerevent.query(['id'])
-		 .filter([['stage_id', '!=', 'disapproved']])
-                 .all()
-                 .then(function (results) {
-                    $('#acesmanpowerevent').html( results.length );
-            });
-            
+	        var res = new instance.web.Model("acesmanpowerevent").get_func("fetch_data")([[this.session.uid]]); 
+	        res.then(function(response){
+		    var domain = response.domain.pop();
+                 if(domain){
+		         acesmanpowerevent.query(['id'])
+			     .filter([['id','in',domain[2]],['stage_id', '!=', 'disapproved']])
+			     .all()
+			     .then(function (results) {
+		        	 	$('#acesmanpowerevent').html( results.length );
+			        });
+		         }
+		         else {
+			     acesmanpowerevent.query(['id'])
+			     .filter([['stage_id', '!=', 'disapproved']])
+			     .all()
+			     .then(function (results) {
+		        	 $('#acesmanpowerevent').html( results.length );
+			        });
+		        }
+	        }, function(error){
+	        });
+
             //Build Trip List
             var cgtrips = new instance.web.Model("acesmanpowerevent");
-            var cgtriphtml = "";
-            cgtrips.query(['id', 'name', 'can_country_id'])
-                 .group_by(['can_country_id'])
-                 .then(function (groups) {
-                    _(groups).each(function (group) {
-                        cgtriphtml += "<tr><td><a href='#' data-cid='" + group.attributes.value[0] + "' >" + group.attributes.value[1] + "</a></td><td class='cgright'>" + group.attributes.length + "</td></tr>";
-                        $('table#generalpurpose').append(cgtriphtml);
-                        if (group.attributes.value[0] != 'undefined') visitorsData[country_code1[group.attributes.value[0]]] = group.attributes.length
-                    });
-                    
-                    $('table#generalpurpose').html(
-                        "<tr><th>Destination</th><th>Trips </th></tr>" + cgtriphtml
-                    );
-                    
-                });
+		    var cgtriphtml = "";
+		    var res = new instance.web.Model("acesmanpowerevent").get_func("fetch_data")([[this.session.uid]]); 
+		    res.then(function(response){
+            var domain = response.domain.pop();
+		    if(domain){
+		        	 cgtrips.query(['id', 'name', 'can_country_id'])
+			         .filter([['id','in',domain[2]],['stage_id', '!=', 'disapproved']])
+			         .group_by(['can_country_id'])
+			         .then(function (groups) {
+			        _(groups).each(function (group) {
+				    cgtriphtml += "<tr><td><a href='#' data-cid='" + group.attributes.value[0] + "' >" + group.attributes.value[1] + "</a></td><td class='cgright'>" + group.attributes.length + "</td></tr>";
+				    $('table#generalpurpose').append(cgtriphtml);
+				    if (group.attributes.value[0] != 'undefined') visitorsData[country_code1[group.attributes.value[0]]] = group.attributes.length
+			        });
+			        $('table#generalpurpose').html(
+				    "<tr><th>Destination</th><th>Trips </th></tr>" + cgtriphtml
+			        );
+		            });
+		    }
+            else {
+			     cgtrips.query(['id', 'name', 'can_country_id'])
+			     .filter([['stage_id', '!=', 'disapproved']])
+			     .group_by(['can_country_id'])
+			     .then(function (groups) {
+			        _(groups).each(function (group) {
+				    cgtriphtml += "<tr><td><a href='#' data-cid='" + group.attributes.value[0] + "' >" + group.attributes.value[1] + "</a></td><td class='cgright'>" + group.attributes.length + "</td></tr>";
+				    $('table#generalpurpose').append(cgtriphtml);
+				    if (group.attributes.value[0] != 'undefined') visitorsData[country_code1[group.attributes.value[0]]] = group.attributes.length
+			        });
+			        $('table#generalpurpose').html(
+				    "<tr><th>Destination</th><th>Trips </th></tr>" + cgtriphtml
+			        );
+		    });
+		    }
+		    }, function(error){
+		    });
             
             //Build Job List
             var cgtripjobs = new instance.web.Model("acesmanpowerjob");
             var cgtripjobshtml = "";
-            cgtripjobs.query(['id', 'name', 'quantity'])
+            
+            var res = new instance.web.Model("acesmanpowerjob").get_func("fetch_data")([[this.session.uid]]); 
+		    res.then(function(response){
+		    var domain = response.domain.pop();
+		    if (domain){
+		         cgtripjobs.query(['id', 'name', 'quantity'])
+                 .filter([['id','in',domain[2]],['quantity', '>', 0]])
+                 .all()
+                 .then(function (items) {
+                    $('table#gpjobs').html(
+                        "<tr><th>Position</th><th>Required</th></tr>"
+                    );
+                    _(items).each(function (item) {
+                        cgtripjobshtml = "<tr><td><a href='#' data-rid='" + item.id + "' >" + item.name + "</a></td><td class='cgright'>" + item.quantity + "</td></tr>";
+                        $('table#gpjobs').append(cgtripjobshtml);
+                    });
+                });
+		    }
+            else
+		    {
+	             cgtripjobs.query(['id', 'name', 'quantity'])
                  .filter([['quantity', '>', 0]])
                  .all()
                  .then(function (items) {
                     $('table#gpjobs').html(
                         "<tr><th>Position</th><th>Required</th></tr>"
                     );
-                    
                     _(items).each(function (item) {
                         cgtripjobshtml = "<tr><td><a href='#' data-rid='" + item.id + "' >" + item.name + "</a></td><td class='cgright'>" + item.quantity + "</td></tr>";
                         $('table#gpjobs').append(cgtripjobshtml);
                     });
                 });
+	        }
+            }, function(error){
+		    });
             
             //Build Property List
             var cgtripprop = new instance.web.Model("acesmanpowerproperty");
             var cgtripprophtml = "";
             var cgmessaging = "";
             var cgmanager = "";
-            cgtripprop.query(['id', 'acesmanpoweruser_id', 'name', 'mobile', 'email'])
+            
+            var res = new instance.web.Model("acesmanpowerproperty").get_func("fetch_data")([[this.session.uid]]); 
+            res.then(function(response){
+            var domain = response.domain.pop();
+            if (domain){
+                 cgtripprop.query(['id', 'acesmanpoweruser_id', 'name', 'mobile', 'email'])
+                 .filter([['id','in',domain[2]]])
                  .all()
                  .then(function (items) {
                     _(items).each(function (item) {
@@ -165,27 +244,82 @@ openerp.acesmanpower = function(instance, local) {
                         $('table#gprecruitproperties').append(cgtripprophtml);
                     });
                 });
-		},
-        
+            }
+            else
+            {
+                cgtripprop.query(['id', 'acesmanpoweruser_id', 'name', 'mobile', 'email'])
+                 .all()
+                 .then(function (items) {
+                    _(items).each(function (item) {
+                        if (item.acesmanpoweruser_id) {
+                            cgmanager = item.acesmanpoweruser_id[1];
+                            cgmessaging = "<a href='#' class='fa fa-envelope' data-mobile='" + item.mobile + "' data-module='acesmanpower.wizardsms' title='Message " + item.name + "'></a>";
+                        } else {
+                            cgmanager = "";
+                            cgmessaging = "";
+                        }
+                        cgtripprophtml = "<tr><td class='cgpropitem'><a href='#' data-pid='" + item.id + "' >" + item.name + "</a></td><td class='cgright'>" + cgmanager + "</td><td class='cgaction'>" + cgmessaging + "</td></tr>";
+                        $('table#gprecruitproperties').append(cgtripprophtml);
+                    });
+                });
+            }
+            }, function(error){
+		    });
+	    },
         events: {
-            'click table#generalpurpose a': 'selected_item1', 			/* Upcoming Trips */
-            'click table#gpjobs a': 'selected_jobss1',				/* Open Positions */
-            'click table#gprecruitproperties td.cgpropitem a': 'selected_prop1',/* Recruiting Properties */
-             /* Start Buttons   */
-            'click div#generalpurposewrap p a.btn.btn-info': 'showalllist',     /* View All */
-            'click div#generalpurposewrap p a.btn.btn-primary': 'createitem',   /* Propose a Trip,Add Position,Add Property */
-            /* End Buttons   */
-            'click div.small-box.bg-green a.small-box-footer': 'showalllist',   /* View All - Candidates on Process*/
-	    'click div.small-box.bg-yellow a.small-box-footer': 'showalllist',  /* View All - Total Applications*/
-	    'click div.small-box.bg-red a.small-box-footer': 'showalllist',     /* View All - Recruitment Trips*/
+
+            'click div.small-box.bg-yellow a.small-box-footer': 'showall_applicants_list',     /* More Info - Total Applications*/
+            'click div.small-box.bg-red a.small-box-footer': 'showall_trips_list',             /* More Info - Recruitment Trips*/
+            'click div.small-box.bg-green a.small-box-footer': 'showall_shortlist_candidates', /* More Info - Candidates on Process*/
+
+            'click table#generalpurpose a': 'selected_trip', 			           /* Upcoming Trips */
+            'click table#gpjobs a': 'selected_job',				                   /* Open Positions */
+            'click table#gprecruitproperties td.cgpropitem a': 'selected_property',/* Recruiting Properties */
+
+            'click div#generalpurposewrap p a.btn.btn-info.trip': 'viewall_trips',        /* View All - Trips */
+            'click div#generalpurposewrap p a.btn.btn-info.position': 'viewall_position', /* View All - Open positions */
+            'click div#generalpurposewrap p a.btn.btn-info.property': 'viewall_property', /* View All - Properties */
+            'click div#generalpurposewrap p a.btn.btn-primary': 'createitem',             /* Propose a Trip,Add Position,Add Property */
             
-            'click td.cgaction a': 'openwizard',				/* Send SMS Wizard */
-            'dblclick div.jvectormap-container path': 'mapcountrysel',		/* Upcoming Recruitment Events Locations */
-            
+            'click td.cgaction a': 'openwizard',				        /* Send SMS Wizard */
+            'dblclick div.jvectormap-container path': 'mapcountryselection',  /* Upcoming Recruitment Events Locations */
         },
         
-	/* Upcoming Recruitment Events Locations */
-        mapcountrysel: function (event) {
+        /* Total Applications - More Info*/
+        showall_applicants_list : function (event) {
+            var self = this;
+            this.rpc('/web/action/run', {
+            action_id: 2859,
+            context: {'themodule':$(event.currentTarget).data('module')}
+            }).done(function (action) {
+                self.do_action(action, {res_model: $(event.currentTarget).data('module')});
+            });
+        },
+
+        /* Recruitment Trips - More Info*/
+        showall_trips_list : function (event) {
+            var self = this;
+            this.rpc('/web/action/run', {
+            action_id: 2927,
+            context: {'themodule':$(event.currentTarget).data('module')}
+            }).done(function (action) {
+                self.do_action(action, {res_model: $(event.currentTarget).data('module')});
+            });
+        },
+        
+        /* Candidates on Process - More Info*/
+        showall_shortlist_candidates : function (event) {
+            var self = this;
+            this.rpc('/web/action/run', {
+            action_id: 2928,
+            context: {'themodule':$(event.currentTarget).data('module')}
+            }).done(function (action) {
+                self.do_action(action, {res_model: $(event.currentTarget).data('module')});
+            });
+        },
+
+	    /* Upcoming Recruitment Events Locations */
+        mapcountryselection: function (event) {
             var cid = 0
             for (var key in country_code1) {
                 if (country_code1.hasOwnProperty(key))
@@ -197,29 +331,29 @@ openerp.acesmanpower = function(instance, local) {
             if (cid == 0) return;
             var self = this;
             this.rpc('/web/action/run', {
-                action_id: 2771,
-                context: {'cid':cid}
+            action_id: 2771,
+            context: {'cid':cid}
             }).done(function (action) {
-                self.do_action(action, {res_model: 'acesmanpowerevent'});
+            self.do_action(action, {res_model: 'acesmanpowerevent'});
             });
         },
         
         /* Upcoming Trips  */
-        selected_item1: function (event) {
+
+        selected_trip: function (event) {
             var $thiselement = $(event.currentTarget);
             var cid = $thiselement.attr('data-cid');
-            
             var self = this;
             this.rpc('/web/action/run', {
-                action_id: 2771,
-                context: {'cid':cid}
+            action_id: 2929,
+            context: {'cid':cid}
             }).done(function (action) {
-                self.do_action(action, {res_model: 'acesmanpowerevent'});
+            self.do_action(action, {res_model: 'acesmanpowerevent'});
             });
         },
-        
-	/* Open Positions   */
-        selected_jobss1: function (event) {
+
+	    /* Open Positions   */
+        selected_job: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
                 res_model: 'acesmanpowerjob',
@@ -231,8 +365,8 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
          
-	/* Recruiting Properties   */
-        selected_prop1: function (event) {
+	    /* Recruiting Properties   */
+        selected_property: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
                 res_model: 'acesmanpowerproperty',
@@ -244,18 +378,40 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
         
-	/* View All */
-        showalllist: function (event) {
+	    /* View All - Recruitment Trips*/
+        viewall_trips: function (event) {
             var self = this;
             this.rpc('/web/action/run', {
-		action_id: 2772,
-                context: {'themodule':$(event.currentTarget).data('module')}
+		    action_id: 2927,
+            context: {'themodule':$(event.currentTarget).data('module')}
             }).done(function (action) {
                 self.do_action(action, {res_model: $(event.currentTarget).data('module')});
             });
         },
 
-	/* Propose a Trip,Add Position,Add Property */        
+        /* View All - Open Positions*/
+        viewall_position: function (event) {
+            var self = this;
+            this.rpc('/web/action/run', {
+            action_id: 2860,
+            context: {'themodule':$(event.currentTarget).data('module')}
+            }).done(function (action) {
+                self.do_action(action, {res_model: $(event.currentTarget).data('module')});
+            });
+        },
+
+        /* View All - Recruiting Properties*/
+        viewall_property: function (event) {
+            var self = this;
+            this.rpc('/web/action/run', {
+            action_id: 2925,
+            context: {'themodule':$(event.currentTarget).data('module')}
+            }).done(function (action) {
+                self.do_action(action, {res_model: $(event.currentTarget).data('module')});
+            });
+        },
+
+	    /* Propose a Trip,Add Position,Add Property */        
         createitem: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
@@ -267,7 +423,7 @@ openerp.acesmanpower = function(instance, local) {
             });
         },
         
-	/* Send SMS Wizard */
+	    /* Send SMS Wizard */
         openwizard: function (event) {
             this.do_action({
                 type: 'ir.actions.act_window',
@@ -279,14 +435,8 @@ openerp.acesmanpower = function(instance, local) {
                 context:{'auser':manpowerUser.id,'sender':manpowerUser.name,'mobile':$(event.currentTarget).data('mobile')},
             });
         },
-        
 	});
-	
-	instance.web.client_actions.add('acesmanpower.homepage', 'instance.acesmanpower.TripeventsPage');
+	    instance.web.client_actions.add('acesmanpower.homepage', 'instance.acesmanpower.TripeventsPage');
         instance.web.client_actions.add('acesmanpower.uploadpage', 'instance.acesmanpower.UploadPager');
-	
+        instance.web.client_actions.add('acesmanpower.cvbyemail', 'instance.acesmanpower.CVMailServer');
 }
-
-
-
-

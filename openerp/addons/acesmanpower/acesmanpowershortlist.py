@@ -50,14 +50,10 @@ class acesmanpowershortlist(osv.osv):
     def _set_image_url2(self, cr, uid, id, name, value, args, context=None):
         file = cStringIO.StringIO(urllib.urlopen(URL).read())
         return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(file)}, context=context)
-        
-#     @api.model
-#     def _needaction_domain_get(self):
-#         return [('stage_id', 'in', (1,3,4,5,6,9))]
 
     @api.multi
     def back_to_screening(self):
-        action = self.env.ref('acesmanpower.act_open_acesmanpowerscreening_view')
+        action = self.env.ref('acesmanpower.ir_actions_server_acesmanpowerscreening')
         result = action.read()[0]
         return result
         
@@ -103,16 +99,15 @@ class acesmanpowershortlist(osv.osv):
         'assessment_date': fields.datetime('Create Date', readonly=True),
         
         'create_date': fields.datetime('Create Date', readonly=True),
-        'write_date': fields.datetime('Updated', readonly=True),
+        'write_date': fields.datetime('Updated On', readonly=True),
         'write_uid': fields.many2one('res.users', 'Updated by', readonly=True),
+        'company_id': fields.many2one('res.company', 'Company'),
         'description': fields.text(string='Notes', ),
         
         'acesmanpowerjob_id': fields.many2one('acesmanpowerjob', 'Job Applied'),
         'acesmanpoweruser_id': fields.related('acesmanpowerjob_id', 'acesmanpoweruser_id', type="many2one", relation="acesmanpoweruser", string="Event Initiator", store=True),
         'acesmanpowerproperty_id': fields.related('acesmanpowerjob_id', 'acesmanpowerproperty_id', type="many2one", relation="acesmanpowerproperty", string="Property", store=True),
         'acesmanpowerevent_id': fields.related('acesmanpowerjob_id', 'acesmanpowerevent_id', type="many2one", relation="acesmanpowerevent", string="Trip Event", store=True),
-        
-        #'agency_consultant_ids': fields.many2many('acesmanpoweruser','acesmanpowershortlist_acesuser_rel','acesmanpowershortlist_id','acesmanpoweruser_id'),
         'agency_consultant_ids':fields.many2many('hr.employee','shortlist_consultant_rel','shortlist_id','consultant_id'),
         
         'interview_sheet_name':fields.char('Filename'),
@@ -150,6 +145,62 @@ class acesmanpowershortlist(osv.osv):
             raw_data = open(image_path, 'rb').read().encode('base64')
         return tools.image_resize_image_big(raw_data)
     
+    def candidates_on_process(self, cr, uid, ids, stage = None, context=None):
+        if context is None:
+            context = {}
+            
+        manpower_user_obj = self.pool.get('acesmanpoweruser')
+        shortlist_obj = self.pool.get('acesmanpowershortlist')
+        shortlist_ids = property_ids = []
+        log_in_user = property_user_id = False
+        
+        # Find the log in user and his related property user id
+        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
+            log_in_user = uid
+            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
+        
+        # Find property and related property ids of log in user with related to property user
+        if log_in_user and property_user_id:
+            property_id = manpower_user_obj.browse(cr,uid,property_user_id[0],context).property_id.id
+            for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
+                property_ids = [obj.id for obj in obje.property_ids]
+            property_ids.append(property_id)
+                
+        # Find all the short listed candidates who is linked with any of the property
+        if property_ids:
+            shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
+            
+        domain = [('stage_id', 'in', [1,3,4,5,9]),('id','in',shortlist_ids)]
+            
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_grop_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if flag_grop_user or flag_group_admin or flag_grop_consultant:
+            domain = domain[:-1]
+            
+        # This is a special condition to show data in the dash board of each and every user.
+        if stage == None:
+            stage = 25
+            name_dict = {25:'All'}
+            if shortlist_ids:
+                domain = [('stage_id', 'in', [1,3,4,5,9]),('id','in',shortlist_ids)]
+                if flag_grop_user or flag_group_admin or flag_grop_consultant:
+                    domain = []
+            
+        print "Domain=1>",domain,stage
+        value = {
+                'name': _(name_dict[stage]),
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'type': 'ir.actions.act_window',
+                'res_model': 'acesmanpowershortlist',
+                'view_id': False,
+                'domain': domain
+                }
+        return value
+        
+    
     def fetch_data(self, cr, uid, ids, stage=None, context=None):
         if context is None:
             context = {}
@@ -161,13 +212,9 @@ class acesmanpowershortlist(osv.osv):
         log_in_user = property_user_id = False
         
         # Find the log in user and his related property user id
-        
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
             log_in_user = uid
             property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
-            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
-        else:
-            pass
         
         # Find property and related property ids of log in user with related to property user
         if log_in_user and property_user_id:
@@ -178,9 +225,6 @@ class acesmanpowershortlist(osv.osv):
                 property_ids = [obj.id for obj in obje.property_ids]
             property_ids.append(property_id)
                 
-            print "Direct Property ID=",property_id
-            print "Other Property IDS=",property_ids
-            
         # Find all the short listed candidates who is linked with any of the property
         if property_ids:
             shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
@@ -197,12 +241,23 @@ class acesmanpowershortlist(osv.osv):
         else:
             domain = [('id','in',shortlist_ids)]
             
-        flag = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
-        if flag:
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_grop_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if flag_grop_user or flag_group_admin or flag_grop_consultant:
             domain = domain[:-1]
-        
-        print "Domain=",domain
-        
+            
+        # This is a special condition to show data in the dash board of each and every user.
+        if stage == None:
+            stage = 25
+            name_dict = {25:'All'}
+            if shortlist_ids:
+                domain = [('id','in',shortlist_ids),('stage_id', 'in', [1,3,4,5,9])]
+                if flag_grop_user or flag_group_admin or flag_grop_consultant:
+                    domain = []
+            
+        print "Domain Short=>",domain,stage
         value = {
                 'name': _(name_dict[stage]),
                 'view_type': 'form',
@@ -216,9 +271,9 @@ class acesmanpowershortlist(osv.osv):
         return value
     
     _defaults = {
-        'acesjobseeker_id': lambda self, cr, uid, c: c.get('acesjobseeker_id', False),
-        'image': _get_default_image,
         'stage_id': 1,
-        #'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'hr.applicant', context=c),
+        'image': _get_default_image,
+        'acesjobseeker_id': lambda self, cr, uid, c: c.get('acesjobseeker_id', False),
+        'company_id': lambda s, cr, uid, c: s.pool.get('res.company')._company_default_get(cr, uid, 'acesmanpowershortlist', context=c),
     }
     

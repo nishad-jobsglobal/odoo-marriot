@@ -174,7 +174,7 @@
 		<menuitem name="Referral Search" id="menu_relationship_management_referral_search" 
         		parent="menu_relationship_management_main"  sequence="1" 
         		action="act_open_manpower_referral_view"
-				groups="base.group_marriot_consultant" />
+				groups="base.group_marriot_group_property_admin" />
 		
 		<!-- Referral Anaysis Report	-->
 		
