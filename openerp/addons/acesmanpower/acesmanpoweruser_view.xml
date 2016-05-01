@@ -63,7 +63,7 @@
                                         <field name="mobile" />
                                     </group>
                                     <group>
-                                        <field name="user_id" widget="selection"/>
+                                        <field name="user_id"/>
                                         <field name="company_id"/>
                                         <field name="access_id"/>
                                     </group>

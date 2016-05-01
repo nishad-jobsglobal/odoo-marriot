@@ -153,7 +153,6 @@
             </field>
         </record>
         
-        
         <record id="act_open_manpower_referral_view" model="ir.actions.act_window" >
             <field name="name">Referral Engagement</field>
             <field name="type">ir.actions.act_window</field>
@@ -207,11 +206,12 @@
             <field name="act_window_id" ref="action_referral_analysis_report"/>
        </record>
 										
-		<menuitem name="Referrels" id='menu_referral_analysis_report_main' parent='menu_relationship_management_root' sequence='1'></menuitem>
+		<menuitem name="Referrels" id='menu_referral_analysis_report_main' 
+			parent='menu_relationship_management_root' sequence='1'></menuitem>
 		
-<!--		<menuitem name="Referral Analysis" id="menu_referral_analysis_report"
+		<menuitem name="Referral Analysis" id="menu_referral_analysis_report"
         		parent="menu_referral_analysis_report_main"  sequence="0" 
-        		action="action_referral_analysis_report"/> -->
+        		action="action_referral_analysis_report"/> 
 							
    	</data>
 </openerp>

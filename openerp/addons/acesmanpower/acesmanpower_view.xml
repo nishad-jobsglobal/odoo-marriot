@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
-    	
     	<menuitem name='Recruitment' id='menu_recruitment_root' sequence='97'></menuitem>
 	
     	<menuitem name="Dashboards" id="menu_recruitment_portal_live_modules"
@@ -32,6 +31,7 @@
             <field name="arch" type="xml">
                 <form string="Jobseeker" version="7.0">
                     <header>
+                    	<button name="view_cv" string="View CV"/>	
                         <field name="stage_id" widget="statusbar" clickable="false"/>
                     </header>
                     <sheet>
@@ -117,18 +117,12 @@
                             <page string="Other Info">
                                 <group>
                                     <group colspan="4" >
-                                        <field name="user_id" widget="selection"/>
+                                        <field name="user_id"/>
                                         <field name="url_cv"  readonly="1"/>
                                         <field name="url_cvpdf" readonly="1"/>
                                     </group>
                                 </group>
                             </page>
-                           
-                           	<page string="CV">	
-                           		<iframe width="100%" height="300" src="http://dps.jobsglobal.com/aHR0cDovL2pvYnNnbG9iYWwuY29tL2NvbXBhbnkvdGhlY3YvZ2V0X2N2LnBocD9jdj00MDk4NC5kb2N4.html">
-									<p>Your browser does not support iframes.</p>
-								</iframe>	
-                           	</page>  
                         </notebook>
                         <separator string="Notes"/>
                         <field name="description" nolabel="1" />

@@ -440,7 +440,8 @@
         
         <menuitem name="Trips" id="menu_post_recruitment_trips" 
         			parent="menu_post_recruitment"  sequence="0" 
-        			action="ir_actions_server_post_trip"/>			
+        			action="ir_actions_server_post_trip"
+        			 groups="base.group_marriot_consultant"/>			
     	
     </data>
 </openerp>

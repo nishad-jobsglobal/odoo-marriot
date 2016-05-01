@@ -20,7 +20,6 @@
 ##############################################################################
 import os
 import re
-import random
 import base64
 import subprocess
 
@@ -31,8 +30,6 @@ from openerp.tools.translate import _
 from openerp.osv import osv, fields
 
 _logger = logging.getLogger(__name__)
-
-
 
 class mail_jobseeker(osv.osv):
 
@@ -56,51 +53,30 @@ class mail_jobseeker(osv.osv):
                 }
     
     @api.model
-    @api.returns('self', lambda value:value.id)
     def create(self, vals):
-        company_id = vals.get('company_id','007')
-        auto_email = str(company_id) + str(random.randrange(0,9999)) + '@jobsglobal.biz'
-        vals['auto_email'] = auto_email
-        return osv.osv.create(self, vals)
+        new_id = super(mail_jobseeker, self).create(vals)
+        event_obj = self.env['mail.jobseeker'].search([('id','=',new_id.id)])
+        const = 2020
+        mail_dom = const + new_id.id
+        auto_email = str(mail_dom) + '@jobsglobal.biz'
+        event_obj.auto_email = auto_email
+        return new_id
     
     def fetch_data(self, cr, uid, ids,context=None):
         if context is None:
             context = {}
         print "-"*25
         
-        manpower_user_obj = self.pool.get('acesmanpoweruser')
-        log_in_user = property_id = property_user_id = False
-        
-        # Find the log in user and his related property user id
-        if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
-            log_in_user = uid
-            property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
-        else:
-            pass
-        
-        # Find property and related property ids of log in user with related to property user
-        if log_in_user and property_user_id:
-            # Direct Property
-            property_id = manpower_user_obj.browse(cr,uid,property_user_id[0],context).property_id.id
-            
-        flag_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_user')
-        flag_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_property_admin')
         flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
         flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
         
-        domain = [('user_id','=',uid)]
-        if flag_user and log_in_user and property_user_id:
-            domain = [('user_id','=',log_in_user)]
-            
-        if  (flag_admin or flag_group_admin ) and log_in_user and property_user_id:
-            property_users = manpower_user_obj.search(cr,uid,[('property_id','=',property_id)])
-            user_ids = []
-            for users in property_users:
-                user_id = manpower_user_obj.browse(cr,uid,users,context).user_id.id
-                user_ids.append(user_id)
-            domain = [('user_id','in',user_ids)]
+        mail_job_obj = self.pool.get('mail.jobseeker')
+        user_company_id = self.pool.get('res.users').browse(cr, uid,uid).company_id.id
+        mail_user_company_id = mail_job_obj.search(cr,uid,[('company_id','=',user_company_id)])
         
-        if uid == 1:
+        domain = [('id','in',mail_user_company_id)]
+        if flag_grop_user or flag_group_admin or flag_group_consultant:     
             domain = []
             
         print "Domain=",domain
@@ -235,9 +211,23 @@ class job_posting(osv.osv):
 
     def _set_image(self, cr, uid, ids, name, value, args, context=None):
         if value:
-            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+            return self.write(cr, uid, [ids], {'image': tools.image_resize_image_big(value)}, context=context)
         return True
     
+    @api.multi
+    def generate_email_to_publish(self):
+        order_obj = self.env['job.posting'].browse(self.ids)[0]
+        return {
+                'name':_("Jobseeker by Email"),
+                'view_mode': 'form',
+                'view_type': 'form',
+                'view_id': False,
+                'res_model': 'mail.jobseeker', 
+                'type': 'ir.actions.act_window',
+                'context':{'default_name': order_obj.posting_intro},
+                'target': 'current'
+                }
+        
     _columns = {
                 'posting_intro': fields.char("Posting Introduction"),
                 'posting_title':fields.char("Post Title"),

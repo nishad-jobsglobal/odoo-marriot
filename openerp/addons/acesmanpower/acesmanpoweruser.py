@@ -39,7 +39,7 @@ class acesmanpoweruser(osv.osv):
 
     def _set_image(self, cr, uid, ids, name, value, args, context=None):
         if value:
-            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+            return self.write(cr, uid, [ids], {'image': tools.image_resize_image_big(value)}, context=context)
         return True
     
     _columns = {
@@ -106,61 +106,6 @@ class acesmanpoweruser(osv.osv):
         if username == '':
             values['username'] = email
         return {'value': values}
-    
-#     @api.model
-#     def create(self,values):
-#         # Create System user
-#         userobject = super(acesmanpoweruser, self).create(values)
-#         
-#         auser = {}
-#         auser['name'] = userobject.name
-#         auser['email'] = userobject.email
-#         auser['acesmanpoweruser_id'] = userobject.id
-#         auser['login'] = userobject.email
-#         auser['password'] = userobject.password
-#         auser['new_password'] = userobject.password
-#         auser['mobile'] = userobject.mobile
-#          
-#         auser['company_id'] = userobject.company_id.id
-#         company_ids = []
-#         company_ids.append(userobject.company_id.id)
-#         auser['company_ids'] = company_ids
-#          
-#         external_id_model = self.pool.get('ir.model.data')
-#         group_portal_ref = external_id_model.get_object_reference(self._cr,self._uid, 'base', 'recruitment_portal')
-#         group_portal_id = group_portal_ref and group_portal_ref[1] or False
-#          
-#         group_portal_ref1 = external_id_model.get_object_reference(self._cr,self._uid, 'base', 'recruitment_portal_special')
-#         group_portal_id1 = group_portal_ref1 and group_portal_ref1[1] or False
-#          
-#         if group_portal_id:
-#             auser['groups_id'] = [(6, 0, [group_portal_id, group_portal_id1])]
-#          
-#         print "auser",auser
-#         try:
-#             idw = self.env['res.users'].sudo().create(auser)
-#         except IntegrityError:
-#             idw = None
-#             #user_name = userobject.email
-#             osv.except_osv(_('Warning!'),_('User  is already existing, Please choose another username !'))
-#         except InternalError:
-#             idw = None
-#             #user_name = userobject.email
-#             osv.except_osv(_('Warning!'),_('User  is already existing, Please choose another username !'))
-#         except:
-#             print "AM here"
-#             raise
-#         else:
-#             idw = None
-#         
-#         # Update Manpower user with System user ID
-#         if idw:
-#             st = {}
-#             st['user_id'] = idw
-#             self.write(st)
-#         #_____end
-#              
-#         return userobject
     
     def fetch_data(self, cr, uid, ids,context=None):
         if context is None:

@@ -107,7 +107,7 @@ class acesmanpowerevent(osv.osv):
         # Send SMS to the manager    
             
         initiator_obj = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
-        link = "http://64.71.72.30:8080/link.php?id=" + str(new_id.id)
+        link = "http://192.168.2.124:8060/link.php?id=" + str(new_id.id)
         to = manager.mobile or 0
         mess = 'A new Recruitment Trip has been proposed by ' + initiator_obj.name + '.  Follow URL link to take action, ' + link
         
@@ -139,7 +139,7 @@ class acesmanpowerevent(osv.osv):
         if mail_server:
             body = subject = ''
             subject += "Recruitment Trip"
-            url = (str('http://64.71.72.30:8080/web')+
+            url = (str('http://192.168.2.124:8060/web')+
                          "?db=%s#id=%d&view_type=form&model=acesmanpowerevent"%(self._cr.dbname,new_id.id))
             body += 'A new Recruitment Trip has been proposed by ' + initiator_obj.name + '.  Follow URL link to take action, ' + url
                 
@@ -158,7 +158,6 @@ class acesmanpowerevent(osv.osv):
                                                     subtype_alternative = 'plain')
                     res = mail_server_obj.send_email(self._cr, self._uid, msg,
                        mail_server_id=mail_server_ids[0])
-                    
                 except Exception:
                     return new_id
         return new_id
@@ -220,7 +219,7 @@ class acesmanpowerevent(osv.osv):
     
     def send_notification_mail(self):
         
-        # Send SMS to the manager    
+        # Send SMS to the property by manager on Disapprove   
         initiator_obj = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
         mobile = self.env['acesmanpowerevent'].search([('id','=',self.id)]).acesmanpoweruser_id.mobile
 
@@ -234,7 +233,7 @@ class acesmanpowerevent(osv.osv):
         ames['name'] = thelink + "to=" + to + "&" + 'text=' + mess
         self.pool.get('sms.smsclient.queue').create(self._cr,SUPERUSER_ID,ames)
         
-        # Send mail to Manager to inform that a trip has been created and is waiting for approval.
+        # Send mail to property to inform that a trip has been cancelled/dispparoved.
         
         mail_server = None
         mail_server_obj = self.pool.get('ir.mail_server')
@@ -270,18 +269,18 @@ class acesmanpowerevent(osv.osv):
     @api.multi
     def write(self, values):
         stage_id = values.get('stage_id',False)
+        event_obj = self.env['acesmanpowerevent'].search([('id','=',self.id)])
         
         # Validations for the event 
-        
         flag_group_admin = self.env['res.users'].has_group('base.group_marriot_group_property_admin')
         if not flag_group_admin:
             if stage_id != 'new' and stage_id != False:
                 raise osv.except_osv(_('Warning!'), _("You don't have the permission to change the stage of this trip. Please contact Group Manager"))
             elif stage_id == False and len(values) >= 1:
-                raise osv.except_osv(_('Warning!'), _("You don't have the permission to change the details of this trip." 
+                if event_obj.stage_id != 'new':
+                    raise osv.except_osv(_('Warning!'), _("You don't have the permission to change the details of this trip." 
                                                   " Please contact Group Manager"))
             elif stage_id == 'new':
-                event_obj = self.env['acesmanpowerevent'].search([('id','=',self.id)])
                 if event_obj.stage_id != 'new':
                     raise osv.except_osv(_('Warning!'), _("You don't have the permission to change the stage of this trip. Please contact Group Manager"))
         if flag_group_admin:
@@ -290,32 +289,64 @@ class acesmanpowerevent(osv.osv):
         else:
             marriot_trip_id = None
 
-        numproperty = 0
-        # Send SMS to all properties to inform an Event has been approved and if wish then join with them.
-        properties = self.env['acesmanpowerproperty'].search([['mobile', '!=', '']])
-        
-        for property in properties:
-            thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
-            link = "http://64.71.72.30:8080/?id=" + str(self.id) + '%26pid=' + str(property.id)
-            mess = 'Recruitment Trip,' + self.name + ' , has been approved. Follow URL link to take action, ' + link
-            ames={}
-            ames['msg'] = mess
-            ames['gateway_id'] = 2
-            ames['mobile'] = property.mobile
-            ames['name'] = thelink + "to=" + property.mobile + "&" + 'text=' + mess
-            #self.env['sms.smsclient.queue'].sudo().create(ames)
-            self.pool.get('sms.smsclient.queue').create(self._cr,SUPERUSER_ID,ames)
-            numproperty += 1
+        # Send SMS & Mail to all properties to inform an Event has been approved and if wish then join with them.
+        if stage_id == 'approved':
             
-        # Record mail_message in respective event.
-        sysm = {}
-        sysm['model'] = 'acesmanpowerevent'
-        sysm['type'] = 'notification'
-        sysm['subject'] = 'SMS'
-        sysm['res_id'] = self.id
-        sysm['body'] = 'Invitations has been sent to ' + str(numproperty) + ' properties'  
-        #env['mail.message'].create(sysm)
-        self.pool.get('mail.message').create(self._cr,SUPERUSER_ID,sysm)
+            mail_server = None
+            mail_server_obj = self.pool.get('ir.mail_server')
+            mail_server_ids = mail_server_obj.search(self._cr, SUPERUSER_ID, [], order='sequence', limit=1)
+            if mail_server_ids:
+                mail_server = mail_server_obj.browse(self._cr, SUPERUSER_ID, mail_server_ids[0])
+            
+            numproperty = 0
+            properties = self.env['acesmanpowerproperty'].search([['mobile', '!=', '']])
+            
+            for property in properties:
+                thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+                link = "http://192.168.2.124:8060/?id=" + str(self.id) + '%26pid=' + str(property.id)
+                mess = 'Recruitment Trip,' + self.name + ' , has been approved. Follow URL link to take action, ' + link
+                ames={}
+                ames['msg'] = mess
+                ames['gateway_id'] = 2
+                ames['mobile'] = property.mobile
+                ames['name'] = thelink + "to=" + property.mobile + "&" + 'text=' + mess
+                self.pool.get('sms.smsclient.queue').create(self._cr,SUPERUSER_ID,ames)
+                numproperty += 1
+                
+                initiator_obj = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
+                
+                if mail_server:
+                    body = subject = ''
+                    subject += "Recruitment Trip"
+                    url = (str('http://192.168.2.124:8060/web')+
+                                 "?db=%s#id=%d&view_type=form&model=acesmanpowerevent"%(self._cr.dbname,event_obj.id))
+                    body += 'A new Recruitment Trip,'+ self.name +' has been approved by ' + initiator_obj.name + '.  Follow URL link to take action, ' + url
+                        
+                    manager_obj = self.env['res.users'].search([('id','=',self._uid)])
+                    manager_mail =  manager_obj.login
+                    rceiver_email =  property.email
+                    
+                    if manager_mail and rceiver_email:
+                        try:
+                            msg = mail_server_obj.build_email(
+                                                            email_from = manager_mail,
+                                                            email_to = [rceiver_email],
+                                                            subject = subject,
+                                                            body = body,
+                                                            subtype_alternative = 'plain')
+                            res = mail_server_obj.send_email(self._cr, self._uid, msg,
+                               mail_server_id=mail_server_ids[0])
+                        except Exception:
+                            return True
+                
+            # Record mail_message in respective event.
+            sysm = {}
+            sysm['model'] = 'acesmanpowerevent'
+            sysm['type'] = 'notification'
+            sysm['subject'] = 'SMS'
+            sysm['res_id'] = self.id
+            sysm['body'] = 'Invitations has been sent to ' + str(numproperty) + ' properties'  
+            self.pool.get('mail.message').create(self._cr,SUPERUSER_ID,sysm)
             
         # Create a Trip in Human Resource -> Recruitment Trips -> Trips to do further follow ups.
         if not marriot_trip_id and stage_id == 'approved':
@@ -332,6 +363,9 @@ class acesmanpowerevent(osv.osv):
             
         #elif marriot_trip_id and not stage_id:
             # TO DO
+            
+        print "values-------",values
+        
         return super(acesmanpowerevent, self).write(values)
 
     _columns = {

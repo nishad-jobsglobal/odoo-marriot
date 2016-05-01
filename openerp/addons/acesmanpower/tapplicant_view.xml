@@ -378,7 +378,8 @@
        
         <menuitem name="All Applicants" id="menu_post_recruitment_tapplicants" 
         			parent="menu_post_recruitment"  sequence="1" 
-        			action="ir_actions_server_post_tapplicants"/>		
+        			action="ir_actions_server_post_tapplicants"
+        			groups="base.group_marriot_consultant"/>		
         
     </data>
 </openerp>

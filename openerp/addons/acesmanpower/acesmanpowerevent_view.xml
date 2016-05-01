@@ -169,7 +169,7 @@
         </record>
        
        <menuitem name="Recruitment" id="menu_recruitment_process_live_modules" parent="menu_recruitment_root"
-       	groups="base.group_marriot_property_user" sequence="1"/>  
+       		groups="base.group_marriot_property_user,base.group_marriot_consultant,base.group_processing_team_head_office" sequence="1"/>  
         
         <menuitem name="Recruitment Trips" id="menu_acesmanpowerevent" parent="menu_recruitment_process_live_modules"  sequence="2" action="ir_actions_server_acesmanpowerevent"/>
         

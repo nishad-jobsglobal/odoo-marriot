@@ -36,6 +36,7 @@ openerp.acesmanpower = function(instance, local) {
             	}); 
         	    },
     	        });
+    	
 
 	    local.CVMailServer = instance.Widget.extend({
 		template: "MyMailServerTemplate",
@@ -43,22 +44,91 @@ openerp.acesmanpower = function(instance, local) {
 			  this._super(parent);
 		                        },
 		start: function() {
-		    var cUser = this.rpc("/web/session/get_session_info", {}).then(function(result) {
-				$('div#uid').html(
-				"<pre>" +
-				"\nUser id   : " + result.uid +
-				"\nCompany id: " + result.company_id +
-				"\nUsername  : " + result.username +
-				"\nDatabase  : " + result.db +
-				"\n</pre>"
-				);
-				
-				var payload = [result.uid, result.company_id, result.username, result.db];
-				payload = btoa(JSON.stringify(payload));
-				$('#uploaddest').attr('src', 'http://odoo.jobsglobal-hr.com/?id=' + payload);
-			    }); 
+
+			//Build Mails List
+            var mails = new instance.web.Model("mail.jobseeker");
+	        var mailshtml = "";
+		    var res = new instance.web.Model("mail.jobseeker").get_func("fetch_data")([[this.session.uid]]);
+		    res.then(function(response)
+		    {
+            var domain = response.domain.pop();
+		    if(domain){
+		        	 mails.query(['id','name','auto_email'])
+			         .filter([['id','in',domain[2]]])
+			         .all()
+			         .then(function (items) {
+			         	$('table#generalemials').html(
+                        "<tr><th>Name</th><th>Email</th></tr>"
+                    );
+			        _(items).each(function (item) 
+				        {
+					    mailshtml = "<tr><td><a href='#' data-mid='" + item.id + "' >" + item.name + "</a></td><td>" + item.auto_email + "</td></tr>";
+					    $('table#generalemials').append(mailshtml);
+				        });
+		            });
+		    }
+
+            else {
+			     mails.query(['id','name','auto_email'])
+			     .all()
+			     .then(function (items) {
+			     	$('table#generalemials').html(
+                        "<tr><th>Name</th><th>Email</th></tr>"
+                    );
+			        _(items).each(function (item) 
+				        {
+						    mailshtml = "<tr><td><a href='#' data-mid='" + item.id + "' >" + item.name + "</a></td><td>" + item.auto_email + "</td></tr>";
+						    $('table#generalemials').append(mailshtml);
+				        });
+		            });
+		    }
+		    }, function(error){
+		    });
+
 				},
+		        events: {
+		            'click div#generalpurposewrap p a.btn.btn-info.mails': 'viewall_mailseeker_email', /* View All - Jobseekr by Email */
+		            'click div#generalpurposewrap p a.btn.btn-primary': 'createitem',                  /* Propose a mail */
+		            'click table#generalemials a': 'selected_mailseeker_email', 			           /* Selected Email */
+		        		},
+
+		        /* Selected Email   */
+		        selected_mailseeker_email: function (event) {
+		            this.do_action({
+		                type: 'ir.actions.act_window',
+		                res_model: 'mail.jobseeker',
+		                res_id: $(event.currentTarget).data('mid'),
+		                views: [[false, 'form']],
+		                target: 'current',
+		                view_mode:'form',
+		                view_type:'form',
+		            });
+		        },
+
+		        /* View All - Jobseeker by Email*/
+		        viewall_mailseeker_email: function (event) {
+		            var self = this;
+		            this.rpc('/web/action/run', {
+		            action_id: 2931,
+		            context: {'themodule':$(event.currentTarget).data('module')}
+		            }).done(function (action) {
+		                self.do_action(action, {res_model: $(event.currentTarget).data('module')});
+		            });
+		        },
+
+			    /* Propose a mail */        
+		        createitem: function (event) {
+		            this.do_action({
+		                type: 'ir.actions.act_window',
+		                res_model: 'mail.jobseeker',
+		                views: [[false, 'form']],
+		                target: 'current',
+		                view_mode:'form',
+		                view_type:'form',
+		            });
+		        },
     	        });
+
 	
 	    local.TripeventsPage = instance.Widget.extend({
 		template: "DashBoarder",

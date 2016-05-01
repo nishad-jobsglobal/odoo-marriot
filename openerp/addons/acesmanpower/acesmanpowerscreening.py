@@ -56,6 +56,7 @@ class acesmanpowerscreening(osv.osv):
     _defaults = {
         'user_id': lambda s, cr, uid, c: uid,
         'name' : 'Screening',
+        'state_id':'new',
         'acesjobseeker_id': lambda self, cr, uid, context: context.get('acesjobseeker_id', False),
         'url_image': lambda self, cr, uid, context: context.get('url_image', False),
     }

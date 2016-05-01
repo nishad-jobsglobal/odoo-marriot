@@ -18,8 +18,9 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+from openerp import api
 from openerp.osv import osv, fields
+from openerp import SUPERUSER_ID
 from openerp.tools.translate import _
 
 class acesmanpowerjob(osv.osv):
@@ -60,6 +61,204 @@ class acesmanpowerjob(osv.osv):
             if rec.stage != 'new':
                 raise osv.except_osv(_('Warning!'),_('You can only delete draft records!'))
         return super(acesmanpowerjob, self).unlink(cr, uid, ids, context)
+    
+    @api.model
+    def create(self,vals):
+        
+        new_id = super(acesmanpowerjob, self).create(vals)
+        
+        job_obj = self.env['acesmanpowerjob'].search([('id', '=', new_id.id)])
+        event_id = job_obj.acesmanpowerevent_id.id
+        event_job_user_id = job_obj.acesmanpowerevent_id.user_id.id
+        
+        if event_job_user_id != self._uid:
+            # Send SMS to the Property Group Manager for the approval of a trip. 
+            self.env.cr.execute("SELECT id FROM res_groups WHERE name='Group Management'")
+            group_id = self.env.cr.fetchone()[0]
+            self.env.cr.execute("SELECT uid FROM res_groups_users_rel WHERE gid="+str(group_id))
+            rst = self.env.cr.fetchall()
+            if rst not in (None,[None],[]):
+                for record in rst:
+                    if record[0] == 1:
+                        continue
+                    manager_id = record[0]
+                    manager = self.env['acesmanpoweruser'].search([('user_id','=',manager_id)])
+                    
+            # Send SMS to the manager    
+            initiator_obj = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
+            link = "http://192.168.2.124:8060/managejob.php?jid=" + str(new_id.id)
+            to = manager.mobile or 0
+            mess = 'A new Job position has been proposed by ' + initiator_obj.name + '.  Follow URL link to take action, ' + link
+            
+            thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+            ames={}
+            ames['msg'] = mess
+            ames['gateway_id'] = 1
+            ames['mobile'] = to
+            ames['name'] = thelink + "to=" + to + "&" + 'text=' + mess
+            self.pool.get('sms.smsclient.queue').create(self._cr,SUPERUSER_ID,ames)
+            
+            # Send Notification
+            sysm = {}
+            sysm['model'] = 'acesmanpowerjob'
+            sysm['type'] = 'notification'
+            sysm['subject'] = 'SMS'
+            sysm['res_id'] = new_id.id
+            sysm['body'] = 'Message has been sent'
+            self.pool.get('mail.message').create(self._cr,SUPERUSER_ID,sysm)
+            
+            # Send mail to Manager to inform that a trip has been created and is waiting for approval.
+        
+            mail_server = None
+            mail_server_obj = self.pool.get('ir.mail_server')
+            mail_server_ids = mail_server_obj.search(self._cr, SUPERUSER_ID, [], order='sequence', limit=1)
+            if mail_server_ids:
+                mail_server = mail_server_obj.browse(self._cr, SUPERUSER_ID, mail_server_ids[0])
+                  
+            if mail_server:
+                body = subject = ''
+                subject += "Open Position"
+                url = (str('http://192.168.2.124:8060/web')+
+                             "?db=%s#id=%d&view_type=form&model=acesmanpowerjob"%(self._cr.dbname,new_id.id))
+                body += 'A new Open position has been proposed by ' + initiator_obj.name + '.  Follow URL link to take action, ' + url
+                    
+                sender_obj = self.env['res.users'].search([('id','=',self._uid)])
+                sender_email =  sender_obj.login
+                manager_obj = self.env['res.users'].search([('id','=',manager_id)])
+                manager_email = manager_obj.login
+                
+                if sender_email and manager_email:
+                    try:
+                        msg = mail_server_obj.build_email(
+                                                        email_from = sender_email,
+                                                        email_to = [manager_email],
+                                                        subject = subject,
+                                                        body = body,
+                                                        subtype_alternative = 'plain')
+                        res = mail_server_obj.send_email(self._cr, self._uid, msg,
+                           mail_server_id=mail_server_ids[0])
+                    except Exception:
+                        return True
+        return new_id
+    
+    @api.multi
+    def write(self,values):
+        stage_id = values.get('stage_id',False)
+        
+        job_obj = self.env['acesmanpowerjob'].search([('id', '=', self.id)])
+        
+        if stage_id == 'reject':
+            self.send_notification_mail()
+        
+        if stage_id == 'approve':
+            
+            mail_server = None
+            mail_server_obj = self.pool.get('ir.mail_server')
+            mail_server_ids = mail_server_obj.search(self._cr, SUPERUSER_ID, [], order='sequence', limit=1)
+            if mail_server_ids:
+                mail_server = mail_server_obj.browse(self._cr, SUPERUSER_ID, mail_server_ids[0])
+            
+            job_obj = self.env['acesmanpowerjob'].search([('id', '=', self.id)])
+            mobile = self.env['acesmanpowerjob'].search([('id','=',self.id)]).acesmanpoweruser_id.mobile
+            
+            thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+            link = "http://192.168.2.124:8060/?id=" + str(self.id) + '%26jid=' + str(job_obj.id)
+            mess = 'Open position,' + self.name + ' , has been approved. Follow URL link to take action, ' + link
+            ames={}
+            ames['msg'] = mess
+            ames['gateway_id'] = 2
+            ames['mobile'] = mobile
+            ames['name'] = thelink + "to=" + mobile + "&" + 'text=' + mess
+            self.pool.get('sms.smsclient.queue').create(self._cr,SUPERUSER_ID,ames)
+            
+            manager_obj = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
+            
+            if mail_server:
+                body = subject = ''
+                subject += "Open Position"
+                url = (str('http://192.168.2.124:8060/web')+
+                             "?db=%s#id=%d&view_type=form&model=acesmanpowerjob"%(self._cr.dbname,job_obj.id))
+                body += 'A new Open Position,'+ self.name +' has been approved by ' + manager_obj.name + '.  Follow URL link to take action, ' + url
+                    
+                manager_obj = self.env['res.users'].search([('id','=',self._uid)])
+                manager_mail =  manager_obj.login
+                
+                acesmanpoweruser_id = self.env['acesmanpowerjob'].search([('id','=',self.id)]).acesmanpoweruser_id.id
+                rceiver_obj = self.env['res.users'].search([('acesmanpoweruser_id','=',acesmanpoweruser_id)])
+                rceiver_email =  rceiver_obj.login
+                
+                if manager_mail and rceiver_email:
+                    try:
+                        msg = mail_server_obj.build_email(
+                                                        email_from = manager_mail,
+                                                        email_to = [rceiver_email],
+                                                        subject = subject,
+                                                        body = body,
+                                                        subtype_alternative = 'plain')
+                        res = mail_server_obj.send_email(self._cr, self._uid, msg,
+                           mail_server_id=mail_server_ids[0])
+                    except Exception:
+                        return True
+                
+            # Record mail_message in respective event.
+            sysm = {}
+            sysm['model'] = 'acesmanpowerjob'
+            sysm['type'] = 'notification'
+            sysm['subject'] = 'SMS'
+            sysm['res_id'] = self.id
+            sysm['body'] = 'Invitations has been sent to job initiator'  
+            self.pool.get('mail.message').create(self._cr,SUPERUSER_ID,sysm)
+        
+        return super(acesmanpowerjob, self).write(values)
+    
+    def send_notification_mail(self):
+        
+        # Send SMS to the manager    
+        manager_obj = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)]) # Manager
+        mobile = self.env['acesmanpowerjob'].search([('id','=',self.id)]).acesmanpoweruser_id.mobile
+
+        to = mobile or 0
+        mess = 'Your request for the Open position has been denied by ' + manager_obj.name
+        thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+        ames={}
+        ames['msg'] = mess
+        ames['gateway_id'] = 1
+        ames['mobile'] = to
+        ames['name'] = thelink + "to=" + to + "&" + 'text=' + mess
+        self.pool.get('sms.smsclient.queue').create(self._cr,SUPERUSER_ID,ames)
+        
+        # Send mail to Manager to inform that a trip has been created and is waiting for approval.
+        
+        mail_server = None
+        mail_server_obj = self.pool.get('ir.mail_server')
+        mail_server_ids = mail_server_obj.search(self._cr, SUPERUSER_ID, [], order='sequence', limit=1)
+        if mail_server_ids:
+            mail_server = mail_server_obj.browse(self._cr, SUPERUSER_ID, mail_server_ids[0])
+              
+        if mail_server:
+            body = subject = ''
+            subject += "Open Position"
+            body += 'Your request for the Open Position has been denied by ' + manager_obj.name
+             
+            manager_obj = self.env['res.users'].search([('id','=',self._uid)])
+            manager_email = manager_obj.login
+            
+            acesmanpoweruser_id = self.env['acesmanpowerjob'].search([('id','=',self.id)]).acesmanpoweruser_id.id
+            rceiver_obj = self.env['res.users'].search([('acesmanpoweruser_id','=',acesmanpoweruser_id)])
+            rceiver_email =  rceiver_obj.login
+            
+            if rceiver_email and manager_email:
+                try:
+                    msg = mail_server_obj.build_email(
+                                                    email_from = manager_email,
+                                                    email_to = [rceiver_email],
+                                                    subject = subject,
+                                                    body = body,
+                                                    subtype_alternative = 'plain')
+                    res = mail_server_obj.send_email(self._cr, self._uid, msg,
+                        mail_server_id=mail_server_ids[0])
+                except Exception:
+                    return True
     
     
     def fetch_data(self, cr, uid, ids,context=None):

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?> 		
 <templates >
 	<t t-name="MyMailServerTemplate" >
+	  <style>
+	    .mails {
+	  		}
+	  </style>		
 		
 	  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/chris/acesmanpower.css" />
 	  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
@@ -27,11 +31,16 @@
 		            <li class="active">CV Email</li>
 			     </ol>  
 		        </section>
-		        
-		       
 		         
 		        <!-- Main content -->
 		        <section class="content">
+		        	
+		        	<div id="generalpurposewrap">
+				        <p>
+				            <a href="#" class="btn btn-primary" role="button">Add New</a>
+				        </p>
+			        </div>	
+		        			
 			        <div style="margin: 20px; padding: 0;" >
 			            <br />
 			            <em style="font-size: 15px;"> <strong>Explanation:</strong> This email is auto generated
@@ -42,10 +51,10 @@
 			        </div>
 			       <div id="generalpurposewrap">
 				        <h3>Emails </h3>
-				        <table id="generalpurpose" border="1px"/>
+				        <table id="generalemials" border="1px"/>
 				        <p>
-				            <a href="#" class="btn btn-info" data-module="acesmanpowerevent" data-iractid="2771" role="button">View All</a>
-				            <a href="#" class="btn btn-primary" data-module="acesmanpowerevent" role="button">Propose a Trip</a>
+				            <a href="#" class="btn btn-info mails" role="button">View All</a>
+				            <a href="#" class="btn btn-primary" role="button">Add New</a>
 				        </p>
 			        </div> 
 		        </section>

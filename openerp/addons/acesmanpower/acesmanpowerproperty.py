@@ -48,7 +48,7 @@ class acesmanpowerproperty(osv.osv):
 
     def _set_image(self, cr, uid, ids, name, value, args, context=None):
         if value:
-            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+            return self.write(cr, uid, [ids], {'image': tools.image_resize_image_big(value)}, context=context)
         return True
     
     @api.model
