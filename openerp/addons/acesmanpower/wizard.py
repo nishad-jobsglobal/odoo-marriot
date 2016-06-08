@@ -3,6 +3,71 @@
 from openerp import models 
 from openerp.osv import orm
 from openerp.osv import fields
+from openerp.tools.translate import _
+from openerp import SUPERUSER_ID
+
+class ReminderWizard(models.TransientModel):
+    _name = 'reminder.wizard'
+    
+    def _unapproved_trip_count(self,cr,uid,context=None):
+        trip_obj = self.pool.get('acesmanpowerevent')
+        value = trip_obj.fetch_data(cr,uid,ids=[],context=None)
+        domain = value['domain']
+        if len(domain) > 1:
+            domain.extend([('stage_id','=','new')])
+        else:
+            domain = [('stage_id','=','new')]
+        event_count = trip_obj.search(cr,uid,domain)
+        if len(event_count):
+            return "You have %d Unapproved recruitment trips "%len(event_count)
+        else:
+            return "You have 0 Unapproved recruitment trips"
+    
+    def _unapproved_position_count(self,cr,uid,context=None):
+        job_obj = self.pool.get('acesmanpowerjob')
+        value = job_obj.fetch_data(cr,uid,ids=[],context=None)
+        domain = value['domain']
+        if len(domain) > 1:
+            domain.extend([('stage','=','new')])
+        else:
+            domain = [('stage','=','new')]
+        job_count = job_obj.search(cr,uid,domain)
+        if len(job_count):
+            return "You have %d Unapproved Open positions "%len(job_count)
+        else:
+            return "You have 0 Unapproved Open positions "
+        
+    def go_to_trips(self, cr, uid, ids,context=None):
+        job_obj = self.pool.get('acesmanpowerevent')
+        value = job_obj.fetch_data(cr, uid, ids,context=None)
+        domain = value['domain']
+        if len(domain) > 1:
+            domain.extend([('stage_id','=','new')])
+        else:
+            domain = [('stage_id','=','new')]
+        value['domain'] = domain
+        return value
+    
+    def go_to_jobs(self, cr, uid,ids, context=None):
+        job_obj = self.pool.get('acesmanpowerjob')
+        value = job_obj.fetch_data(cr, uid, ids,context=None)
+        domain = value['domain']
+        if len(domain) > 1:
+            domain.extend([('stage','=','new')])
+        else:
+            domain = [('stage','=','new')]
+        value['domain'] = domain
+        return value
+    
+    _columns = { 
+            'trip_count' : fields.char('Trip Count',readonly='1'),
+            'position_count' : fields.char('Position Count',readonly='1'),
+            }
+    
+    _defaults = {
+        'trip_count':lambda s, cr, uid, c: s._unapproved_trip_count(cr, uid,context=c),
+        'position_count':lambda s, cr, uid, c: s._unapproved_position_count(cr, uid,context=c)
+    }
 
 class Wizard(models.TransientModel):
     _name = 'acesmanpower.wizard'
@@ -14,36 +79,6 @@ class Wizard(models.TransientModel):
         gateway_ids = self.env['sms.smsclient'].search([])
         return gateway_ids and gateway_ids[0] or False
 
-    def _default_validity(self):
-        gateway_id = self.env['sms.smsclient'].search([])
-        gateway = self.env['sms.smsclient'].browse(gateway_id[0])
-        return gateway.validity or False
-    
-    def _default_classes(self):
-        gateway_id = self.env['sms.smsclient'].search([])
-        gateway = self.env['sms.smsclient'].browse(gateway_id[0])
-        return gateway.classes or False
-    
-    def _default_deferred(self):
-        gateway_id = self.env['sms.smsclient'].search([])
-        gateway = self.env['sms.smsclient'].browse(gateway_id[0])
-        return gateway.deferred or False
-    
-    def _default_coding(self):
-        gateway_id = self.env['sms.smsclient'].search([])
-        gateway = self.env['sms.smsclient'].browse(gateway_id[0])
-        return gateway.coding or False
-    
-    def _default_tag(self):
-        gateway_id = self.env['sms.smsclient'].search([])
-        gateway = self.env['sms.smsclient'].browse(gateway_id[0])
-        return gateway.tag or False
-    
-    def _default_nonstop(self):
-        gateway_id = self.env['sms.smsclient'].search([])
-        gateway = self.env['sms.smsclient'].browse(gateway_id[0])
-        return gateway.nostop or False
-          
     _columns = { 
                 
         'jobseeker_id' : fields.many2one('acesjobseeker', string="Jobseeker", required=True, default=_default_jobseeker),
@@ -94,18 +129,6 @@ class Wizard(models.TransientModel):
                 client_obj._send_message(cr, uid, data, context=context)
         return {}
     
-class WizardJobseeker(models.TransientModel):
-    _name = 'acesmanpower.jobseeker.wizard'
-    
-    def _default_jobseeker(self):
-        return self.env['acesjobseeker'].browse(self._context.get('active_id'))
-
-    columns = {
-               'jobseeker_id' : fields.many2one('acesjobseeker', string="Jobseeker", required=True, default=_default_jobseeker),
-               'mobile' : fields.char(related='jobseeker_id.mobile', store=True, string='Mobile' ),
-               'message' : fields.text(string="Message"),
-               }
-    
 class WizardNotify(models.TransientModel):
     _name = 'acesmanpower.notify.agents'
     
@@ -116,10 +139,19 @@ class WizardNotify(models.TransientModel):
         return self.env['acesmanpoweruser'].browse([self._context.get('active_id')]).mobile or 0000
     
     _columns = { 
-            'agency_consultant_ids' : fields.many2one('acesmanpoweruser', string="Agency Consultant",default=_default_consultant),
+            'agency_consultant_ids' : fields.many2one('acesmanpoweruser', string="Receiver",default=_default_consultant),
             'mobile' : fields.char(size=12, string='Mobile', default=_default_mobile_no),
             'message' : fields.text(string="Message")
             }
+
+    def send_sms(self, cr, uid, ids, context=None):
+        thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+        ames={}
+        ames['msg'] = context.get('message')
+        ames['gateway_id'] = 1
+        ames['mobile'] = context.get('mobile')
+        ames['name'] = thelink + "to=" + context.get('mobile') + "&" + 'text=' + context.get('message')
+        self.pool.get('sms.smsclient.queue').create(cr,SUPERUSER_ID,ames)
     
 class WizardNotifyEmployee(models.TransientModel):
     _name = 'acesmanpower.notify.employee'
@@ -136,17 +168,21 @@ class WizardNotifyEmployee(models.TransientModel):
             'message' : fields.text(string="Message")
             }
     
+    def send_sms(self, cr, uid, ids, context=None):
+        thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+        ames={}
+        ames['msg'] = context.get('message')
+        ames['gateway_id'] = 1
+        ames['mobile'] = context.get('mobile')
+        ames['name'] = thelink + "to=" + context.get('mobile') + "&" + 'text=' + context.get('message')
+        self.pool.get('sms.smsclient.queue').create(cr,SUPERUSER_ID,ames)
+    
     
 class WizardNotify1(models.TransientModel):
     _name = 'acesmanpower.notifyassess'
     
     def _default_assess(self):
         return self.env['acesmanpowershortlist'].browse(self._context.get('active_id'))
-    
-    def _default_consultant(self):
-        property_id = self._context.get('acesmanpowerproperty_id')
-        agency_consultant_ids = [consultants.id for consultants in self.env['acesmanpowerproperty'].browse([property_id]).agency_consultant_ids]
-        return {'value': {'agency_contacts': [(6, 0, agency_consultant_ids)]}}
     
     def _default_mobile_no(self):
         acesjobseeker_id = self.env['acesmanpowershortlist'].browse(self._context.get('active_id')).acesjobseeker_id.id
@@ -157,43 +193,44 @@ class WizardNotify1(models.TransientModel):
         return {'value': {'mobile': mobile}}
     
     _columns = { 
-            'acesmanpowershortlist_id' : fields.many2one('acesmanpowershortlist', "Applicant Process", default=_default_assess),
+            'acesmanpowershortlist_id' : fields.many2one('acesmanpowershortlist', "Applicant", default=_default_assess),
             'mobile' : fields.char(size=12, string='Mobile', default=_default_mobile_no),
             'message' : fields.text(string="Message")
             }
+    
+    def send_sms(self, cr, uid, ids, context=None):
+        thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+        ames={}
+        ames['msg'] = context.get('message')
+        ames['gateway_id'] = 1
+        ames['mobile'] = context.get('mobile')
+        ames['name'] = thelink + "to=" + context.get('mobile') + "&" + 'text=' + context.get('message')
+        self.pool.get('sms.smsclient.queue').create(cr,SUPERUSER_ID,ames)
     
 class WizardNotify2(models.TransientModel):
     _name = 'acesmanpower.notifyusers'
     
-    
-    def _default_partner(self):
-        user_id =  self.env['acesmanpoweruser'].browse(self._context.get('active_id')).user_id.id
-        return self.env['res.users'].browse([user_id]).partner_id.id
+    def _default_users(self):
+        return self.env['acesmanpoweruser'].browse(self._context.get('active_id'))
     
     def _default_mobile_no(self):
-        user_id =  self.env['acesmanpoweruser'].browse(self._context.get('active_id')).user_id.id
-        partner_id = self.env['res.users'].browse([user_id]).partner_id.id
-        return self.env['res.partner'].browse([partner_id]).mobile or 000
+        return self.env['acesmanpoweruser'].browse([self._context.get('active_id')]).mobile or 0000
     
     _columns = { 
-            'recipient_id' : fields.many2one('res.partner', string="Send to", default=_default_partner),
+            'recipient_id' : fields.many2one('acesmanpoweruser', string="Send to", default=_default_users),
             'mobile' : fields.char(size=12, string='Mobile', default=_default_mobile_no),
             'message' : fields.text(string="Message")
             }
-
-class WizardNotify3(models.TransientModel):
-    _name = 'acesmanpower.createuser'
     
-    _columns = { 
-            'name' : fields.char(string='Name' , required=True, ),
-            'login' : fields.char(string='Login/Email' , required=True, ),
-            'password' : fields.char(string='Password' , required=True, ),
-            'mobile' : fields.char(string='Mobile', required=True, ),
-            'property_id' : fields.many2one('acesmanpowerproperty', ondelete='set null', string="Default Property", index=True),
-            'company_id' : fields.many2one('res.company', ondelete='set null', string="Company" , required=True,),
-            'access_id' : fields.selection([('staff', 'Recruitment Staff'), ('manager', 'Recruitment Management'), ('admin', 'Administrator')], 'Role / Access Level', required=True,)
-            }
-   
+    def send_sms(self, cr, uid, ids, context=None):
+        thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+        ames={}
+        ames['msg'] = context.get('message')
+        ames['gateway_id'] = 1
+        ames['mobile'] = context.get('mobile')
+        ames['name'] = thelink + "to=" + context.get('mobile') + "&" + 'text=' + context.get('message')
+        self.pool.get('sms.smsclient.queue').create(cr,SUPERUSER_ID,ames)
+        
 class WizardSms(models.TransientModel):
     _name = 'acesmanpower.wizardsms'
     
@@ -213,3 +250,24 @@ class WizardSms(models.TransientModel):
             'auser_id' : fields.integer(string='', default=_default_auser)
             }
     
+    def send_sms(self, cr, uid, ids, context=None):
+        thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+        ames={}
+        ames['msg'] = context.get('message')
+        ames['gateway_id'] = 1
+        ames['mobile'] = context.get('mobile')
+        ames['name'] = thelink + "to=" + context.get('mobile') + "&" + 'text=' + context.get('message')
+        self.pool.get('sms.smsclient.queue').create(cr,SUPERUSER_ID,ames)
+
+class WizardNotify3(models.TransientModel):
+    _name = 'acesmanpower.createuser'
+    
+    _columns = { 
+            'name' : fields.char(string='Name' , required=True, ),
+            'login' : fields.char(string='Login/Email' , required=True, ),
+            'password' : fields.char(string='Password' , required=True, ),
+            'mobile' : fields.char(string='Mobile', required=True, ),
+            'property_id' : fields.many2one('acesmanpowerproperty', ondelete='set null', string="Default Property", index=True),
+            'company_id' : fields.many2one('res.company', ondelete='set null', string="Company" , required=True,),
+            'access_id' : fields.selection([('staff', 'Property User'),('manager','Property Manager'),('user','Group User'),('admin','Group Manager')], 'Role / Access Level', required=True,)
+            }

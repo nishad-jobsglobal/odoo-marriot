@@ -8,7 +8,7 @@
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
 	            <tree string="Recruitment Events">
-	                <field name="name"/>
+	                <field name="name" string="Trip Name"/>
 	                <field name="can_country_id"/>
 	                <field name="datestart"/>
 	                <field name="dateend"/>
@@ -26,6 +26,15 @@
             <field name="arch" type="xml">
                 <form string="Recruitment Event" version="7.0">
                     <header>
+                    	<button name="approve_trip" stage_id="new" string="Approve" class="oe_highlight" 
+                    	  type="object" context="{'stage_id': 'approved'}" attrs="{'invisible': [('stage_id', '!=', 'new')]}"
+                    	 groups="base.group_marriot_group_property_admin" />
+                    	<button name="reject_trip" stage_id="new" string="Reject" class="oe_highlight" 
+                    	 type="object" context="{'stage_id': 'disapproved'}" attrs="{'invisible': [('stage_id', '!=', 'new')]}"
+                    	groups="base.group_marriot_group_property_admin"/>	
+                    	<button name="join_trip" string="Join" class="oe_highlight" 
+                    	  type="object" context="{'stage_id': 'joined'}" attrs="{'invisible': [('stage_id', '!=', 'approved')]}"
+                    	/>
                         <field name="stage_id" widget="statusbar" clickable="True"/>
                     </header>
                     <sheet>
@@ -33,10 +42,11 @@
                             <button name="action_view_invite" class="oe_stat_button" icon="fa-check-square-o" type="object" string="Invite" invisible="1"/>
                             <button name="action_view_participant" class="oe_stat_button" icon="fa-share-square" type="object" string="Participants" invisible="1"/>
                             <button name="action_view_registration" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Registrations" invisible="1"/>
-                            <button name="action_view_shortlists" class="oe_stat_button" icon="fa-file-pdf-o" type="object" string="Shortlists"/>
+                            <button name="action_view_screened" class="oe_stat_button" icon="fa-th-list" type="object" string="Screened"/>
+                            <button name="action_view_shortlists" class="oe_stat_button" icon="fa-list-ol" type="object" string="Shortlists"/>
                         </div>
                         <div class="oe_title" style="width: 480px;">
-                            <label for="name" class="oe_edit_only"/>
+                            <label for="name" string="Trip Name" class="oe_edit_only"/>
                             <h1><field name="name"/></h1>
                             <label for="can_country_id" class="oe_edit_only"/>
                             <h2 style="display: inline-block;">
@@ -48,8 +58,8 @@
                             <page string="Details"  >
                                 <group>
                                     <group string="Inclusive Dates">
-                                        <field name="datestart" />
-                                        <field name="dateend" />
+                                        <field name="datestart"/>
+                                        <field name="dateend"/>
                                     </group>
                                     <group string="Contacts for the Event" groups="base.group_marriot_group_property_user,
                                         							      base.group_marriot_group_property_admin">
@@ -76,6 +86,12 @@
                                     <field name="acesmanpowerproperty_ids" nolabel="1" />
                                 </group>
                             </page>
+                            <page string="Screened Candidates">
+                                <group>
+                                    <field name="jobseeker_ids" nolabel="1">
+							        </field> 
+                                </group>
+                            </page> 
                             <page string="Other Info">
                                 <group>
                                 	<group string="Venue">

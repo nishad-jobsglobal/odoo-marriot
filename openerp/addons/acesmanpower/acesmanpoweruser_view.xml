@@ -9,8 +9,7 @@
             <tree string="Recruitment Users">
                 <field name="image_small" widget="image" string="" />
                 <field name="name"/>
-                <field name="username"/>
-                <field name="email"/>
+                <field name="email" string="Email/Username"/>
                 <field name="mobile"/>
                 <field name="property_id"/>
                 <field name="access_id"/>
@@ -32,7 +31,7 @@
                         <field name="image_medium" widget='image' class="oe_left oe_avatar" />
                         
                         <div class="oe_right oe_button_box" name="button_box" style="width: 180px; " >
-                            <button name="%(acesmanpower.launch_acesmanpower_wizardnotify2)d" class="oe_stat_button" icon="fa-phone-square" type="action" string="Send Request"/>
+                            <button name="%(acesmanpower.launch_acesmanpower_wizardnotify2)d" class="oe_stat_button" icon="fa-comment" type="action" string="Send SMS"/>
                             <button name="%(launch_acesmanpower_wizardnotify3)d" class="oe_stat_button" icon="fa-user" type="action" string="Create User"
                             groups="base.group_marriot_property_admin,base.group_marriot_group_property_user,base.group_marriot_group_property_admin,account.group_marriot_consultant" />
                         </div>
@@ -58,14 +57,20 @@
                                         <field name="username" attrs="{'readonly':[('username','!=','')], 'invisible':[('username','=','')]}" />
                                         <field name="email" string="Email/Username" on_change="onchange_email(email, username)" />
                                         <field name="password" password="True" />
+					<field name="position" />
+                                        <field name="job_title" />
                                     </group>
                                     <group string="Contact Details">
                                         <field name="mobile" />
+					<field name="street" />
+                                        <field name="city" />
+                                        <field name="country_id" />
                                     </group>
                                     <group>
-                                        <field name="user_id"/>
+
                                         <field name="company_id"/>
                                         <field name="access_id"/>
+                                        <field name="user_id" placeholder="Automatically fills the data for you"/>
                                     </group>
                                     <group>
                                         <field name="write_date" />
@@ -75,7 +80,7 @@
                             </page>
                             <page string="Other Properties" groups="base.group_marriot_group_property_user,base.group_marriot_group_property_admin,account.group_marriot_consultant">
                                 <group>
-                                    <field name="property_ids" nolabel="1" context="{'acesmanpoweruser_id': active_id}" />111
+                                    <field name="property_ids" nolabel="1" context="{'acesmanpoweruser_id': active_id}" />
                                 </group>
                             </page>
                             <page string="Notes">

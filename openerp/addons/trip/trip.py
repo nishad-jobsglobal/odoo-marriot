@@ -18,6 +18,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #/#############################################################################
+from openerp import api
+from openerp import SUPERUSER_ID
 from openerp.osv import osv, fields
 from datetime import datetime
 from openerp.tools import DEFAULT_SERVER_DATETIME_FORMAT
@@ -105,10 +107,73 @@ class trip(osv.osv):
     }
     
 
-
-trip()
-
-
+    @api.model
+    def create(self,vals):
+        
+        new_id = super(trip, self).create(vals)
+        # Send SMS to the manager    
+        resource_obj = self.env['resource.resource'].search([('user_id','=',self._uid)])
+        self.env.cr.execute("SELECT id,name_related,coach_id FROM hr_employee WHERE resource_id="+str(resource_obj.id))
+        rst = self.env.cr.fetchone()
+        if rst not in (None,[None],[]):
+            emp_id = rst[0] or False
+            employee_name = rst[1] or ''
+            coach_id = rst[2] or False
+            
+            if emp_id and coach_id:
+                trip_obj = self.env['trip'].search([('id','=',new_id.id)])
+                partner_name = trip_obj.partner_id.name or ''
+                branch_location = trip_obj.company_id.name or ''
+                self.env.cr.execute("SELECT mobile_phone FROM hr_employee WHERE id="+str(coach_id))
+                rst = self.env.cr.fetchone()
+                if rst not in (None,[None],[]):
+                    coach_mobile = rst[0] or 0
+                    thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+                    mess = 'Planned trip posted by '+ employee_name + ' for '+partner_name+' / '+branch_location
+                    to = str(coach_mobile)
+                    
+                    ames={}
+                    ames['msg'] = mess
+                    ames['gateway_id'] = 1
+                    ames['mobile'] = to
+                    ames['name'] = thelink + "to=" + to + "&" + 'text=' + mess
+                    created_id = self._uid or SUPERUSER_ID
+                    self.pool.get('sms.smsclient.queue').create(self._cr,created_id,ames)
+        return new_id
+            
+    @api.multi
+    def write(self, values):
+        stage_id = values.get('stage_id',False)
+        trip_obj = self.env['trip'].search([('id','=',self.id)])
+        resource_obj = self.env['resource.resource'].search([('user_id','=',self._uid)])
+        self.env.cr.execute("SELECT id,name_related,coach_id FROM hr_employee WHERE resource_id="+str(resource_obj.id))
+        rst = self.env.cr.fetchone()
+        if rst not in (None,[None],[]):
+            employee_name = rst[1] or ''
+            coach_id = rst[2] or False
+            partner_name = trip_obj.partner_id.name or ''
+            branch_location = trip_obj.company_id.name or ''
+            
+            if coach_id and stage_id:
+                self.env.cr.execute("SELECT mobile_phone FROM hr_employee WHERE id="+str(coach_id))
+                rst = self.env.cr.fetchone()
+                if rst not in (None,[None],[]):
+                    coach_mobile = rst[0] or 0
+                    trip_stage_obj = self.env['trip.stage'].search([('id','=',stage_id)])
+                    tripstage = trip_stage_obj.name
+                
+                    thelink = "http://api.clickatell.com/http/sendmsg?password=YNZYHCMDTHaCDO&user=gagamba1&api_id=3502830&"
+                    mess = partner_name+ ' trip '+tripstage+ ' by '+employee_name+ ' to '+branch_location
+                    to = str(coach_mobile)
+                    
+                    ames={}
+                    ames['msg'] = mess
+                    ames['gateway_id'] = 1
+                    ames['mobile'] = to
+                    ames['name'] = thelink + "to=" + to + "&" + 'text=' + mess
+                    created_id = self._uid or SUPERUSER_ID
+                    self.pool.get('sms.smsclient.queue').create(self._cr,created_id,ames)
+        return super(trip, self).write(values)
 
 
 class res_partner(osv.osv):

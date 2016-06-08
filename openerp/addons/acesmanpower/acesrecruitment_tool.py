@@ -20,6 +20,7 @@
 ##############################################################################
 import os
 import re
+import random
 import base64
 import subprocess
 
@@ -79,7 +80,7 @@ class mail_jobseeker(osv.osv):
         if flag_grop_user or flag_group_admin or flag_group_consultant:     
             domain = []
             
-        print "Domain=",domain
+        print "Mail Domain=",domain
         value = {
                 'view_type': 'form',
                 'view_mode': 'tree,form',

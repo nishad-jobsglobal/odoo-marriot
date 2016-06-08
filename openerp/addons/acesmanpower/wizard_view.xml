@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+    	  
+    	  <!-- Reminder wizard for managers on Log in to the system -->
+    	
+    	  <record model="ir.ui.view" id="reminder_wizard_form_view">
+            <field name="name">reminder.wizard.form</field>
+            <field name="model">reminder.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Trips and Job positions to Approve">
+                    <group>
+			<field name="trip_count" string="Recruitment Trips"/> 
+			<field name="position_count" string="Open Positions"/>                        
+                    </group>
+                   	<footer>
+                        <button string="Go to Trips" name="go_to_trips" type="object" class="oe_stat_button" 
+                       icon="fa-share-square"/>
+                        
+                        <button string="Go to Jobs" name="go_to_jobs" type="object" class="oe_stat_button" 
+                        icon="fa-share-square"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer> 
+                </form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="launch_reminder_wizard">
+            <field name="name">Reminder</field>
+            <field name="res_model">reminder.wizard</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <!-- Reminder wizard ends here -->
+    	
+        <!-- Jobseeker[Model] - Candidates List[Menu] -->
+    	
         <record model="ir.ui.view" id="wizard_form_view">
             <field name="name">wizard.form</field>
             <field name="model">acesmanpower.wizard</field>
@@ -13,11 +51,10 @@
                     </group>
                    	<footer>
                         <button string="Send SMS" name="send_sms" type="object" class="oe_stat_button" 
-                       icon="fa-share-square" context="{'mobile_to': mobile_to, 'text': text,}"/>
+                       icon="fa-comment" context="{'mobile_to': mobile_to, 'text': text,}"/>
                         or
                         <button string="Cancel" class="oe_link" special="cancel" />
                     </footer> 
-<!--                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />-->
                 </form>
             </field>
         </record>
@@ -30,61 +67,10 @@
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
-       
-      <!--
-       <record model="ir.ui.view" id="wizard_jobseeker_form_view">
-            <field name="name">wizardjobseeker.form</field>
-            <field name="model">acesmanpower.jobseeker.wizard</field>
-            <field name="arch" type="xml">
-                <form string="Send SMS">
-                    <group>
-                        <field name="jobseeker_id"/>
-                        <field name="mobile"/>
-                        <field name="message"/>
-                    </group>
-                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
-                </form>
-            </field>
-        </record>    
-       
-
-        <act_window id="launch_acesjobseeker_wizard"
-                    name="Send SMS"
-                    src_model="acesjobseeker"
-                   	res_model="acesmanpower.jobseeker.wizard"
-                    view_mode="form"
-                    target="new"
-                    key2="client_action_multi"/>
-        -->       	
-                    
-        <record model="ir.ui.view" id="wizard_sms_form_view">
-            <field name="name">wizardsms.form</field>
-            <field name="model">acesmanpower.wizardsms</field>
-            <field name="arch" type="xml">
-                <form string="Send SMS">
-                    <group>
-                        <field name="sender"/>
-                        <field name="mobile"/>
-                        <field name="message"/>
-                        <field name="auser_id" invisible="1"/>
-                    </group>
-                    <button name="2775" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'sender': sender, 'mobile': mobile, 'message': message, 'auser_id': auser_id,}"  />
-                </form>
-            </field>
-        </record>
-
-        <act_window id="launch_acesmanpower_wizardsms"
-                    name="Send SMS"
-                    src_model="acesmanpoweruser"
-                    res_model="acesmanpower.wizardsms"
-                    view_mode="form"
-                    target="new"
-                    key2="client_action_multi"/>		
-       
-         
-                    
-       <!-- 
+        
+        <!-- 
        'This is to notify agency consultants from approved data pool'
+		 acesmanpoweruser[Model] - Users[Menu] - Direct from treeview      
        -->		           
        
        <record model="ir.ui.view" id="wizardnotify_agents_form_view">
@@ -97,7 +83,9 @@
                         <field name="mobile"/>
                         <field name="message"/>
                     </group>
-                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+                    <button name="send_sms" class="oe_stat_button" icon="fa-comment" type="object" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+					or
+                    <button string="Cancel" class="oe_link" special="cancel" />                    
                 </form>
             </field>
         </record>
@@ -115,6 +103,7 @@
        
        <!-- 
        'This is to notify agency consultants/employee from property'
+         acesmanpowerproperty[Model] - Properties[Menu] - Agency Consultant treeview 
        -->		           
        
        <record model="ir.ui.view" id="wizardnotify_employee_form_view">
@@ -127,7 +116,9 @@
                         <field name="mobile"/>
                         <field name="message"/>
                     </group>
-                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+                    <button name="send_sms" class="oe_stat_button" icon="fa-comment" type="object" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+					or
+                    <button string="Cancel" class="oe_link" special="cancel" />                     
                 </form>
             </field>
         </record>
@@ -141,8 +132,8 @@
         			groups="base.user_root"
                    />	
       
-       <!--======= -->						
-        		
+       <!--======= -->		
+       	<!-- Shortlist[Model] - For Interview[Menu] Assessment Done button-->
         
         <record model="ir.ui.view" id="wizardnotify1_form_view">
             <field name="name">wizardnotify1.form</field>
@@ -154,7 +145,9 @@
                         <field name="mobile"/>
                         <field name="message"/>
                     </group>
-                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send Request" context="{'mobile': mobile, 'message': message,}"  />
+                    <button name="send_sms" class="oe_stat_button" icon="fa-comment" type="object" string="Send SMS" context="{'mobile': mobile, 'message': message,}"  />
+					or
+                    <button string="Cancel" class="oe_link" special="cancel" />                    
                 </form>
             </field>
         </record>
@@ -166,8 +159,9 @@
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"/>    
-                              
 
+		<!-- acesmanpoweruser[Model] - Users[Menu] From the form view -->
+		                    	
         <record model="ir.ui.view" id="wizardnotify2_form_view">
             <field name="name">wizardnotify2.form</field>
             <field name="model">acesmanpower.notifyusers</field>
@@ -178,7 +172,9 @@
                         <field name="mobile"/>
                         <field name="message"/>
                     </group>
-                    <button name="2551" class="oe_stat_button" icon="fa-share-square" type="action" string="Send Request" context="{'recipient_id': recipient_id,'mobile': mobile, 'message': message,}"  />
+                    <button name="send_sms" class="oe_stat_button" icon="fa-comment" type="object" string="Send SMS" context="{'recipient_id': recipient_id,'mobile': mobile, 'message': message,}"  />
+					or
+                    <button string="Cancel" class="oe_link" special="cancel" />                    
                 </form>
             </field>
         </record>
@@ -189,9 +185,40 @@
                     res_model="acesmanpower.notifyusers"
                     view_mode="form"
                     target="new"
-                    key2="client_action_multi"/>    
+                    key2="client_action_multi"/>
+
+        <!-- acesmanpowerproperty[Model] - Recruiting Properties[Dashboard]-->
+        
+		<record model="ir.ui.view" id="wizard_sms_form_view">
+            <field name="name">wizardsms.form</field>
+            <field name="model">acesmanpower.wizardsms</field>
+            <field name="arch" type="xml">
+                <form string="Send SMS">
+                    <group>
+                        <field name="sender"/>
+                        <field name="mobile"/>
+                        <field name="message"/>
+                        <field name="auser_id" invisible="1"/>
+                    </group>
+                    <button name="send_sms" class="oe_stat_button" icon="fa-comment" type="object" string="Send SMS" context="{'sender': sender, 'mobile': mobile, 'message': message, 'auser_id': auser_id,}"  />
+					or
+                    <button string="Cancel" class="oe_link" special="cancel" />                    
+                </form>
+            </field>
+        </record>
+
+        <act_window id="launch_acesmanpower_wizardsms"
+                    name="Send SMS"
+                    src_model="acesmanpoweruser"
+                    res_model="acesmanpower.wizardsms"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"/>
+                    	
                     
 
+		<!-- acesmanpoweruser[Model] - Users[Menu] From the form view Create User button-->
+                    	
         <record model="ir.ui.view" id="wizardnotify3_form_view">
             <field name="name">wizardnotify3.form</field>
             <field name="model">acesmanpower.createuser</field>
@@ -205,9 +232,7 @@
                         <field name="access_id"/>
                         <field name="property_id"/>
                         <field name="company_id" />
-                        
                     </group>
-                    
                     <button name="2613" class="oe_stat_button" icon="fa-user" type="action" string="Create User" 
                     context="{
                     'name': name, 
@@ -218,7 +243,9 @@
                     'property_id': property_id,
                     'company_id': company_id,
                     }"  />
-                    
+    				or
+                    <button string="Cancel" class="oe_link" special="cancel" />                
+	                    
                 </form>
             </field>
         </record>

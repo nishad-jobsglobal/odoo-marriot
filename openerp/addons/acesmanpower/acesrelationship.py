@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #/#############################################################################
-from openerp import api
+from openerp import api,models
 from openerp.osv import osv, fields
 from openerp.tools.translate import _
 from openerp import tools

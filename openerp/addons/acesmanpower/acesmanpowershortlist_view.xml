@@ -10,7 +10,7 @@
        
        <!-- ######################################
         
-        			For Assessment
+        			Pending Assessment Result
         
         	 ######################################	-->  
     		
@@ -19,7 +19,7 @@
             <field name="model">acesmanpowershortlist</field>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-            <tree string="For Assessment" color="green:asses_id == 1" >
+            <tree string="Pending Assessment Result" color="green:asses_id == 1" >
                 <field name="image_small" widget="image" string="" />
                 <field name="name"/>
                 <field name="acesjobseeker_id"/>
@@ -38,17 +38,20 @@
             <field name="arch" type="xml">
                 <form string="Applicant Process" version="7.0">
                     <header>
-                        <field name="stage_id" widget="statusbar" clickable="False"/>
+                        <field name="stage_id" widget="statusbar" clickable="false"/>
                     </header>
                     <sheet>
                         <field name="image_medium" widget='image' class="oe_left oe_avatar" />
                         <div class="oe_right oe_button_box" name="button_box" style="width: 280px; " >
-                            <button attrs="{'invisible': [('assess_id','=',False)]}" name="2601" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Interview" context="{'stage_id': 4}" />
-                            <button attrs="{'invisible': [('assess_id','=',False)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_stat_button" icon="fa-phone-square" type="action" context="{'agency_consultant_ids':agency_consultant_ids}" string="Assessment Done" help="Ask JobsGlobal more info regarding this applicant" />
-                            <button attrs="{'invisible': [('stage_id','!=',1)]}" name="2601" class="oe_stat_button" icon="fa-clipboard" type="action" string="Request Result" context="{'stage_id': 9}" />
-                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-close" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
-                            <button name="2603" class="oe_stat_button" icon="fa-keyboard-o" type="action" string="Send Request to Interview"/>
+                            <button attrs="{'invisible': [('stage_id','!=',3)]}" name="set_assessment_stage" class="oe_stat_button" icon="fa-share-square" type="object" string="For Interview" context="{'stage_id': 4}" />
+                            <button attrs="{'invisible': [('stage_id','!=',4)]}" name="set_assessment_stage" class="oe_stat_button" icon="fa-close" type="object" string="Failed Interview" context="{'stage_id': 7}"/>
+                            <button attrs="{'invisible': [('assess_id','=',False)]}" name="%(launch_acesmanpower_wizardnotify1)d" class="oe_stat_button" icon="fa-comment" type="action" context="{'agency_consultant_ids':agency_consultant_ids}" string="Assessment Done" />
+                            <button attrs="{'invisible': [('stage_id','!=',1)]}" name="set_assessment_stage" class="oe_stat_button" icon="fa-pencil-square" type="object" string="Request Result" context="{'stage_id': 9}" />
+                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="remove_from_data_pool" class="oe_stat_button" icon="fa-trash-o" type="object" string="Remove from Pool" confirm="Are you sure you want to permanantly remove this applicant?"/>
+                            <button attrs="{'invisible': [('stage_id','!=',4)]}" name="move_to_data_pool" class="oe_stat_button" icon="fa-keyboard-o" type="object" string="To Data Pool" context="{'stage_id': 6}"/> 
                             <button attrs="{'invisible': [('stage_id','!=',1)]}" name="back_to_screening" class="oe_stat_button" icon="fa-mail-reply" type="object" string="Back to Screening" />
+                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="set_assessment_stage" class="oe_stat_button" icon="fa-search-minus" type="object" string="Unavailable" context="{'stage_id': 8}"/>
+                            <button attrs="{'invisible': [('stage_id','!=',6)]}" name="set_assessment_stage" class="oe_stat_button" icon="fa-user" type="object" string="My Candidate" context="{'stage_id': 10}"/>
                         </div>
                         
                         <div class="oe_title" >
@@ -68,13 +71,13 @@
                                 <separator />
                                 <group>
                                     <div class="assessbox">
-                                        <button name="2599" class="oe_stat_button oeb_red" icon="fa-close" context="{'assess_id':'red'}" type="action" string=" Fail" />
-                                        <div></div>
-                                        <button name="2599" class="oe_stat_button oeb_yellow" icon="fa-check-square-o" context="{'assess_id':'yellow'}" type="action" string=" Good" />
-                                        <div></div>
-                                        <button name="2599" class="oe_stat_button oeb_white" icon="fa-check-square-o" context="{'assess_id':'white'}" type="action" string=" Very Good" />
-                                        <div></div>
-                                        <button name="2599" class="oe_stat_button oeb_green" icon="fa-check-square-o" context="{'assess_id':'green'}" type="action" string=" Excellent" />
+                                    	<button name="set_assessment_result" class="oe_stat_button oeb_green" icon="fa-check-square-o" context="{'assess_id':'green'}" type="object" string=" Green" />
+                                    	<div></div>
+                                    	<button name="set_assessment_result" class="oe_stat_button oeb_white" icon="fa-check-square-o" context="{'assess_id':'white'}" type="object" string=" Clear" />
+                                    	<div></div>
+                                    	<button name="set_assessment_result" class="oe_stat_button oeb_yellow" icon="fa-check-square-o" context="{'assess_id':'yellow'}" type="object" string=" Yellow" />
+                                    	<div></div>			
+                                        <button name="set_assessment_result" class="oe_stat_button oeb_red" icon="fa-close" context="{'assess_id':'red'}" type="object" string=" Red" />
                                     </div>
                                 </group>
                                <group>
@@ -134,7 +137,7 @@
             <field name="model">acesmanpowershortlist</field>
             <field name="priority" eval="8"/>
             <field name="arch" type="xml">
-            <search string="For Assessment">
+            <search string="Pending Assessment Result">
                 <newline/>
                 <field name="name" string="Name"/>
                 <field name="acesmanpowerjob_id" string="Job Applied"/>
@@ -150,7 +153,7 @@
         </record>
        
         <record model="ir.actions.act_window" id="act_open_acesmanpowershortlist_view">
-            <field name="name">For Assessment</field>
+            <field name="name">Pending Assessment Result</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">acesmanpowershortlist</field>
             <field name="view_type">form</field>
@@ -174,7 +177,7 @@
             <field name="view_id" ref="view_acesmanpowershortlist_tree"/>
         </record>
         
-        <menuitem name="For Assessment" id="menu_acesmanpowershortlist" parent="menu_prerecruitment_portal_live_modules"  sequence="1" action="act_open_acesmanpowershortlist_view"/>
+        <menuitem name="Pending Assessment Result" id="menu_acesmanpowershortlist" parent="menu_prerecruitment_portal_live_modules"  sequence="1" action="act_open_acesmanpowershortlist_view"/>
         
         <!-- ######################################
         
@@ -474,7 +477,85 @@
             <field name="code">action = self.candidates_on_process(cr, uid, None, stage=None,context=context)</field>
             <field name="condition">True</field>
            <field name="name">Dashboard - Candidates On Processing</field> 
-        </record>		
+        </record>	
+       
+       
+       <!-- ######################################
+        
+        	   All Candidates ( Passed & Failed )			
+        
+        	 ######################################	-->
+        
+        <record id="ir_actions_server_all_candidates" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_acesmanpowershortlist"/>
+            <field name="code">action = self.fetch_data(cr, uid, None, stage=11,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">All Candidates</field> 
+        </record>	
+        	
+        <record model="ir.ui.view" id="view_acesmanpower_all_candidates_tree">
+            <field name="name">view.acesmanpower.all.candidates.tree</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="9"/>
+            <field name="arch" type="xml">
+	            <tree string="All candidates">
+	                <field name="image_small" widget="image" string="" />
+	                <field name="name"/>
+	                <field name="acesjobseeker_id"/>
+	                <field name="acesmanpowerjob_id"/>
+	                <field name="acesmanpowerproperty_id"/>
+	                <field name="acesmanpowerevent_id"/>
+	                <field name="assess_id"/>
+	                <field name="stage_id"/>
+	            </tree>
+            </field>
+        </record>
+        
+       <record id="view_acesmanpowershortlist_all_search" model="ir.ui.view">
+            <field name="name">acesmanpowershortlist.all.search</field>
+            <field name="model">acesmanpowershortlist</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+            <search string="Pending Assessment Result">
+                <newline/>
+                <field name="name" string="Name"/>
+                <field name="acesmanpowerjob_id" string="Job Applied"/>
+                <field name="assess_id" string="Assessment Score"/>
+                <field name="acesmanpowerproperty_id" string="Property"/>
+                <field name="acesmanpowerevent_id" string="Event"/>
+                <group expand="0" string="Group By...">
+                	<filter string="Jobseeker" domain="[]" context="{'group_by':'acesjobseeker_id'}"/>	
+                    <filter string="Assessment Score" domain="[]" context="{'group_by':'assess_id'}"/>
+                </group>
+            </search>
+            </field>
+        </record>
+         
+        <!-- Not Using --> 
+        <record model="ir.actions.act_window" id="view_acesmanpower_all_candidates_view">
+            <field name="name">All Candidates</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">acesmanpowershortlist</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="view_acesmanpowershortlist_all_search"/>
+            <field name="domain">[('stage_id', 'in', (2,3))]</field>
+            <field name="context">{}</field>
+        </record>
+       
+       <record model="ir.actions.act_window.view" id="act_open_acesmanpower_all_candidates_tree">
+            <field name="act_window_id" ref="view_acesmanpower_all_candidates_view"/>
+            <field name="sequence" eval="10"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_acesmanpower_all_candidates_tree"/>
+        </record>  
+
+        <menuitem name="All Candidates" id="menu_acesmanpower_all_candidates" 
+        	parent="menu_finalrecruitment_portal_live_modules"  sequence="4" 
+        	action="view_acesmanpower_all_candidates_view"/>   	
         			
     </data>
 </openerp>

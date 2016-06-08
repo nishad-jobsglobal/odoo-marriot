@@ -352,7 +352,7 @@
         </record>  	
         
         <record model="ir.actions.act_window" id="act_open_post_tapplicants_view">
-            <field name="name">Trip</field>
+            <field name="name">Applicants</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">tapplicant</field>
             <field name="view_type">form</field>
@@ -378,8 +378,6 @@
        
         <menuitem name="All Applicants" id="menu_post_recruitment_tapplicants" 
         			parent="menu_post_recruitment"  sequence="1" 
-        			action="ir_actions_server_post_tapplicants"
-        			groups="base.group_marriot_consultant"/>		
-        
+        			action="ir_actions_server_post_tapplicants" />		
     </data>
 </openerp>

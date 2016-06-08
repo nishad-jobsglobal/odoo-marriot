@@ -18,7 +18,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
-
+from openerp import api
 from openerp.tools.translate import _
 from openerp.osv import osv, fields
 
@@ -32,7 +32,7 @@ class acesmanpowerscreening(osv.osv):
         'trip_id':fields.many2one('acesmanpowerevent',"Recruitment Trip"),
         'name': fields.related('acesjobseeker_id', 'name', string="Name", type="char", size=256, store=True, readonly=True),
         'state_id': fields.selection([('new', 'New'),('shortlisted', 'Shortlisted')], 'Screening Status'),
-        'url_image': fields.related('acesjobseeker_id', 'url_image', string="Photo", type="char", size=500, store=True, readonly=True),
+        'url_image': fields.related('acesjobseeker_id', 'url_image', string="Photo", type="char", size=500, store=True,),
         'q1': fields.selection([('1', '1'),('2', '2'),('3','3'),('4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10')], 'Overall Experience'),
         'q2': fields.selection([('1', '1'),('2', '2'),('3','3'),('4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10')], 'Communication Skills'),
         'q3': fields.selection([('1', '1'),('2', '2'),('3','3'),('4','4'),('5','5'),('6','6'),('7','7'),('8','8'),('9','9'),('10','10')], 'Appearance'),
@@ -61,6 +61,65 @@ class acesmanpowerscreening(osv.osv):
         'url_image': lambda self, cr, uid, context: context.get('url_image', False),
     }
     
+    @api.multi
+    def view_profile(self):
+        acesjobseeker_id = self._context['acesjobseeker_id']
+        value = {
+                "type": "ir.actions.act_window",
+                "view_mode": "form",
+                "res_model": "acesjobseeker",
+                "res_id": acesjobseeker_id,
+                "context":self._context,
+                    }
+        return value
+    
+    @api.model
+    def create(self, vals):
+        new_id = super(acesmanpowerscreening, self).create(vals)
+        screening_obj = self.env['acesmanpowerscreening'].search([('id','=',new_id.id)])
+        if screening_obj.trip_id:
+            event_vals = {}
+            jobseeker_id = screening_obj.acesjobseeker_id.id
+            trip_obj = self.env['acesmanpowerevent'].search([('id','=',screening_obj.trip_id.id)])
+            event_vals['jobseeker_ids'] = [(4,jobseeker_id)]
+            trip_obj.write(event_vals)
+        jobseeker_obj = self.env['acesjobseeker'].search([('id','=',screening_obj.acesjobseeker_id.id)])
+        jobseeker_obj.write({'stage_id':'screening'})
+        return new_id
+    
+    @api.multi
+    def write(self, values):
+        current_trip_id = values.get('trip_id',False)
+        #flag_shortlist = values.get('from_short_list',False)
+        screening_obj = self.env['acesmanpowerscreening'].search([('id', '=', self.id)])
+        existing_trip_id = screening_obj.trip_id.id or False
+        event_vals = event_vals2 = {}
+        jobseeker_id = screening_obj.acesjobseeker_id.id
+        
+        if current_trip_id and (not existing_trip_id):
+            trip_obj = self.env['acesmanpowerevent'].search([('id','=',current_trip_id)])
+            event_vals['jobseeker_ids'] = [(4,jobseeker_id)]
+            trip_obj.write(event_vals)
+            jobseeker_obj = self.env['acesjobseeker'].search([('id','=',screening_obj.acesjobseeker_id.id)])
+            jobseeker_obj.write({'stage_id':'screening'})
+        elif current_trip_id and existing_trip_id:
+            if existing_trip_id != current_trip_id:
+                # Delete existing job seeker from Trip
+                trip_obj1 = self.env['acesmanpowerevent'].search([('id','=',existing_trip_id)])
+                event_vals['jobseeker_ids'] = [(3,jobseeker_id)]
+                trip_obj1.write(event_vals)
+                # Add job seeker to the new trip
+                trip_obj2 = self.env['acesmanpowerevent'].search([('id','=',current_trip_id)])
+                event_vals2['jobseeker_ids'] = [(4,jobseeker_id)]
+                trip_obj2.write(event_vals2)
+        #elif existing_trip_id and (not current_trip_id) and (not flag_shortlist):
+        elif existing_trip_id and (not current_trip_id):
+            # Delete existing job seeker from Trip
+            trip_obj1 = self.env['acesmanpowerevent'].search([('id','=',existing_trip_id)])
+            event_vals['jobseeker_ids'] = [(3,jobseeker_id)]
+            trip_obj1.write(event_vals)
+            
+        return super(acesmanpowerscreening, self).write(values)
     
     def fetch_data(self, cr, uid, ids,context=None):
         if context is None:
@@ -87,32 +146,32 @@ class acesmanpowerscreening(osv.osv):
                 property_ids = [obj.id for obj in obje.property_ids]
             property_ids.append(property_id)
             
-        print "UID PUID:",log_in_user,property_id
-        print "Other property_ids:",property_ids
-        print "-"*25
+        #print "UID PUID:",log_in_user,property_id
+        #print "Other property_ids:",property_ids
+        #print "-"*25
             
         # Select different trips linked to a screening
         cr.execute("""SELECT DISTINCT(trip_id) FROM acesmanpowerscreening""")
         rst = cr.fetchall()
         if rst not in (None,[],[None]):
             trip_ids = [record[0] for record in rst if record[0] != None]
-            print "trip_ids",trip_ids
+            #print "trip_ids",trip_ids
             for trip_id in trip_ids:
-                print "trip_id=",trip_id
+                #print "trip_id=",trip_id
                 cr.execute("""SELECT acesmanpowerproperty_id FROM acesmproperty_acesmevent_rel WHERE acesmanpowerevent_id=%s"""%(trip_id))
                 rst = cr.fetchall()
                 trip_property_ids = [record[0] for record in rst if record[0] != None]
-                print 'trip_property_ids',trip_property_ids
+                #print 'trip_property_ids',trip_property_ids
                 for pid in trip_property_ids:
                     if pid in list(set(property_ids)):
                         final_trips.append(trip_id)
                     else:
                         pass
             final_trips = list(set(final_trips))
-            print "final_trips",final_trips
+            #print "final_trips",final_trips
             if flag_group_admin or flag_grop_user:
                 final_trips = trip_ids
-                print "Admin final_trips",final_trips
+                #print "Admin final_trips",final_trips
             
             if len(final_trips):
                 if len(final_trips) > 1:
@@ -121,7 +180,7 @@ class acesmanpowerscreening(osv.osv):
                     cr.execute("""SELECT id FROM acesmanpowerscreening WHERE trip_id in (%s)"""%(tuple(final_trips)))
                 rst = cr.fetchall()
                 screening_ids = [record[0] for record in rst if record[0] != None]
-                print "screening_ids",screening_ids
+                #print "screening_ids",screening_ids
                 domain = [('id','in',screening_ids),('state_id','=','new')]
             else:
                 domain = [('id','=',0)]

@@ -44,18 +44,48 @@ class acesmanpowershortlist(osv.osv):
 
     def _set_image(self, cr, uid, ids, name, value, args, context=None):
         if value:
-            return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(value)}, context=context)
+            return self.write(cr, uid, [ids], {'image': tools.image_resize_image_big(value)}, context=context)
         return True
 
-    def _set_image_url2(self, cr, uid, id, name, value, args, context=None):
+    def _set_image_url2(self, cr, uid, ids, name, value, args, context=None):
         file = cStringIO.StringIO(urllib.urlopen(URL).read())
-        return self.write(cr, uid, [id], {'image': tools.image_resize_image_big(file)}, context=context)
+        return self.write(cr, uid, [ids], {'image': tools.image_resize_image_big(file)}, context=context)
 
+    @api.multi
+    def set_assessment_stage(self):
+        values = {}
+        values['stage_id'] = self._context.get('stage_id')
+        shortlist_obj = self.env['acesmanpowershortlist'].search([('id','=',self.id)])
+        if not shortlist_obj.acesmanpowerjob_id:
+            raise osv.except_osv(_('Warning!'), _("Please fill up Job Applied details before moving to final assessment stage"))
+        return super(acesmanpowershortlist, self).write(values)
+    
     @api.multi
     def back_to_screening(self):
         action = self.env.ref('acesmanpower.ir_actions_server_acesmanpowerscreening')
         result = action.read()[0]
         return result
+    
+    @api.multi
+    def set_assessment_result(self):
+        values = {}
+        values['assess_id'] = self._context.get('assess_id')
+        if self._context.get('assess_id') == 'red':
+            values['stage_id'] = 2
+        else: 
+            values['stage_id'] = 3
+        return super(acesmanpowershortlist, self).write(values)
+    
+    @api.multi
+    def move_to_data_pool(self):
+        values = {}
+        stage_id = self._context.get('stage_id')
+        if stage_id == 6:
+            shortlist_obj = self.env['acesmanpowershortlist'].search([('id','=',self.id)])
+            if not shortlist_obj.interview_sheet:
+                raise osv.except_osv(_('Warning!'), _("Please upload Interview Sheet before you proceed to Approved Data Pool"))
+        values['stage_id'] = stage_id
+        return super(acesmanpowershortlist, self).write(values)
         
     def remove_from_data_pool(self,cr,uid,ids,context=None):
         if context is None:
@@ -67,9 +97,16 @@ class acesmanpowershortlist(osv.osv):
         
     @api.model
     def create(self, vals):
-        jobseeker_id = self._context['acesjobseeker_id']
-        screen_obj = self.env['acesmanpowerscreening'].search([('acesjobseeker_id','=',jobseeker_id)])
-        screen_obj.write({'state_id':'shortlisted'})
+#         jobseeker_id = self._context['acesjobseeker_id']
+#         screen_objs = self.env['acesmanpowerscreening'].search([('acesjobseeker_id','=',jobseeker_id)])
+#         screen_ids = [obj.id for obj in screen_objs]
+#         values = {}
+#         for screen_obj in self.env['acesmanpowerscreening'].browse(screen_ids):
+#             values['state_id'] = 'shortlisted'
+#             values['from_short_list'] = True
+#             screen_obj.write(values)
+#         jobseeker_obj = self.env['acesjobseeker'].search([('id','=',jobseeker_id)])
+#         jobseeker_obj.write({'stage_id':'shortlisted'})
         return osv.osv.create(self, vals)
     
     @api.multi
@@ -95,7 +132,10 @@ class acesmanpowershortlist(osv.osv):
         'url_image': fields.related('acesjobseeker_id', 'url_image', type='char', size=500, string='Name', store=True ),
         
         'stage_id': fields.selection([(1, 'Pending Assessment'),(9, 'Request Result'),(2, 'Failed Assessment'),(3, 'Passed Assessment'),(4, 'For Interview'),(5, 'Selected'),(6, 'Approved Data Pool'),(7, 'Failed Interview'),(8, 'Unavailable'),(10, 'My Candidates')], 'Status', track_visibility='onchange'),
-        'assess_id': fields.selection([('green', 'Excellent'),('white', 'Very Good'),('yellow', 'Good'),('red', 'Fail')], 'Assessment Score', track_visibility='onchange' ),
+        
+        #'assess_id': fields.selection([('green', 'Excellent'),('white', 'Very Good'),('yellow', 'Good'),('red', 'Fail')], 'Assessment Score', track_visibility='onchange' ),
+        'assess_id': fields.selection([('green', 'Green'),('white', 'Clear'),('yellow', 'Yellow'),('red', 'Red')], 'Assessment Score', track_visibility='onchange' ),
+        
         'assessment_date': fields.datetime('Create Date', readonly=True),
         
         'create_date': fields.datetime('Create Date', readonly=True),
@@ -151,8 +191,9 @@ class acesmanpowershortlist(osv.osv):
             
         manpower_user_obj = self.pool.get('acesmanpoweruser')
         shortlist_obj = self.pool.get('acesmanpowershortlist')
+        property_obj = self.pool.get('acesmanpowerproperty')
         shortlist_ids = property_ids = []
-        log_in_user = property_user_id = False
+        log_in_user = property_user_id = property_id = False
         
         # Find the log in user and his related property user id
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
@@ -166,17 +207,23 @@ class acesmanpowershortlist(osv.osv):
                 property_ids = [obj.id for obj in obje.property_ids]
             property_ids.append(property_id)
                 
-        # Find all the short listed candidates who is linked with any of the property
-        if property_ids:
-            shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
-            
-        domain = [('stage_id', 'in', [1,3,4,5,9]),('id','in',shortlist_ids)]
-            
         flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
         flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
         flag_grop_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
         
-        if flag_grop_user or flag_group_admin or flag_grop_consultant:
+        if (flag_grop_user or flag_group_admin) and property_id:
+            all_child_ids = property_obj.search(cr,uid,[('id','child_of',[property_id])],context=context)
+            if all_child_ids:
+                property_ids.extend(all_child_ids)
+                property_ids = list(set(property_ids))
+                
+        # Find all the short listed candidates who is linked with any of the property
+        if property_ids:
+            shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
+            
+        domain = [('stage_id', 'in', [1,3,4,5,9]),('id','in',shortlist_ids)]   
+            
+        if flag_grop_consultant:
             domain = domain[:-1]
             
         # This is a special condition to show data in the dash board of each and every user.
@@ -185,7 +232,7 @@ class acesmanpowershortlist(osv.osv):
             name_dict = {25:'All'}
             if shortlist_ids:
                 domain = [('stage_id', 'in', [1,3,4,5,9]),('id','in',shortlist_ids)]
-                if flag_grop_user or flag_group_admin or flag_grop_consultant:
+                if flag_grop_consultant:
                     domain = []
             
         print "Domain=1>",domain,stage
@@ -208,8 +255,9 @@ class acesmanpowershortlist(osv.osv):
         
         manpower_user_obj = self.pool.get('acesmanpoweruser')
         shortlist_obj = self.pool.get('acesmanpowershortlist')
+        property_obj = self.pool.get('acesmanpowerproperty')
         shortlist_ids = property_ids = []
-        log_in_user = property_user_id = False
+        log_in_user = property_user_id = property_id = False
         
         # Find the log in user and his related property user id
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
@@ -225,27 +273,32 @@ class acesmanpowershortlist(osv.osv):
                 property_ids = [obj.id for obj in obje.property_ids]
             property_ids.append(property_id)
                 
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_grop_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if (flag_grop_user or flag_group_admin) and property_id:
+            all_child_ids = property_obj.search(cr,uid,[('id','child_of',[property_id])],context=context)
+            if all_child_ids:
+                property_ids.extend(all_child_ids)
+                property_ids = list(set(property_ids))
+                
         # Find all the short listed candidates who is linked with any of the property
         if property_ids:
             shortlist_ids = shortlist_obj.search(cr,uid,[('acesmanpowerproperty_id','in',list(set(property_ids)))],context=context)
-            print "shortlist_ids=",shortlist_ids
                 
         # Name and Domain selection for final data filtering
         if isinstance(stage, int):
             domain = [('stage_id', '=', stage),('id','in',shortlist_ids)]
-            name_dict = {1:'For Assessment',9:'Waiting Results',4:'For Interview',
+            name_dict = {1:'Pending Assessment Result',9:'Waiting Results',4:'For Interview',
                          6:'Approved Data Pool',10:'My candidates'}
         elif isinstance(stage, tuple):
             domain = [('stage_id', 'in', stage),('id','in',shortlist_ids)]
             name_dict = {stage:'Qualified'}
         else:
             domain = [('id','in',shortlist_ids)]
-            
-        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
-        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
-        flag_grop_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
-        
-        if flag_grop_user or flag_group_admin or flag_grop_consultant:
+                
+        if flag_grop_consultant:
             domain = domain[:-1]
             
         # This is a special condition to show data in the dash board of each and every user.
@@ -254,10 +307,10 @@ class acesmanpowershortlist(osv.osv):
             name_dict = {25:'All'}
             if shortlist_ids:
                 domain = [('id','in',shortlist_ids),('stage_id', 'in', [1,3,4,5,9])]
-                if flag_grop_user or flag_group_admin or flag_grop_consultant:
+                if flag_grop_consultant:
                     domain = []
             
-        print "Domain Short=>",domain,stage
+        print "Shortlist Domain =>",domain,stage
         value = {
                 'name': _(name_dict[stage]),
                 'view_type': 'form',

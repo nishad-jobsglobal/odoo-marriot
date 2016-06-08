@@ -36,32 +36,40 @@
                     <header>
                     </header>
                     <sheet>
+                    	<div class="oe_right oe_button_box" name="button_box" style="width: 300px; ">
+                            <button name="view_profile" class="oe_stat_button" icon="fa-share-square-o" 
+                              type="object" string="Go to Profile"
+                             context="{'url_image': url_image, 'acesjobseeker_id': acesjobseeker_id }" />
+                        </div> 	
                         <div class="oe_left" style="width: 128px; ">
                             <field name="url_image" widget="uimage"  />
                         </div>
-                        <div class="oe_title" style="width: 480px;">
+                        <div class="oe_title">
                             <label for="acesjobseeker_id" class="oe_edit_only"/>
                             <h1><field name="acesjobseeker_id"/></h1>
-                        </div>
-                        <div class="oe_title" style="width: 480px;">
                             <label for="trip_id" class="oe_edit_only"/>
-                            <h2><field name="trip_id"/></h2>
-                        </div> 
+                            <h2><field name="trip_id"/></h2> 
+                        </div>
+                        
                         <group>
-                            <group>
-                                <field name="q1" widget="radio" class="oe_myrad" />
-                                <field name="q2" widget="radio" class="oe_myrad" />
-                                <field name="q3" widget="radio" class="oe_myrad" />
-                                <field name="q4" widget="radio" class="oe_myrad" />
-                                <field name="q5" widget="radio" class="oe_myrad" />
-                                <field name="q6" widget="radio" class="oe_myrad" />
-                                <field name="q7" widget="radio" class="oe_myrad" />
-                                <field name="q8" widget="radio" class="oe_myrad" />
-                                <field name="q9" widget="radio" class="oe_myrad" />
-                                <field name="q10" widget="radio" class="oe_myrad" />
-                                <field name="q11" widget="radio" class="oe_myrad" />
-                                <field name="q12" widget="radio" class="oe_myrad" />
-                            </group>
+			<group colspan="4" col="10">
+			    	<field name="q1" widget="radio" class="oe_myrad" />
+			    	<field name="q2" widget="radio" class="oe_myrad" />
+			    	<field name="q3" widget="radio" class="oe_myrad" />
+			    	<field name="q4" widget="radio" class="oe_myrad" />
+			</group>
+			<group colspan="4" col="10">
+			    	<field name="q5" widget="radio" class="oe_myrad" />
+			    	<field name="q6" widget="radio" class="oe_myrad" />
+			    	<field name="q7" widget="radio" class="oe_myrad" />
+			    	<field name="q8" widget="radio" class="oe_myrad" />
+			</group>	
+			<group colspan="4" col="12">
+				<field name="q9" widget="radio" class="oe_myrad" />
+				<field name="q10" widget="radio" class="oe_myrad" />
+				<field name="q11" widget="radio" class="oe_myrad" />
+				<field name="q12" widget="radio" class="oe_myrad" />
+			</group>
                         </group>
                         
                         <group>
@@ -135,7 +143,7 @@
             <field name="view_id" ref="view_acesmanpowerscreening_tree"/>
         </record>
         
-        <menuitem name="Agency Screening" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  
+        <menuitem name="Candidate List" id="menu_acesmanpowerscreening" parent="menu_prerecruitment_portal_live_modules"  
         sequence="0" action="ir_actions_server_acesmanpowerscreening"/>
         
     </data>

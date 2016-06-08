@@ -32,3 +32,4 @@ import trip
 import tapplicant
 import edi
 import menu_view
+import mail_notifications

@@ -6,10 +6,10 @@
 	  		}
 	  </style>		
 		
-	  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/chris/acesmanpower.css" />
+	  <link rel="stylesheet" href="/acesmanpower/static/src/css/acesmanpower.css" />
 	  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
 	  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
-	  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/jvectormap/jquery-jvectormap-1.2.2.css" />
+	  <link rel="stylesheet" href="/acesmanpower/static/src/css/jquery-jvectormap-1.2.2.css" />
 	  
 	  <script src="http://jobsglobal.com/cdn/plugins/chris/acesmanpowers.js"></script>
 	

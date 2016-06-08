@@ -10,13 +10,14 @@
   		}		
   </style>
   
-  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/chris/acesmanpower.css" />
-  
+  <link rel="stylesheet" href="/acesmanpower/static/src/css/acesmanpower.css" />
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
-  <link rel="stylesheet" href="http://jobsglobal.com/cdn/plugins/jvectormap/jquery-jvectormap-1.2.2.css" />
+  <link rel="stylesheet" href="/acesmanpower/static/src/css/jquery-jvectormap-1.2.2.css" />
   
   <script src="http://jobsglobal.com/cdn/plugins/chris/acesmanpowers.js"></script>
+ 
+  <!-- <script src="/acesmanpower/static/src/adminlte/js/pages/dashboard.js"></script> -->		
 
   <div class="content">
   <!-- Content Wrapper. Contains page content -->
@@ -39,7 +40,7 @@
           <div class="row">
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-aqua">
+              <div class="small-box bg-aqua" style="border-radius:10px">
                 <div class="inner">
                   <h3 id="cgnewmessages">0</h3>
 
@@ -48,14 +49,14 @@
                 <div class="icon">
                   <i class="ion ion-ios-email-outline"></i>
                 </div>
-                <a href="http://c.jobsglobal.com/web#menu_id=148&amp;action=158" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" style="border-radius:0px 0px 10px 10px; color:#FFF" data-module="cgnewmessages">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             
             <!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-yellow">
+              <div class="small-box bg-yellow" style="border-radius:10px">
                 <div class="inner">
                   <h3 id="acesjobseeker">0</h3>
 
@@ -64,13 +65,13 @@
                 <div class="icon">
                   <i class="ion ion-ios-contact-outline"></i>
                 </div>
-                <a href="#" class="small-box-footer" data-module="acesjobseeker" >More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" style="border-radius:0px 0px 10px 10px; color:#FFF" data-module="acesjobseeker" >More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-red">
+              <div class="small-box bg-red" style="border-radius:10px">
                 <div class="inner">
                   <h3 id="acesmanpowerevent">0</h3>
 
@@ -79,7 +80,7 @@
                 <div class="icon">
                   <i class="ion ion-ios-people"></i>
                 </div>
-                <a href="#" class="small-box-footer" data-module="acesmanpowerevent">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" style="border-radius:0px 0px 10px 10px; color:#FFF" data-module="acesmanpowerevent">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -88,7 +89,7 @@
             <!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
-              <div class="small-box bg-green">
+              <div class="small-box bg-green" style="border-radius:10px">
                 <div class="inner">
                   <h3 id="acesmanpowershortlist">0</h3>
                   
@@ -97,7 +98,7 @@
                 <div class="icon">
                   <i class="ion-ios-speedometer"></i>
                 </div>
-                <a href="#" class="small-box-footer" data-module="acesmanpowershortlist">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer" style="border-radius:0px 0px 10px 10px; color:#FFF" data-module="acesmanpowershortlist">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -149,7 +150,7 @@
         <div id="generalpurposewrap" style="width: 380px; ">
         <h3>Recruiting Properties</h3>
         <table id="gprecruitproperties" border="1px"  >
-        <tr><th>Property</th><th>Manager</th><th>Task</th></tr>
+        <tr><th>Property</th><th>Manager</th><th>SMS</th></tr>
         </table>
         <p>
             <a href="#" class="btn btn-info property" data-module="acesmanpowerproperty" role="button">View All</a>
@@ -163,10 +164,6 @@
   </div>
   
   </div>
-  
-   <script>
-   
-   </script>
   
 </t>
 

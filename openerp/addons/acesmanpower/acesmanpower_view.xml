@@ -31,7 +31,7 @@
             <field name="arch" type="xml">
                 <form string="Jobseeker" version="7.0">
                     <header>
-                    	<button name="view_cv" string="View CV"/>	
+                    	<button name="view_cv" type="object" context="{'url': importid, }" string="View CV"/>
                         <field name="stage_id" widget="statusbar" clickable="false"/>
                     </header>
                     <sheet>
@@ -39,12 +39,16 @@
                             <field name="url_image" widget="uimage"  />
                         </div>
                         <div class="oe_right oe_button_box" name="button_box" style="width: 300px; ">
-                            <button name="2544" class="oe_stat_button" icon="fa-check-square-o" type="action" string="New Screen" help="Set a new screening test for this candidate" />
-                            <button name="%(launch_acesmanpower_wizard)d" class="oe_stat_button" icon="fa-share-square" type="action" string="Send SMS"/>
-                            <button name="open_document" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Original CV" context="{'url': url_cv, }" />
+                            <button name="screen_candidate" class="oe_stat_button" icon="fa-plus-square" 
+                             type="object" string="New Screen" />
+                            <button name="%(launch_acesmanpower_wizard)d" class="oe_stat_button" icon="fa-comment" type="action" string="Send SMS"/>
+                            <button name="view_original_cv" class="oe_stat_button" icon="fa-file-word-o" type="object" string="Original CV"/>
                             <button name="open_document" class="oe_stat_button" icon="fa-file-pdf-o" type="object" string="Formatted CV" context="{'url': url_cvpdf, }" />
-                            <button name="2597" class="oe_stat_button" icon="fa-share-square-o" type="action" string="For Assessment" help="Set this candidate to take the assessment exam"
+                            <button name="send_for_assessment" class="oe_stat_button" icon="fa-share-square" type="object" string="For Assessment" help="Set this candidate to take the assessment exam"
                             context="{'url_image': url_image, 'acesjobseeker_id': active_id }" />
+			     <button name="qualify_candidate" class="oe_stat_button" icon="fa-thumbs-up" 
+			     type="object" string="Qualified" 
+			      context="{'acesmanpowerjob_id': acesmanpowerjob_id }" />                            
                         </div>
                         <div class="oe_title" style="width: 380px;">
                             <label for="name" class="oe_edit_only"/>
@@ -64,6 +68,7 @@
                                 <group>
                                     <group>
                                         <field name="industrypref" />
+					<field name="acesmanpowerjob_id" />                                        
                                         <field name="expectedsalary" groups="base.group_candidates_visibility"/>
                                     </group>
                                     <group>
@@ -120,6 +125,7 @@
                                         <field name="user_id"/>
                                         <field name="url_cv"  readonly="1"/>
                                         <field name="url_cvpdf" readonly="1"/>
+                                        <field name="importid" readonly="1"/>
                                     </group>
                                 </group>
                             </page>

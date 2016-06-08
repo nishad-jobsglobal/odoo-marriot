@@ -67,14 +67,15 @@ class tapplicant(osv.osv):
         print "-"*25
         
         manpower_user_obj = self.pool.get('acesmanpoweruser')
+        property_obj = self.pool.get('acesmanpowerproperty')
         trip_obj = self.pool.get('trip')
         tapplicant_ids = property_ids = []
-        log_in_user = property_user_id = False
+        log_in_user = property_user_id = property_id = False
         # Find the log in user and his related property user id
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
             log_in_user = uid
             property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
-            print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
+            #print "Log In user {'%s'} = Property User {'%s'}"%(log_in_user,property_user_id[0])
         else:
             pass
         # Find property and related property ids of log in user with related to property user
@@ -85,8 +86,18 @@ class tapplicant(osv.osv):
             for obje in manpower_user_obj.browse(cr,uid,property_user_id,context):
                 property_ids = [obj.id for obj in obje.property_ids]
             property_ids.append(property_id)
-            print "Direct Property ID=",property_id,property_ids
+            #print "Direct Property ID=",property_id,property_ids
             
+        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
+        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
+        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
+        
+        if (flag_grop_user or flag_group_admin) and property_id:
+            all_child_ids = property_obj.search(cr,uid,[('id','child_of',[property_id])],context=context)
+            if all_child_ids:
+                property_ids.extend(all_child_ids)
+                property_ids = list(set(property_ids))
+                
         # Find all the candidates who is linked with any of the property
         if property_ids:
             trip_ids = trip_obj.search(cr,uid,[('property_id','in',property_ids)])
@@ -94,15 +105,11 @@ class tapplicant(osv.osv):
                 tapplicant_ids.extend([obj.id for obj in current_trip_obj.tapplicant_ids])
                 
         domain = [('id','in',tapplicant_ids)]
-            
-        flag_grop_user = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_user')
-        flag_group_admin = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_group_property_admin')
-        flag_group_consultant = self.pool.get('res.users').has_group(cr, uid, 'base.group_marriot_consultant')
-        
-        if flag_grop_user or flag_group_admin or flag_group_consultant:     
+                
+        if flag_group_consultant:     
             domain = []
                     
-        print "Domain=",domain
+        print "Domain=Post Applicants",domain
         value = {
                 'name': _("Trip Applicants"),
                 'view_type': 'form',

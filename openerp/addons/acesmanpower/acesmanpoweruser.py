@@ -21,6 +21,7 @@
 from psycopg2 import IntegrityError
 
 from openerp import tools
+from openerp import api
 from openerp.osv import osv, fields
 from openerp import SUPERUSER_ID
 from openerp.tools.translate import _
@@ -47,9 +48,14 @@ class acesmanpoweruser(osv.osv):
         'username': fields.char(size=256, string='Username',  ),
         'password': fields.char(size=256, string='Password', required=True, ),
         
-        'access_id': fields.selection([('staff', 'Recruitment Staff'),('manager','Manager'),('admin','Administrator')], 'Role / Access Level'),
+        'access_id': fields.selection([('staff', 'Property User'),('manager','Property Manager'),('user','Group User'),('admin','Group Manager')], 'Role / Access Level'),
         'email': fields.char(size=100, string='Email', required=True ),
         'mobile': fields.char(size=100, string='Mobile', required=True),
+	'position': fields.char(size=100, string='Position'),
+        'job_title': fields.char(size=100, string='Job Title'),
+	'street': fields.char(size=256, string='Street', ),
+        'city': fields.char(size=256, string='City', ),
+        'country_id': fields.many2one('res.country', 'Country'),
         
         'company_id': fields.many2one('res.company', 'Parent Company', required=True),
         'user_id': fields.many2one('res.users', 'Related User'),
@@ -107,6 +113,104 @@ class acesmanpoweruser(osv.osv):
             values['username'] = email
         return {'value': values}
     
+    @api.model
+    def create(self,vals):
+        
+        login_user = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
+        if not vals['access_id']:
+            raise osv.except_osv(_('Warning!'), _("You should set a Role/Access Level for the new user"))
+        if login_user.access_id == 'staff' and vals['access_id'] != 'staff':
+            raise osv.except_osv(_('Warning!'), _("You can't create a user with a higher Role/Access Level than you !"))
+        if login_user.access_id == 'manager' and vals['access_id'] in ('user','admin'):
+            raise osv.except_osv(_('Warning!'), _("You can't create a user with a higher Role/Access Level than you !"))
+        if login_user.access_id == 'user' and vals['access_id'] == 'admin':
+            raise osv.except_osv(_('Warning!'), _("You can't create a user with a higher Role/Access Level than you !"))
+        
+        aces_object = super(acesmanpoweruser, self).create(vals)
+        
+        auser = {}
+        auser['name'] = aces_object.name
+        auser['email'] = aces_object.email
+        auser['acesmanpoweruser_id'] = aces_object.id
+        auser['login'] = aces_object.email
+        auser['password'] = aces_object.password
+        auser['new_password'] = aces_object.password
+        auser['mobile'] = aces_object.mobile
+        auser['company_id'] = aces_object.company_id.id
+        company_ids = []
+        company_ids.append(aces_object.company_id.id)
+        auser['company_ids'] = company_ids
+        
+        print "auser",auser
+        
+        external_id_model = self.env['ir.model.data']
+        group_portal_ref = external_id_model.get_object_reference('base', 'recruitment_portal')
+        group_portal_id = group_portal_ref and group_portal_ref[1] or False
+        
+        print "Portal =",group_portal_id
+        
+        group_portal_ref1 = external_id_model.get_object_reference('base', 'recruitment_portal_special')
+        group_portal_id1 = group_portal_ref1 and group_portal_ref1[1] or False
+        
+        print "Special Portal =",group_portal_id1
+        
+        employee_ref = external_id_model.get_object_reference('base', 'group_user')
+        employee_red_id = employee_ref and employee_ref[1] or False
+        
+        sms_ref = external_id_model.get_object_reference('smsclient', 'group_sms_user')
+        sms_ref_id = sms_ref and sms_ref[1] or False
+        
+        print "employee_red_id",employee_red_id
+        
+        staff_id = manager_id = gp_user_id = gp_admin_id = False
+            
+        if vals['access_id'] == 'staff':
+            staff = external_id_model.get_object_reference('base', 'group_marriot_property_user')
+            staff_id = staff and staff[1] or False
+            auser['groups_id'] = [(6, 0, [employee_red_id,group_portal_id,group_portal_id1,staff_id,sms_ref_id])]
+            
+        if vals['access_id'] == 'manager':
+            manager = external_id_model.get_object_reference('base', 'group_marriot_property_admin')
+            manager_id = manager and manager[1] or False
+            auser['groups_id'] = [(6, 0, [employee_red_id,group_portal_id,group_portal_id1,manager_id,sms_ref_id])]
+            
+        if vals['access_id'] == 'user':
+            gp_user = external_id_model.get_object_reference('base', 'group_marriot_group_property_user')
+            gp_user_id = gp_user and gp_user[1] or False
+            auser['groups_id'] = [(6, 0, [employee_red_id,group_portal_id,group_portal_id1,gp_user_id,sms_ref_id])]
+            
+        if vals['access_id'] == 'admin':
+            gp_admin = external_id_model.get_object_reference('base', 'group_marriot_group_property_admin')
+            gp_admin_id = gp_admin and gp_admin[1] or False
+            auser['groups_id'] = [(6, 0, [employee_red_id,group_portal_id,group_portal_id1,gp_admin_id,sms_ref_id])]
+            
+        print "auser['groups_id']",auser['groups_id']
+        
+        
+        user_id = self.pool.get('res.users').create(self._cr,SUPERUSER_ID,auser)
+        value = {}
+        value['user_id'] = user_id
+        aces_object.write(value)
+        return aces_object
+        
+    @api.multi
+    def write(self, values):
+        
+        access_id = values.get('access_id',False)
+        login_user = self.env['acesmanpoweruser'].search([('user_id','=',self._uid)])
+        obj = self.env['acesmanpoweruser'].search([('id','=',self.id)])
+        
+        #if not access_id and obj.access_id != False:
+        #    raise osv.except_osv(_('Warning!'), _("You should set a Role/Access Level for the new user"))
+        if login_user.access_id == 'staff' and access_id != 'staff':
+            raise osv.except_osv(_('Warning!'), _("You can't create a user with a higher Role/Access Level than you !"))
+        if login_user.access_id == 'manager' and access_id in ('user','admin'):
+            raise osv.except_osv(_('Warning!'), _("You can't create a user with a higher Role/Access Level than you !"))
+        if login_user.access_id == 'user' and access_id == 'admin':
+            raise osv.except_osv(_('Warning!'), _("You can't create a user with a higher Role/Access Level than you !"))
+        
+        return super(acesmanpoweruser, self).write(values)
+    
     def fetch_data(self, cr, uid, ids,context=None):
         if context is None:
             context = {}
@@ -119,8 +223,6 @@ class acesmanpoweruser(osv.osv):
         if manpower_user_obj.search(cr,uid,[('user_id','=',uid)]):
             log_in_user = uid
             property_user_id = manpower_user_obj.search(cr,uid,[('user_id','=',uid)])
-        else:
-            pass
         
         # Find property and related property ids of log in user with related to property user
         if log_in_user and property_user_id:
@@ -139,10 +241,14 @@ class acesmanpoweruser(osv.osv):
         if flag_admin and log_in_user and property_user_id:
             property_users = manpower_user_obj.search(cr,uid,[('property_id','=',property_id)])
             domain = [('id','in',property_users)]
-        if flag_grop_user or flag_group_admin or flag_group_consultant:
+        if (flag_grop_user or flag_group_admin) and property_id:
+            property_users = manpower_user_obj.search(cr,uid,[('property_id','child_of',property_id)])
+            domain = [('id','in',property_users)]
+            
+        if flag_group_consultant:
             domain = []
             
-        print "Domain=",domain
+        print "User Domain=",domain
         value = {
                 'name': _('Users'),
                 'view_type': 'form',

@@ -51,6 +51,7 @@ This module manages the testing
         'acesrelationship_view.xml',
         'edi/property_action_data.xml',
         'menu_view.xml',
+        'mail_notifications_view.xml'
     ],
      'js': [
         'static/src/js/resource.js',
@@ -68,7 +69,8 @@ This module manages the testing
     ],
     'css': [
         '/acesmanpower/static/src/css/tripevents.css',
-    
+        '/acesmanpower/static/src/css/acesmanpower.css',
+        '/acesmanpower/static/src/css/jquery-jvectormap-1.2.2.css'
     ],     
     'images': [],
     'demo': [],
