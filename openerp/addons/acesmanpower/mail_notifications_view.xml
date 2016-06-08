@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+        <!-- mail.message tree: short view !-->
+        <record model="ir.ui.view" id="view_message_tree_inherit">
+            <field name="name">mail.message.tree.inherit</field>
+            <field name="model">mail.message</field>
+            <field name="arch" type="xml">
+            	<tree string="Messages">
+                    <field name="date"/>
+                    <field name="subject"/>
+					<field name="author_id"/>
+                    <field name="body"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- mail.message form: short view !-->
+        <record model="ir.ui.view" id="view_message_form_inherit">
+            <field name="name">mail.message.form.inherit</field>
+            <field name="model">mail.message</field>
+            <field name="arch" type="xml">
+            	<form string="Message">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="subject"/>
+                                <field name="author_id"/>
+                                <field name="date"/>
+                                <field name="type"/>
+                            </group>
+                        </group>
+                        <field name="body"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <record id="ir_actions_server_message" model="ir.actions.server">
+            <field name="sequence" eval="5"/>
+            <field name="state">code</field>
+            <field name="type">ir.actions.server</field>
+            <field name="model_id" ref="model_mail_message"/>
+            <field name="code">action = self.fetch_data(cr, uid, None,context=context)</field>
+            <field name="condition">True</field>
+           <field name="name">Messages</field> 
+        </record>
+
+
+        <record id="action_view_mail_message_inherit" model="ir.actions.act_window">
+            <field name="name">Messages</field>
+            <field name="res_model">mail.message</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field eval="False" name="view_id"/>
+        </record>
+        
+        <record id="action_message_tree1_view1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_view_mail_message_inherit"/>
+        </record>
+
+        <record id="action_message_tree1_view2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_message_form_inherit"/>
+            <field name="act_window_id" ref="action_view_mail_message_inherit"/>
+        </record>
+        
+        <!-- Add menu entry in for messages -->
+        <!-- <menuitem name="Messages" id="menu_mail_message_recruitment" parent="menu_recruitment_portal_live_modules" action="ir_actions_server_message"/> -->
+        
+    </data>
+</openerp>
